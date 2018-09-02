@@ -1,0 +1,6 @@
+{
+    "speedUpInterval": 60,
+    "speedUpPersist": 30,
+    "doubleInterval": 120,
+    "doublePersist": 60
+}
