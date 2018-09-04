@@ -134,6 +134,19 @@
                 <key>sourceSize</key>
                 <string>{300,59}</string>
             </dict>
+            <key>btn_sure.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{489,870},{383,159}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{1,0},{383,159}}</string>
+                <key>sourceSize</key>
+                <string>{385,159}</string>
+            </dict>
             <key>eft_1.png</key>
             <dict>
                 <key>frame</key>
@@ -150,7 +163,7 @@
             <key>eft_2.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{703,895},{86,98}}</string>
+                <string>{{750,984},{86,98}}</string>
                 <key>offset</key>
                 <string>{0,-1}</string>
                 <key>rotated</key>
@@ -163,7 +176,7 @@
             <key>eft_3.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{489,959},{86,98}}</string>
+                <string>{{650,984},{86,98}}</string>
                 <key>offset</key>
                 <string>{0,-1}</string>
                 <key>rotated</key>
@@ -202,7 +215,7 @@
             <key>frame9G4.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{589,1036},{60,60}}</string>
+                <string>{{802,1161},{60,60}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -254,7 +267,7 @@
             <key>jar_black.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{752,994},{73,72}}</string>
+                <string>{{650,1222},{73,72}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -267,7 +280,7 @@
             <key>jar_high.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{489,1047},{73,72}}</string>
+                <string>{{727,1161},{73,72}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -345,11 +358,11 @@
             <key>liquid0.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{633,902},{23,30}}</string>
+                <string>{{380,963},{23,30}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <false/>
+                <true/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{23,30}}</string>
                 <key>sourceSize</key>
@@ -358,11 +371,11 @@
             <key>liquid1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{633,870},{23,30}}</string>
+                <string>{{380,938},{23,30}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <false/>
+                <true/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{23,30}}</string>
                 <key>sourceSize</key>
@@ -462,11 +475,11 @@
             <key>logo.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{589,959},{75,61}}</string>
+                <string>{{650,1159},{75,61}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{75,61}}</string>
                 <key>sourceSize</key>
@@ -501,7 +514,7 @@
             <key>plug.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{489,870},{142,87}}</string>
+                <string>{{703,895},{142,87}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -553,11 +566,11 @@
             <key>rocket.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{803,895},{97,87}}</string>
+                <string>{{750,1072},{97,87}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{97,87}}</string>
                 <key>sourceSize</key>
@@ -579,7 +592,7 @@
             <key>unlockComb.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{652,983},{85,98}}</string>
+                <string>{{650,1072},{85,98}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -846,7 +859,7 @@
             <key>size</key>
             <string>{1024,2048}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:3aa56cc52de24728ffea9faaa7e95667:1/1$</string>
+            <string>$TexturePacker:SmartUpdate:1ce75639c1c6c7dbdb1a9aa49428f3f9:1/1$</string>
             <key>textureFileName</key>
             <string>game1.png</string>
         </dict>

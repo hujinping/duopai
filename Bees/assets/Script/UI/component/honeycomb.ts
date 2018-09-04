@@ -93,26 +93,9 @@ export default class NewClass extends cc.Component {
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
             if(e.target.getName()=="btn_upgrade"){
                 if(this._unlockNum==0 && !this._unlock){//解锁蜂巢
-                    if(cc.find("Canvas").getChildByName("unlockCombTip")){return;}
-                    let unlockCombTip=cc.instantiate(this.unlockCombTip);
-                    unlockCombTip.parent=cc.find("Canvas");
-                    unlockCombTip.y=-1218;
-                    unlockCombTip.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0)));
-                    unlockCombTip.getComponent("unlockCombTip").init(GameCtr.comblevel);
-                    GameCtr.getInstance().getGame().setMaskVisit(true);
-                    this._unlock=true;
-                    GameCtr.combsUnlock.push({level:this._unlockNum,unlock:this._unlock});
-                    GameCtr.getInstance().setCombsUnlock();
-
+                    this.onUnlockComb();
                 }else{//升级蜂巢
-                    if(cc.find("Canvas").getChildByName("combUpgrade")){return;}
-                    let combUpgrade=cc.instantiate(this.combUpgrade);
-                    combUpgrade.parent=cc.find("Canvas");
-                    combUpgrade.getComponent("combUpgrade").init(this._level,this._unlockNum);
-                    combUpgrade.y=-1218;
-                    combUpgrade.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0)));
-                    GameCtr.getInstance().getGame().setMaskVisit(true);
-                    GameCtr.getInstance().getGame().setCombUpgrade(combUpgrade);
+                    this.onUpgradeComb();
                 }
                 AudioManager.getInstance().playSound("audio/btn_click");
             }else if(e.target.getName()=="totalComb"){
@@ -121,8 +104,31 @@ export default class NewClass extends cc.Component {
         })
     }
 
-    upgrade(){
+    onUnlockComb(){
+        if(cc.find("Canvas").getChildByName("unlockCombTip")){return;}
+        let unlockCombTip=cc.instantiate(this.unlockCombTip);
+        unlockCombTip.parent=cc.find("Canvas");
+        unlockCombTip.y=-1218;
+        unlockCombTip.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0)));
+        unlockCombTip.getComponent("unlockCombTip").init(this._level);
+        GameCtr.getInstance().getGame().setMaskVisit(true);
+        this._unlock=true;
+        GameCtr.combsUnlock.push({level:this._unlockNum,unlock:this._unlock});
+        GameCtr.getInstance().setCombsUnlock();
+    }
 
+    onUpgradeComb(){
+        if(cc.find("Canvas").getChildByName("combUpgrade")){return;}
+        let combUpgrade=cc.instantiate(this.combUpgrade);
+        combUpgrade.parent=cc.find("Canvas");
+        combUpgrade.getComponent("combUpgrade").init(this._level,this._unlockNum);
+        combUpgrade.y=-1218;
+        combUpgrade.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0)));
+        GameCtr.getInstance().getGame().setMaskVisit(true);
+        GameCtr.getInstance().getGame().setCombUpgrade(combUpgrade);
+    }
+
+    upgrade(){
         this.unlockComb(this._unlockNum)
         this.createBee(this._unlockNum,false)
         GameCtr.money-=GameCtr.combConfig[this._level-1].levelUpCost+GameCtr.combConfig[this._level-1].upMatrix*this._unlockNum
