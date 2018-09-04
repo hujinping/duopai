@@ -19,6 +19,7 @@ export default class NewClass extends cc.Component {
     _combPosArr=[];
     _interval=0;
     _speed=1
+    _unlock=false;
 
     @property(cc.Prefab)
     bee:cc.Prefab=null;
@@ -31,6 +32,9 @@ export default class NewClass extends cc.Component {
 
     @property(cc.Prefab)
     bubbleHoney:cc.Prefab=null;
+
+    @property(cc.Prefab)
+    unlockCombTip:cc.Prefab=null;
 
     onLoad(){
         this.initData();
@@ -62,9 +66,11 @@ export default class NewClass extends cc.Component {
         this._beeNode.setLocalZOrder(2);
     }
 
-    setLevel(level,unlockNum){
+    setLevel(level,unlockNum,unlock){
         this._level=level;
+        this._unlock=unlock;
         this._unlockNum=unlockNum;
+
         this._lb_level.getComponent(cc.Label).string=level+'';
 
         for(let i=0;i<unlockNum;i++){
@@ -86,14 +92,28 @@ export default class NewClass extends cc.Component {
     initBtnEvent(btn){
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
             if(e.target.getName()=="btn_upgrade"){
-                if(cc.find("Canvas").getChildByName("combUpgrade")){return;}
-                let combUpgrade=cc.instantiate(this.combUpgrade);
-                combUpgrade.parent=cc.find("Canvas");
-                combUpgrade.getComponent("combUpgrade").init(this._level,this._unlockNum);
-                combUpgrade.y=-1218;
-                combUpgrade.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0)));
-                GameCtr.getInstance().getGame().setMaskVisit(true);
-                GameCtr.getInstance().getGame().setCombUpgrade(combUpgrade);
+                if(this._unlockNum==0 && !this._unlock){//解锁蜂巢
+                    if(cc.find("Canvas").getChildByName("unlockCombTip")){return;}
+                    let unlockCombTip=cc.instantiate(this.unlockCombTip);
+                    unlockCombTip.parent=cc.find("Canvas");
+                    unlockCombTip.y=-1218;
+                    unlockCombTip.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0)));
+                    unlockCombTip.getComponent("unlockCombTip").init(GameCtr.comblevel);
+                    GameCtr.getInstance().getGame().setMaskVisit(true);
+                    this._unlock=true;
+                    GameCtr.combsUnlock.push({level:this._unlockNum,unlock:this._unlock});
+                    GameCtr.getInstance().setCombsUnlock();
+
+                }else{//升级蜂巢
+                    if(cc.find("Canvas").getChildByName("combUpgrade")){return;}
+                    let combUpgrade=cc.instantiate(this.combUpgrade);
+                    combUpgrade.parent=cc.find("Canvas");
+                    combUpgrade.getComponent("combUpgrade").init(this._level,this._unlockNum);
+                    combUpgrade.y=-1218;
+                    combUpgrade.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0)));
+                    GameCtr.getInstance().getGame().setMaskVisit(true);
+                    GameCtr.getInstance().getGame().setCombUpgrade(combUpgrade);
+                }
                 AudioManager.getInstance().playSound("audio/btn_click");
             }else if(e.target.getName()=="totalComb"){
                 this._speedUpTime=Date.now();
@@ -102,15 +122,13 @@ export default class NewClass extends cc.Component {
     }
 
     upgrade(){
-        if(this._unlockNum==0){
-            GameCtr.combsUnlock[this._level-1]=0;
-        }
+
         this.unlockComb(this._unlockNum)
         this.createBee(this._unlockNum,false)
         GameCtr.money-=GameCtr.combConfig[this._level-1].levelUpCost+GameCtr.combConfig[this._level-1].upMatrix*this._unlockNum
         GameCtr.getInstance().getLevel().setMoney();
         this._unlockNum++;
-        GameCtr.combsUnlock[this._level-1]++;
+        GameCtr.combsUnlock[this._level-1].level++;
         GameCtr.getInstance().setCombsUnlock();
         this.updateBtnState();
         this._combsUnlock=GameCtr.getInstance().getCombsUnlock();
@@ -125,7 +143,7 @@ export default class NewClass extends cc.Component {
     }
 
     createBee(index,needDelay){
-        let delayTime=needDelay?Math.random()*1.5:0;
+        let delayTime=needDelay?Math.random()*4:0;
         this.node.runAction(cc.sequence(
             cc.delayTime(delayTime),
             cc.callFunc(()=>{
@@ -138,27 +156,6 @@ export default class NewClass extends cc.Component {
                 bee.getComponent("bee").init(this._level,this._combPosArr[index]);
             })
         ))
-    }
-
-    showBtn(){
-        if(this._unlockNum==0){
-            this.showUnlockBtn(this._canUnlock);
-        }else if(this._unlockNum>=GameCtr.maxPerCombLevel){
-           this.showFullFillBtn(); 
-        }else{
-            this._word_levelFull.active=false;
-            this._word_unlock.active=false;
-            this._word_levelUp.active=true;
-            this._combsUnlock=GameCtr.getInstance().getCombsUnlock();
-
-            if(GameCtr.money>=(GameCtr.combConfig[this._level-1].levelUpCost+
-                GameCtr.combConfig[this._level-1].upMatrix*(this._combsUnlock[this._level-1])))
-            {
-                this._btn_upgrade.getComponent(cc.Button).interactable=true;
-            }else{
-                this._btn_upgrade.getComponent(cc.Button).interactable=false;
-            }
-        }
     }
 
     showFullFillBtn(){
@@ -175,8 +172,6 @@ export default class NewClass extends cc.Component {
         this._word_levelFull.active=false;
         this._btn_upgrade.getComponent(cc.Button).interactable=isEffectable;
     }
-
-
 
     doBubbleHoney(){
         let bubbleHoney=cc.instantiate(this.bubbleHoney);
@@ -197,13 +192,12 @@ export default class NewClass extends cc.Component {
 
     updateHoneyValue(){
         GameCtr.honeyValue+=GameCtr.combConfig[this._level-1].initialIncome+
-                             (this._combsUnlock[this._level-1])*GameCtr.combConfig[this._level-1].incomeMatrix;
+                             this._combsUnlock[this._level-1].level*GameCtr.combConfig[this._level-1].incomeMatrix;
         GameCtr.getInstance().getManufacture().setHoneyValue();
-        //console.log("log--------------GameCtr.honeyValue=:",GameCtr.honeyValue);
     }
 
     updateBtnState(){
-        if(this._unlockNum==0){// 此蜂巢还未解锁
+        if(this._unlockNum==0 && !this._unlock){// 此蜂巢还未解锁
             if(GameCtr.level>=GameCtr.combConfig[this._level-1].needLevel){//此蜂巢满足解锁条件
                 this.showUnlockBtn(true);
             }else{//此蜂巢不满足解锁条件

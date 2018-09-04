@@ -4207,7 +4207,10 @@
       "__id__": 34
     },
     "_enabled": true,
-    "jar_black": {
+    "jar_full": {
+      "__uuid__": "c8a5815c-258b-49e0-aab4-65e11956793e"
+    },
+    "jar_noFull": {
       "__uuid__": "4d44983c-0167-44f4-9bec-e2382ba18b90"
     },
     "jar_yellow": {

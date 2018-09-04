@@ -6,7 +6,10 @@ import Util from "../../Common/Util";
 export default class NewClass extends cc.Component {
 
     @property(cc.Prefab)
-    jar_black:cc.Prefab=null;
+    jar_full:cc.Prefab=null;
+
+    @property(cc.Prefab)
+    jar_noFull:cc.Prefab=null;
 
     @property(cc.Prefab)
     jar_yellow:cc.Prefab=null;
@@ -16,7 +19,6 @@ export default class NewClass extends cc.Component {
 
     @property(cc.Prefab)
     bubbleMoney:cc.Prefab=null;
-
     _lb_honey=null;
     _lb_upSpeedTime=null;
     _lb_doubleTime=null;
@@ -81,13 +83,21 @@ export default class NewClass extends cc.Component {
     }
 
     doWork(){
-        if(GameCtr.honeyValue-GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus<0){
+        if(GameCtr.honeyValue<=0){
             this._isWorking=false;
             return;
         }
         this._isWorking=true;
-        
-        let jar=cc.instantiate(this.jar_black);
+        let jar=null;
+        if(GameCtr.honeyValue>GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus){
+            jar=cc.instantiate(this.jar_full);
+            GameCtr.honeyValue-=GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus;
+        }else{
+            jar=cc.instantiate(this.jar_noFull);
+            GameCtr.honeyValue-=GameCtr.honeyValue;
+        }
+        this.setHoneyValue();
+
         this._speed=this._speedUpTime>0?GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].speed:1;
         jar.parent=this._jarNode;
         jar.x=-203;
@@ -113,8 +123,6 @@ export default class NewClass extends cc.Component {
                 this.showBubbleMoney(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus*GameCtr.incomeRate);
             })
         ))
-        GameCtr.honeyValue-=GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus;
-        this.setHoneyValue();
         this.scheduleOnce(this.doWork.bind(this),GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].productTime/(this._speed*GameCtr.globalSpeedRate));
     }
 
@@ -161,6 +169,7 @@ export default class NewClass extends cc.Component {
                 this.startSpeedUpTimer(GameCtr.otherConfig.speedUpPersist);
                 this._btn_upSpeed.active=false;
                 AudioManager.getInstance().playMusic("audio/speeUp");
+
             }else if(e.target.getName()=="btn_boubleIncome"){
                 if(!this._btn_doubleIncome.getComponent(cc.Button).interactable){return;}
                 this._doubleTime=0;
@@ -236,12 +245,8 @@ export default class NewClass extends cc.Component {
         this.scheduleOnce(this.countDown1.bind(this),1);
     }
 
-
-
-
-    update(dt){
+    dowork(dt){
         if(!this._upLine){return}
-
         if(this._speedUpTime>0){
             if((Date.now()-this._speedUpTime)/1000>=1.0){
                 this._speedUpTime=-1;

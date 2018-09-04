@@ -97,7 +97,6 @@ export default class NewClass extends cc.Component {
     }
 
     updateLevelProgress(){
-        console.log("log------------------GameCtr.levelMoney   need=:",GameCtr.levelMoney,GameCtr.levelConfig[GameCtr.level-1].need)
         this.progress.getComponent(cc.ProgressBar).progress=GameCtr.levelMoney/GameCtr.levelConfig[GameCtr.level-1].need;
     }
 

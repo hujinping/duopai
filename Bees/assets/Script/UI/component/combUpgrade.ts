@@ -11,7 +11,6 @@ export default class NewClass extends cc.Component {
     _lb_cost=null;
     _level=null;
     _unlockNum=null;
-    _interval=0;
 
     onLoad(){
         this.initNode()
@@ -111,11 +110,7 @@ export default class NewClass extends cc.Component {
 
     doUpdate(dt){
         if(this._btn_upgrade.getComponent(cc.Button).interactable || this._unlockNum>=GameCtr.maxPerCombLevel){return}
-        this._interval+=dt;
-        if(this._interval>=0.5){
-            this.updateBtnState();
-            this._interval=0;
-        }
+        this.updateBtnState();
     }
 
 }

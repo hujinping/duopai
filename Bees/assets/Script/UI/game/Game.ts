@@ -23,8 +23,9 @@ export default class Game extends cc.Component {
     _mask=null;
     _combUpgrade=null;
     _manufactureUpgrade=null;
-
     _combList=[];
+
+    _interval=null;
 
     @property(cc.Prefab)
     test:cc.Prefab=null;
@@ -71,10 +72,9 @@ export default class Game extends cc.Component {
             GameCtr.combsUnlock=JSON.parse(window.localStorage.getItem("combsUnlock")); 
         }else{
             GameCtr.combsUnlock=[];
-            GameCtr.combsUnlock.push(1);
+            GameCtr.combsUnlock.push({level:1,unlock:true});
             GameCtr.getInstance().setCombsUnlock();
 
-            let combsUnlock=GameCtr.getInstance().getCombsUnlock();
         }
     }
 
@@ -92,13 +92,14 @@ export default class Game extends cc.Component {
         let combsUnlock=GameCtr.getInstance().getCombsUnlock();
         for(let level=0;level<GameCtr.comblevel+5;level++){
             let honeyComb=cc.instantiate(this.honeyComb);
-            let unlock=combsUnlock[level]?combsUnlock[level]:0;
+            let unlockNum=combsUnlock[level]?combsUnlock[level].level:0;
+            let unlock=combsUnlock[level]?combsUnlock[level].unlock:false;
             honeyComb.tag=GameCtr.comblevel+level;
             honeyComb.parent=this._honeycombContent;
             honeyComb.setLocalZOrder(2);
             honeyComb.x=60;
             honeyComb.y=-200-408*level;
-            honeyComb.getComponent("honeycomb").setLevel(level+1,unlock);
+            honeyComb.getComponent("honeycomb").setLevel(level+1,unlockNum,unlock);
             honeyComb.getComponent("honeycomb").initBtn();
 
             this._combList.push(honeyComb);
@@ -138,17 +139,20 @@ export default class Game extends cc.Component {
     }
 
     update(dt){
-        for(let i=0;i<this._combList.length;i++){
-            this._combList[i].getComponent("honeycomb").doWork(dt);
-        }
-
-
-        if(this._combUpgrade){
-            this._combUpgrade.getComponent("combUpgrade").doUpdate(dt)
-        }
-
-        if(this._manufactureUpgrade){
-            this._manufactureUpgrade.getComponent("manufactureUpgrade").doUpdate(dt);
+        this._interval++;
+        if(this._interval>0.3){
+            for(let i=0;i<this._combList.length;i++){
+                this._combList[i].getComponent("honeycomb").doWork(dt);
+            }
+            if(this._combUpgrade){
+                this._combUpgrade.getComponent("combUpgrade").doUpdate(dt)
+            }
+    
+            if(this._manufactureUpgrade){
+                this._manufactureUpgrade.getComponent("manufactureUpgrade").doUpdate(dt);
+            }
+            GameCtr.getInstance().getManufacture().dowork(dt);
+            this._interval++;
         }
     }
 

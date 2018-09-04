@@ -9,7 +9,7 @@ export default class NewClass extends cc.Component {
     _btn_close=null;
     _btn_upgrade=null;
     _lb_cost=null;
-    _interval=0;
+
 
 
     onLoad(){
@@ -92,11 +92,7 @@ export default class NewClass extends cc.Component {
 
     doUpdate(dt){
         if(this._btn_upgrade.getComponent(cc.Button).interactable){return}
-        this._interval+=dt;
-        if(this._interval>=0.5){
-            this.showBtn();
-            this._interval=0;
-        }
+        this.showBtn();
     }
 
     showBtn(){

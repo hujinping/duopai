@@ -1,7 +1,5 @@
 import GameCtr from "../../Controller/GameCtr";
-
 const {ccclass, property} = cc._decorator;
-
 @ccclass
 export default class NewClass extends cc.Component {
     _stage1=null;
@@ -12,7 +10,6 @@ export default class NewClass extends cc.Component {
     _honeyEft=null;
     _combsUnlock=null;
     _speed=1;
-
     step=1;
     interval=0;
 
@@ -79,50 +76,8 @@ export default class NewClass extends cc.Component {
 
     updateHoneyValue(){
         this._combsUnlock=GameCtr.getInstance().getCombsUnlock();
-
         GameCtr.honeyValue+=GameCtr.combConfig[this._level-1].initialIncome+
-                             (this._combsUnlock[this._level-1])*GameCtr.combConfig[this._level-1].incomeMatrix;
+                             this._combsUnlock[this._level-1].level*GameCtr.combConfig[this._level-1].incomeMatrix;
         GameCtr.getInstance().getManufacture().setHoneyValue();
-        //console.log("log--------------GameCtr.honeyValue=:",GameCtr.honeyValue);
     }
-
-
-    // update(dt){
-    //     this._interval+=dt;
-
-    //     if(this._interval>=0.1){
-    //         //console.log("log------------bee word---------")
-    //         if(this._step==1){//飞向工作区
-    //             this.node.x-=1000/(this._speed*60/GameCtr.globalSpeedRate)*6;
-    //             if(Math.floor(this.node.x-this.jobPos.x)<5){
-    //                 GameCtr.getInstance().emitEvent("bubbleHoney"+this._level,{comblevel:this._level});
-    //                 this.playHoneyEft();
-    //                 this.updateHoneyValue();
-    //                 this.node.x=this.jobPos.x;
-    //                 this.node.rotation+=180
-    //                 this._step++;
-    //             }
-    //         }
-    //         if(this._step==2){//采蜜 阶段1
-    //             if(this.node.rotation<-45){
-    //                 this.node.rotation+=45/(60/GameCtr.globalSpeedRate*(1-GameCtr.combConfig[GameCtr.comblevel-1].speedMatrix));
-    //             }else{
-    //                 this.node.rotation+=135/(60/GameCtr.globalSpeedRate*(1-GameCtr.combConfig[GameCtr.comblevel-1].speedMatrix));
-    //             }
-    //             if(Math.abs(this.node.rotation-90)<20){
-    //                 this._step++;
-    //             }
-    //         }
-    //         if(this._step==3){//飞回采蜜区
-    //             this.node.x+=1000/(this._speed*60/GameCtr.globalSpeedRate)*6;
-    //             if(Math.abs(this.node.x-this.jobPos.x-1000)<=1000/(this._speed*60/GameCtr.globalSpeedRate)*6){
-    //                 this.node.rotation=-90;
-    //                 this.node.x=this.jobPos.x+1000;
-    //                 this._step=1;
-    //             }
-    //         }
-    //         this._interval=0;
-    //     }
-    // }
-
 }

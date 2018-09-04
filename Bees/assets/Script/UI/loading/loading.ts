@@ -1,5 +1,6 @@
 
 import GameCtr from "../../Controller/GameCtr";
+import AudioManager from "../../Common/AudioManager";
 const {ccclass, property} = cc._decorator;
 
 @ccclass
@@ -18,6 +19,7 @@ export default class NewClass extends cc.Component {
 
     initBtnStart(){
         this._btnStart.on(cc.Node.EventType.TOUCH_END,(e)=>{
+            AudioManager.getInstance().playSound("audio/btn_click");
             if(this._configIndex<this._configTotalCount){
                 //todo 提示
                 return;
