@@ -4,13 +4,26 @@ const {ccclass, property} = cc._decorator;
 
 @ccclass
 export default class NewClass extends cc.Component {
+    _btnStart=null;
     _progress=null;
     _configTotalCount=4;
     _configIndex=0;
 
     onLoad(){
         this._progress=this.node.getChildByName("progress");
+        this._btnStart=this.node.getChildByName("btn_start");
         this.loadResource();
+        this.initBtnStart();
+    }
+
+    initBtnStart(){
+        this._btnStart.on(cc.Node.EventType.TOUCH_END,(e)=>{
+            if(this._configIndex<this._configTotalCount){
+                //todo 提示
+                return;
+            }
+            cc.director.loadScene("Game");
+        })
     }
 
     loadResource(){
@@ -66,9 +79,6 @@ export default class NewClass extends cc.Component {
 
     checkLoadConfigOver(){
         this._configIndex++;
-        if(this._configIndex==this._configTotalCount){
-            //cc.director.loadScene("Game");
-        }
     }
 
 
