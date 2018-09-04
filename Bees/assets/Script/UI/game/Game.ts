@@ -18,8 +18,9 @@ const { ccclass, property } = cc._decorator;
 export default class Game extends cc.Component {
 
     _honeycombContent=null;
+    //_honeycombNode=null;
     _pipelineNode=null;
-    _glassPipeline=null;
+    _glassPipelineNode=null;
     _mask=null;
     _combUpgrade=null;
     _manufactureUpgrade=null;
@@ -35,6 +36,12 @@ export default class Game extends cc.Component {
 
     @property(cc.Prefab)
     honeyComb:cc.Prefab=null;
+
+    @property(cc.Prefab)
+    pipeline:cc.Prefab=null;
+
+    @property(cc.Prefab)
+    glassPipeline:cc.Prefab=null;
 
     onLoad(){
         GameCtr.getInstance().setGame(this);
@@ -80,30 +87,80 @@ export default class Game extends cc.Component {
 
     initNode(){
         this._mask=this.node.getChildByName("mask");
-        this._honeycombContent=this.node.getChildByName("honeycombNode").getChildByName("scrollView").getChildByName("view").getChildByName("content");
+        this._honeycombContent=this.node.getChildByName("honeycombNode").getChildByName("content");
         this._pipelineNode=this._honeycombContent.getChildByName("pipelineNode");
-        this._glassPipeline=this._honeycombContent.getChildByName("glassPipeline")
-        this._glassPipeline.setLocalZOrder(0)
+        this._glassPipelineNode=this._honeycombContent.getChildByName("glassPipelineNode")
+        this._glassPipelineNode.setLocalZOrder(0)
         this._pipelineNode.setLocalZOrder(10);
-        this.initComb();
+        this.initCombContentEvent();
+        this.initCombs();
     }
 
-    initComb(){
-        let combsUnlock=GameCtr.getInstance().getCombsUnlock();
-        for(let level=0;level<GameCtr.comblevel+5;level++){
-            let honeyComb=cc.instantiate(this.honeyComb);
-            let unlockNum=combsUnlock[level]?combsUnlock[level].level:0;
-            let unlock=combsUnlock[level]?combsUnlock[level].unlock:false;
-            honeyComb.tag=GameCtr.comblevel+level;
-            honeyComb.parent=this._honeycombContent;
-            honeyComb.setLocalZOrder(2);
-            honeyComb.x=60;
-            honeyComb.y=-200-408*level;
-            honeyComb.getComponent("honeycomb").setLevel(level+1,unlockNum,unlock);
-            honeyComb.getComponent("honeycomb").initBtn();
+    initCombContentEvent(){
+        this._honeycombContent.on(cc.Node.EventType.TOUCH_START,(e)=>{
+            //console.log("log----------------touch_start");
+        });
 
-            this._combList.push(honeyComb);
+        this._honeycombContent.on(cc.Node.EventType.TOUCH_MOVE,(e)=>{
+            if(this._honeycombContent.y<=0 && e.touch._point.y-e.touch._prevPoint.y<0){
+                return;
+            }
+            if(this._honeycombContent.y>=408*(GameCtr.comblevel+4) && e.touch._point.y-e.touch._prevPoint.y>0){
+                return;
+            }
+            this._honeycombContent.y+=(e.touch._point.y-e.touch._prevPoint.y);
+
+            if(this._honeycombContent.y<=0){
+                this._honeycombContent.y=0
+            }
+            if(this._honeycombContent.y>=408*(GameCtr.comblevel+4)){
+                this._honeycombContent.y=408*(GameCtr.comblevel+4);
+            }
+            
+        });
+
+        this._honeycombContent.on(cc.Node.EventType.TOUCH_END,(e)=>{
+            //console.log("log----------------touch_end");
+        });
+
+        this._honeycombContent.on(cc.Node.EventType.TOUCH_CANCEL,(e)=>{
+            //console.log("log----------------touch_cancle");
+        });
+    }
+
+    initCombs(){
+        for(let level=0;level<GameCtr.comblevel+5;level++){
+            this.initComb(level);
         }
+        this._honeycombContent.setContentSize(cc.size(1080,408*(GameCtr.comblevel+5)+200))
+    }
+
+    initComb(level){
+        let combsUnlock=GameCtr.getInstance().getCombsUnlock();
+        let pipeline=cc.instantiate(this.pipeline);
+        let honeyComb=cc.instantiate(this.honeyComb);
+        let glassPipeline=cc.instantiate(this.glassPipeline);
+       
+        pipeline.parent=this._pipelineNode;
+        honeyComb.parent=this._honeycombContent;
+        glassPipeline.parent=this._glassPipelineNode;
+
+        pipeline.x=-460;
+        pipeline.y=-190-408*level;
+
+        honeyComb.x=60;
+        honeyComb.y=-220-408*level;
+
+        glassPipeline.x=-492;
+        glassPipeline.y=-190-408*level;
+
+        let unlockNum=combsUnlock[level]?combsUnlock[level].level:0;
+        let unlock=combsUnlock[level]?combsUnlock[level].unlock:false;
+        honeyComb.tag=GameCtr.comblevel+level;
+        honeyComb.setLocalZOrder(2);
+        honeyComb.getComponent("honeycomb").setLevel(level+1,unlockNum,unlock);
+        honeyComb.getComponent("honeycomb").initBtn();
+        this._combList.push(honeyComb);
     }
 
     unlockComb(){
@@ -111,6 +168,8 @@ export default class Game extends cc.Component {
         comb.getComponent("honeycomb").setCanUnlock(true);
         comb.getComponent("honeycomb").showUnlockBtn(true);
         GameCtr.comblevel++;
+        this.initComb(GameCtr.comblevel+4);
+        this._honeycombContent.setContentSize(cc.size(1080,408*(GameCtr.comblevel+5)+200))
     }
 
     getComb(combLevel){
