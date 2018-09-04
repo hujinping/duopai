@@ -14,7 +14,6 @@ export default class NewClass extends cc.Component {
     private lb_time=null;
     private btn_upgrade=null;
     private btn_rank=null;
-    // private headImg=null;
     private icon_Arrow=null;
     private progress=null;
     private currentTime=null;
