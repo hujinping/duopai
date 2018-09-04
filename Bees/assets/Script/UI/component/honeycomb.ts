@@ -182,7 +182,7 @@ export default class NewClass extends cc.Component {
     doBubbleHoney(){
         let bubbleHoney=cc.instantiate(this.bubbleHoney);
         bubbleHoney.parent=this.node.parent;
-        bubbleHoney.x=-500+(Math.random()-0.5)*20;
+        bubbleHoney.x=-500+(Math.random()-0.5)*60;
         bubbleHoney.y=this.node.y-50;
         bubbleHoney.runAction(cc.sequence(
             cc.moveTo(0.4*this._level,cc.p(bubbleHoney.x,0)),

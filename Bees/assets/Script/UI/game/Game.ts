@@ -18,9 +18,9 @@ const { ccclass, property } = cc._decorator;
 export default class Game extends cc.Component {
 
     _honeycombContent=null;
-    //_honeycombNode=null;
     _pipelineNode=null;
     _glassPipelineNode=null;
+    _adNode=null;
     _mask=null;
     _combUpgrade=null;
     _manufactureUpgrade=null;
@@ -87,6 +87,7 @@ export default class Game extends cc.Component {
 
     initNode(){
         this._mask=this.node.getChildByName("mask");
+        this._adNode=this.node.getChildByName("adNode");
         this._honeycombContent=this.node.getChildByName("honeycombNode").getChildByName("content");
         this._pipelineNode=this._honeycombContent.getChildByName("pipelineNode");
         this._glassPipelineNode=this._honeycombContent.getChildByName("glassPipelineNode")
