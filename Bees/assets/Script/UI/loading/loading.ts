@@ -67,7 +67,7 @@ export default class NewClass extends cc.Component {
     checkLoadConfigOver(){
         this._configIndex++;
         if(this._configIndex==this._configTotalCount){
-            cc.director.loadScene("Game");
+            //cc.director.loadScene("Game");
         }
     }
 
