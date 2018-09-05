@@ -20,14 +20,16 @@ export default class Game extends cc.Component {
     _honeycombContent=null;
     _pipelineNode=null;
     _glassPipelineNode=null;
+    _btn_upSpeed=null;
+    _lb_upSpeedTime=null;
     _adNode=null;
     _mask=null;
     _combUpgrade=null;
-    _manufactureUpgrade=null;
-    _combList=[];
-
     _interval=null;
-
+    _manufactureUpgrade=null;
+    _speedTime=0;
+    _timeCount=-1;
+    _combList=[];
     @property(cc.Prefab)
     test:cc.Prefab=null;
 
@@ -42,6 +44,9 @@ export default class Game extends cc.Component {
 
     @property(cc.Prefab)
     glassPipeline:cc.Prefab=null;
+
+    @property(cc.Prefab)
+    rocket:cc.Prefab=null;
 
     onLoad(){
         GameCtr.getInstance().setGame(this);
@@ -88,13 +93,33 @@ export default class Game extends cc.Component {
     initNode(){
         this._mask=this.node.getChildByName("mask");
         this._adNode=this.node.getChildByName("adNode");
+        this._btn_upSpeed=this.node.getChildByName("btn_speedUp");
+        this._lb_upSpeedTime=this.node.getChildByName("lb_upSpeedTime");
         this._honeycombContent=this.node.getChildByName("honeycombNode").getChildByName("content");
         this._pipelineNode=this._honeycombContent.getChildByName("pipelineNode");
         this._glassPipelineNode=this._honeycombContent.getChildByName("glassPipelineNode")
+
+        this._lb_upSpeedTime.active=false;
+        this._btn_upSpeed.active=false;
+
         this._glassPipelineNode.setLocalZOrder(0)
         this._pipelineNode.setLocalZOrder(10);
         this.initCombContentEvent();
+        this.initBtnEvent(this._btn_upSpeed);
         this.initCombs();
+    }
+
+    initBtnEvent(btn){
+        btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
+            if(e.target.getName()=="btn_speedUp"){
+                GameCtr.globalSpeedRate=2;
+                this._speedTime=0;
+                this.startSpeedUpTimer(GameCtr.otherConfig.speedUpPersist);
+                this._btn_upSpeed.active=false;
+                AudioManager.getInstance().playMusic("audio/speeUp");
+                this.showRocketAction();
+            }
+        })
     }
 
     initCombContentEvent(){
@@ -173,6 +198,40 @@ export default class Game extends cc.Component {
         this._honeycombContent.setContentSize(cc.size(1080,408*(GameCtr.comblevel+5)+200))
     }
 
+    startSpeedUpTimer(_timeCount){
+        this._timeCount=_timeCount;
+        this._lb_upSpeedTime.active=true;
+        this.countDown();
+    }
+
+    countDown(){
+        if(this._timeCount<0){
+            GameCtr.globalSpeedRate=1;
+            this._lb_upSpeedTime.active=false;
+            AudioManager.getInstance().playMusic("audio/bgMusic");
+            return;
+        }
+        let minStr=Math.floor(this._timeCount/60)<10?"0"+Math.floor(this._timeCount/60):""+Math.floor(this._timeCount/60);
+        let secStr=this._timeCount%60<10?"0"+this._timeCount%60:""+this._timeCount%60;
+
+        this._lb_upSpeedTime.getComponent(cc.Label).string=minStr+":"+secStr;
+        this._timeCount-=1;
+        this.scheduleOnce(this.countDown.bind(this),1);
+    }
+
+    showRocketAction(){
+        let rocket=cc.instantiate(this.rocket);
+        rocket.parent=cc.find("Canvas");
+        rocket.x=45;
+        rocket.y=-613;
+        rocket.runAction(cc.sequence(
+            cc.moveTo(0.5,cc.p(0,1300)),
+            cc.callFunc(()=>{
+                rocket.destroy();
+            })
+        ))
+    }
+
     getComb(combLevel){
         return this._honeycombContent.getChildByTag(combLevel);
     }
@@ -180,7 +239,6 @@ export default class Game extends cc.Component {
     setMaskVisit(isVisit){
         this._mask.active=isVisit;
     }
-
 
     setCombUpgrade(node){
         this._combUpgrade=node;
@@ -198,6 +256,16 @@ export default class Game extends cc.Component {
         this._manufactureUpgrade=null;
     }
 
+    updateSpeedUpState(dt){
+        if(this._speedTime>=0){
+            this._speedTime+=dt;
+            if(this._speedTime>=GameCtr.otherConfig.speedUpInterval){
+                this._btn_upSpeed.active=true;
+                this._speedTime=-1;
+            }
+        }
+    }
+
     update(dt){
         this._interval++;
         if(this._interval>0.3){
@@ -212,6 +280,7 @@ export default class Game extends cc.Component {
                 this._manufactureUpgrade.getComponent("manufactureUpgrade").doUpdate(dt);
             }
             GameCtr.getInstance().getManufacture().dowork(dt);
+            this.updateSpeedUpState(dt);
             this._interval++;
         }
     }

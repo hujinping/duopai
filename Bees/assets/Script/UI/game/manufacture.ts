@@ -19,14 +19,12 @@ export default class NewClass extends cc.Component {
 
     @property(cc.Prefab)
     bubbleMoney:cc.Prefab=null;
+
     _lb_honey=null;
-    _lb_upSpeedTime=null;
     _lb_doubleTime=null;
     _btn_upgrade=null;
-    _btn_upSpeed=null;
     _btn_doubleIncome=null;
     _icon_arrow=null;
-    _timeCount=-1;
     _timeCount1=-1;
     _speed=1;
     _isWorking=false;
@@ -38,7 +36,7 @@ export default class NewClass extends cc.Component {
     _pulleyList=[];
     _jarNode=null;
     _doubleTime=0;
-    _speedTime=0;
+    
     
     onLoad(){
         GameCtr.getInstance().setManufacture(this);
@@ -47,10 +45,10 @@ export default class NewClass extends cc.Component {
 
     initNode(){
         this._lb_honey=this.node.getChildByName("lb_honey");
-        this._lb_upSpeedTime=this.node.getChildByName("lb_upSpeedTime");
+       
         this._lb_doubleTime=this.node.getChildByName("lb_doubleTime");
         this._btn_upgrade=this.node.getChildByName("btn_upgrade");
-        this._btn_upSpeed=this.node.getChildByName("btn_speedUp")
+       
         this._btn_doubleIncome=this.node.getChildByName("btn_boubleIncome");
         this._mask=this.node.getChildByName("mask");
         this._icon_arrow=this.node.getChildByName("icon_arrow");
@@ -64,15 +62,11 @@ export default class NewClass extends cc.Component {
             this._pulleyList.push(pulley);
         }
         this._plug.setLocalZOrder(1);
-        this._lb_upSpeedTime.active=false;
         this._lb_doubleTime.active=false;
         this._btn_doubleIncome.getComponent(cc.Button).interactable=false;
-        this._btn_upSpeed.active=false;
-        // this._icon_arrow.active=false;
-
+        
         this.initBtnEvent(this._btn_upgrade);
         this.initBtnEvent(this._mask); 
-        this.initBtnEvent(this._btn_upSpeed);
         this.initBtnEvent(this._btn_doubleIncome);
 
         this.showBtn();
@@ -163,13 +157,6 @@ export default class NewClass extends cc.Component {
                 GameCtr.getInstance().getGame().setMaskVisit(true);
                 GameCtr.getInstance().getGame().setManufactureUpgrade(manufactureUpgrade);
                 AudioManager.getInstance().playSound("audio/btn_click");
-            }else if(e.target.getName()=="btn_speedUp"){
-                GameCtr.globalSpeedRate=2;
-                this._speedTime=0;
-                this.startSpeedUpTimer(GameCtr.otherConfig.speedUpPersist);
-                this._btn_upSpeed.active=false;
-                AudioManager.getInstance().playMusic("audio/speeUp");
-
             }else if(e.target.getName()=="btn_boubleIncome"){
                 if(!this._btn_doubleIncome.getComponent(cc.Button).interactable){return;}
                 this._doubleTime=0;
@@ -204,11 +191,7 @@ export default class NewClass extends cc.Component {
         this._btn_upgrade.getComponent(cc.Button).interactable=isEffectable;
     }
 
-    startSpeedUpTimer(_timeCount){
-        this._timeCount=_timeCount;
-        this._lb_upSpeedTime.active=true;
-        this.countDown();
-    }
+    
 
     startDoubleTimer(_timeCount){
         this._timeCount1=_timeCount;
@@ -216,20 +199,7 @@ export default class NewClass extends cc.Component {
         this.countDown1();
     }
 
-    countDown(){
-        if(this._timeCount<0){
-            GameCtr.globalSpeedRate=1;
-            this._lb_upSpeedTime.active=false;
-            AudioManager.getInstance().playMusic("audio/bgMusic");
-            return;
-        }
-        let minStr=Math.floor(this._timeCount/60)<10?"0"+Math.floor(this._timeCount/60):""+Math.floor(this._timeCount/60);
-        let secStr=this._timeCount%60<10?"0"+this._timeCount%60:""+this._timeCount%60;
-
-        this._lb_upSpeedTime.getComponent(cc.Label).string=minStr+":"+secStr;
-        this._timeCount-=1;
-        this.scheduleOnce(this.countDown.bind(this),1);
-    }
+    
 
     countDown1(){
         if(this._timeCount1<0){
@@ -261,13 +231,7 @@ export default class NewClass extends cc.Component {
             }
         }
 
-        if(this._speedTime>=0){
-            this._speedTime+=dt;
-            if(this._speedTime>=GameCtr.otherConfig.speedUpInterval){
-                this._btn_upSpeed.active=true;
-                this._speedTime=-1
-            }
-        }
+        
 
         if(!this._isWorking&&GameCtr.honeyValue>0){
             this.unschedule(this.doWork.bind(this));
