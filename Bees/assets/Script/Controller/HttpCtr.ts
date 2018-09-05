@@ -15,22 +15,15 @@ export default class HttpCtr {
 
     //登录游戏
     static login(code) {
-        console.log("log------------HttpCtr-----LoginCode=:",code);
         Http.send({
             url: Http.UrlConfig.LOGIN,
-            
             success: (resp) => {
                 if (resp.ret == 1) {
+                    console.log("log-------------http:login--->resp=:",resp);
                     UserManager.user_id = resp.data.uid;
                     UserManager.voucher = resp.data.voucher
                     HttpCtr.getUserInfo();
                     HttpCtr.getSettingConfig();
-                    WXCtr.getUserInfo();
-                    // HttpCtr.chanelCheck(WXCtr.launchOption.query, UserManager.user_id);
-                    // HttpCtr.channelGift(WXCtr.launchOption.query);
-                    // HttpCtr.getShareConfig();
-                    // HttpCtr.getAdConfig();
-                    // HttpCtr.invitedByFriend(WXCtr.launchOption.query);
                 }
             },
             data: {

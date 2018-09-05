@@ -1387,6 +1387,9 @@
     "_enabled": true,
     "levelUpgrade": {
       "__uuid__": "f174f66c-6ca4-4d12-bae1-b698bad2b436"
+    },
+    "rank": {
+      "__uuid__": "1bd2c913-d0c5-415f-bd3f-b1dbf3f09edd"
     }
   },
   {

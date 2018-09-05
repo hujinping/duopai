@@ -53,7 +53,7 @@ export default class GameCtr {
         WXCtr.getAuthSetting();
         WXCtr.showShareMenu();
         WXCtr.wxOnLogin();
-        WXCtr.getSelfData();
+        //WXCtr.getSelfData();
     }
 
 
@@ -144,6 +144,23 @@ export default class GameCtr {
 
     getTimestamp(){
         return Number(window.localStorage.getItem("timestamp"));
+    }
+
+
+    setMoney(){
+        window.localStorage.setItem("money",GameCtr.money+"");
+    }
+
+    getMoney(){
+        return Number(window.localStorage.getItem("money"))
+    }
+
+    setLevelMoney(){
+        window.localStorage.setItem("levelMoney",GameCtr.levelMoney+"");
+    }
+
+    getLevelMoney(){
+        return Number(window.localStorage.getItem("levelMoney"));
     }
 
     getGame(){

@@ -112,6 +112,7 @@ export default class NewClass extends cc.Component {
                 GameCtr.levelMoney+=GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus*GameCtr.incomeRate;
                 GameCtr.getInstance().getLevel().setMoney();
                 GameCtr.getInstance().getLevel().updateLevelProgress();
+                GameCtr.getInstance().getLevel().showBtnUpGrade();
                 GameCtr.getInstance().emitEvent("moneyUpdate",null);
                 this.showBtn()
                 this.showBubbleMoney(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus*GameCtr.incomeRate);

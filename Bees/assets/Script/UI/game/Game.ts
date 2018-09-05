@@ -103,6 +103,9 @@ export default class Game extends cc.Component {
             GameCtr.combsUnlock.push({level:1,unlock:true});
             GameCtr.getInstance().setCombsUnlock();
         }
+
+        GameCtr.money=GameCtr.getInstance().getMoney();
+        GameCtr.levelMoney=GameCtr.getInstance().getLevelMoney();
     }
 
     initNode(){
@@ -308,6 +311,8 @@ export default class Game extends cc.Component {
             }
             GameCtr.getInstance().getManufacture().dowork(dt);
             GameCtr.getInstance().setTimestamp();
+            GameCtr.getInstance().setMoney();
+            GameCtr.getInstance().setLevelMoney();
             this.updateSpeedUpState(dt);
             this._interval++;
         }

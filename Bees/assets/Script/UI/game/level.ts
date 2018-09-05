@@ -9,6 +9,10 @@ export default class NewClass extends cc.Component {
     @property(cc.Prefab)
     levelUpgrade:cc.Prefab=null;
 
+    @property(cc.Prefab)
+    rank:cc.Prefab=null;
+
+
     private lb_level=null;
     private lb_money=null;
     private lb_time=null;
@@ -38,6 +42,13 @@ export default class NewClass extends cc.Component {
         this.progress.getComponent(cc.ProgressBar).progress=0;
         this.lb_money.getComponent(cc.Label).string=0;
         
+        if(GameCtr.getInstance().getMoney()){
+            this.lb_money.getComponent(cc.Label).string=Util.formatNumber(GameCtr.getInstance().getMoney());
+        }
+        if(GameCtr.getInstance().getLevelMoney()){
+            this.progress.getComponent(cc.ProgressBar).progress=GameCtr.getInstance().getLevelMoney()/GameCtr.levelConfig[GameCtr.level-1].need;
+        }
+
         this.initBtnEvent(this.btn_upgrade);
         this.initBtnEvent(this.btn_rank);
         this.setLevel();
@@ -56,7 +67,12 @@ export default class NewClass extends cc.Component {
                 GameCtr.getInstance().getGame().setMaskVisit(true);
                 AudioManager.getInstance().playSound("audio/btn_click");
             }else if(e.target.getName()=="btn_rank"){
-
+                if(cc.find("Canvas").getChildByName("rank")){return;}
+                let rank=cc.instantiate(this.rank);
+                rank.parent=cc.find("Canvas");
+                rank.y=-1218;
+                rank.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0)));
+                GameCtr.getInstance().getGame().setMaskVisit(true);
             }
         })
     }

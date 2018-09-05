@@ -177,14 +177,17 @@ export default class WXCtr {
 
     //登录微信
     static wxOnLogin() {
+        console.log("----------------------wxOnLogin-----------")
         if (window.wx != undefined) {
             //登录微信
+           
             window.wx.login({
                 success: function (loginResp) {
                     console.log("微信登录返回值res", loginResp);
                     HttpCtr.login(loginResp.code);
+                    WXCtr.getUserInfo();
+                    WXCtr.getSelfData();
                     WXCtr.getShareConfig();
-                    //WXCtr.getReviveData();
                 }
             })
         }
@@ -193,7 +196,8 @@ export default class WXCtr {
     static getUserInfo(){
         //获取用户信息
         window.wx.getUserInfo({
-            //openIdList: ['selfOpenId'],
+            openIdList: ['selfOpenId'],
+            withCredentials: false,
             lang:"zh_CN",
             success: function (res) {
                 let info = res.userInfo;
@@ -208,7 +212,7 @@ export default class WXCtr {
                     province: info.province,
                 };
                 GameCtr.getInstance().saveSelfInfoToLocal(res.userInfo);
-                GameCtr.getInstance().emitEvent("getSelfInfoSuccess",null);
+                //GameCtr.getInstance().emitEvent("getSelfInfoSuccess",null);
                 WXCtr.wxLoginSuccess = true;
                 WXCtr.authed = true;
                 HttpCtr.saveUserInfo(res);
