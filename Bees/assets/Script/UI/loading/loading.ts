@@ -1,4 +1,3 @@
-
 import GameCtr from "../../Controller/GameCtr";
 import AudioManager from "../../Common/AudioManager";
 const {ccclass, property} = cc._decorator;
@@ -15,6 +14,7 @@ export default class NewClass extends cc.Component {
         this._btnStart=this.node.getChildByName("btn_start");
         this.loadResource();
         this.initBtnStart();
+        GameCtr.getInstance();
     }
 
     initBtnStart(){

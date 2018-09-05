@@ -183,10 +183,8 @@ export default class WXCtr {
                 success: function (loginResp) {
                     console.log("微信登录返回值res", loginResp);
                     HttpCtr.login(loginResp.code);
-
-                    
                     WXCtr.getShareConfig();
-                    WXCtr.getReviveData();
+                    //WXCtr.getReviveData();
                 }
             })
         }

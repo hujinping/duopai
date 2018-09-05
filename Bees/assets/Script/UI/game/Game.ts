@@ -48,13 +48,29 @@ export default class Game extends cc.Component {
     @property(cc.Prefab)
     rocket:cc.Prefab=null;
 
+    @property(cc.Prefab)
+    offlineIncome:cc.Prefab=null;
+
     onLoad(){
         GameCtr.getInstance().setGame(this);
         GameCtr.getInstance().initEventTarget();
+        this.initEvent();
         this.initData();
         this.initNode();
         AudioManager.getInstance().playMusic("audio/bgMusic");
+        this.checkOffline();
+        GameCtr.getInstance().setPlayTimes();
         //MemoryDetector.showMemoryStatus();
+    }
+
+    initEvent(){
+        cc.game.on(cc.game.EVENT_SHOW,()=>{
+            this.checkOffline();
+        });
+
+        cc.game.on(cc.game.EVENT_HIDE,()=>{
+            GameCtr.getInstance().setTimestamp();
+        });
     }
 
     initData(){
@@ -86,7 +102,6 @@ export default class Game extends cc.Component {
             GameCtr.combsUnlock=[];
             GameCtr.combsUnlock.push({level:1,unlock:true});
             GameCtr.getInstance().setCombsUnlock();
-
         }
     }
 
@@ -232,6 +247,18 @@ export default class Game extends cc.Component {
         ))
     }
 
+    checkOffline(){
+        if(!GameCtr.getInstance().getPlayTimes()){return;}
+        if(cc.find("Canvas").getChildByName("offlineIncome")){return;}
+
+        let offlineTime=(Date.now()-GameCtr.getInstance().getTimestamp())/1000;
+        if(offlineTime>10){
+            let offlineIncome=cc.instantiate(this.offlineIncome);
+            offlineIncome.parent=cc.find("Canvas");
+            offlineIncome.getComponent("offlineIncome").init(offlineTime);
+        }
+    }
+
     getComb(combLevel){
         return this._honeycombContent.getChildByTag(combLevel);
     }
@@ -280,6 +307,7 @@ export default class Game extends cc.Component {
                 this._manufactureUpgrade.getComponent("manufactureUpgrade").doUpdate(dt);
             }
             GameCtr.getInstance().getManufacture().dowork(dt);
+            GameCtr.getInstance().setTimestamp();
             this.updateSpeedUpState(dt);
             this._interval++;
         }

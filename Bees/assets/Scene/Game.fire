@@ -4648,6 +4648,9 @@
     },
     "rocket": {
       "__uuid__": "5a852c38-a536-4b16-85d6-6a86e90a22fe"
+    },
+    "offlineIncome": {
+      "__uuid__": "59cda4c6-ff90-489e-85b8-4f2c2f650702"
     }
   }
 ]

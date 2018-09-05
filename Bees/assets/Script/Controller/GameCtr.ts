@@ -124,6 +124,28 @@ export default class GameCtr {
         window.localStorage.setItem("comblevel",GameCtr.comblevel)
     }
 
+    setTimestamp(){
+        //console.log("log------------timestamp=:",Date.now().toString());
+        window.localStorage.setItem("timestamp",Date.now().toString());
+    }
+
+    setPlayTimes(){
+        let playTimes=window.localStorage.getItem("playTimes")
+        if(!playTimes){
+            window.localStorage.setItem("playTimes",1+"")
+        }else{
+            window.localStorage.setItem("playTimes",Number(playTimes)+1+"")
+        }
+    }
+
+    getPlayTimes(){
+        return window.localStorage.getItem("playTimes");
+    }
+
+    getTimestamp(){
+        return Number(window.localStorage.getItem("timestamp"));
+    }
+
     getGame(){
         return this.mGame;
     }
