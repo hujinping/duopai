@@ -3,7 +3,7 @@
  * 游戏逻辑自己实现
  */
 import GameCtr from "../../Controller/GameCtr";
-// import WXCtr from "../../Controller/WXCtr";
+import WXCtr from "../../Controller/WXCtr";
 // import ViewManager from "../../Common/ViewManager";
 // import HttpCtr from "../../Controller/HttpCtr";
 // import UserManager from "../../Common/UserManager";
@@ -20,7 +20,9 @@ export default class Game extends cc.Component {
     _honeycombContent=null;
     _pipelineNode=null;
     _glassPipelineNode=null;
+    _authTipNode=null;
     _btn_upSpeed=null;
+    _btn_rank=null;
     _lb_upSpeedTime=null;
     _adNode=null;
     _mask=null;
@@ -50,6 +52,9 @@ export default class Game extends cc.Component {
 
     @property(cc.Prefab)
     offlineIncome:cc.Prefab=null;
+
+    @property(cc.Prefab)
+    rank:cc.Prefab=null;
 
     onLoad(){
         GameCtr.getInstance().setGame(this);
@@ -109,26 +114,31 @@ export default class Game extends cc.Component {
     }
 
     initNode(){
-        this._mask=this.node.getChildByName("mask");
         this._adNode=this.node.getChildByName("adNode");
-        this._btn_upSpeed=this.node.getChildByName("btn_speedUp");
-        this._lb_upSpeedTime=this.node.getChildByName("lb_upSpeedTime");
+        this._mask=this.node.getChildByName("otherNode").getChildByName("mask");
+        this._btn_upSpeed=this.node.getChildByName("otherNode").getChildByName("btn_speedUp");
+        this._btn_rank=this.node.getChildByName("otherNode").getChildByName("btn_rank");
+        this._lb_upSpeedTime=this.node.getChildByName("otherNode").getChildByName("lb_upSpeedTime");
+        this._authTipNode=this.node.getChildByName("authTipNode");
         this._honeycombContent=this.node.getChildByName("honeycombNode").getChildByName("content");
         this._pipelineNode=this._honeycombContent.getChildByName("pipelineNode");
         this._glassPipelineNode=this._honeycombContent.getChildByName("glassPipelineNode")
 
         this._lb_upSpeedTime.active=false;
         this._btn_upSpeed.active=false;
+        this._authTipNode.active=false;
 
         this._glassPipelineNode.setLocalZOrder(0)
         this._pipelineNode.setLocalZOrder(10);
         this.initCombContentEvent();
         this.initBtnEvent(this._btn_upSpeed);
+        this.initBtnEvent(this._btn_rank)
         this.initCombs();
     }
 
     initBtnEvent(btn){
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
+            AudioManager.getInstance().playSound("audio/btn_click");
             if(e.target.getName()=="btn_speedUp"){
                 GameCtr.globalSpeedRate=2;
                 this._speedTime=0;
@@ -136,6 +146,17 @@ export default class Game extends cc.Component {
                 this._btn_upSpeed.active=false;
                 AudioManager.getInstance().playMusic("audio/speeUp");
                 this.showRocketAction();
+            }else if(e.target.getName()=="btn_rank"){
+                if(!WXCtr.authed){
+                    this.showAuthTip();
+                    return;
+                }
+                if(cc.find("Canvas").getChildByName("rank")){return;}
+                let rank=cc.instantiate(this.rank);
+                rank.parent=cc.find("Canvas");
+                rank.y=-1218;
+                rank.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0)));
+                GameCtr.getInstance().getGame().setMaskVisit(true);
             }
         })
     }
@@ -268,6 +289,14 @@ export default class Game extends cc.Component {
 
     setMaskVisit(isVisit){
         this._mask.active=isVisit;
+    }
+
+    showAuthTip(){
+        this._authTipNode.active=true;
+    }
+
+    hideAuthTip(){
+        this._authTipNode.active=false;
     }
 
     setCombUpgrade(node){

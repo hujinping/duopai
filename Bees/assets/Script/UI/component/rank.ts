@@ -22,7 +22,7 @@ export default class NewClass extends cc.Component {
     initBtnEvent(btn){
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
             if(e.target.getName()=="btn_close"){
-                AudioManager.getInstance().playSound("audio/btn_click");
+                AudioManager.getInstance().playSound("audio/btnClose");
                 this.node.destroy();
                 GameCtr.getInstance().getGame().setMaskVisit(false);
             }
@@ -33,7 +33,7 @@ export default class NewClass extends cc.Component {
         for(let i=0;i<5;i++){
             let rankItem=cc.instantiate(this.rankItem);
             rankItem.parent=this._content;
-            rankItem.y=-100-100*i;
+            rankItem.y=-50-98*i;
             // rankItem.getComponent("rankItem").setRank();
             // rankItem.getComponent("rankItem").setCity();
             // rankItem.getComponent("rankItem").setName();

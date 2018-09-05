@@ -9,15 +9,10 @@ export default class NewClass extends cc.Component {
     @property(cc.Prefab)
     levelUpgrade:cc.Prefab=null;
 
-    @property(cc.Prefab)
-    rank:cc.Prefab=null;
-
-
     private lb_level=null;
     private lb_money=null;
     private lb_time=null;
     private btn_upgrade=null;
-    private btn_rank=null;
     private icon_Arrow=null;
     private progress=null;
     private currentTime=null;
@@ -33,15 +28,13 @@ export default class NewClass extends cc.Component {
         this.lb_money=this.node.getChildByName("lb_money");
         this.lb_time=this.node.getChildByName("lb_time");
         this.btn_upgrade=this.node.getChildByName("btn_upgrade");
-        this.btn_rank=this.node.getChildByName("btn_rank");
         this.icon_Arrow=this.node.getChildByName("icon_arrow");
         this.progress=this.node.getChildByName("progress");
-        // this.headImg=this.node.getChildByName("headMask").getChildByName("headImg");
-        
+
         this.icon_Arrow.active=false;
         this.progress.getComponent(cc.ProgressBar).progress=0;
         this.lb_money.getComponent(cc.Label).string=0;
-        
+
         if(GameCtr.getInstance().getMoney()){
             this.lb_money.getComponent(cc.Label).string=Util.formatNumber(GameCtr.getInstance().getMoney());
         }
@@ -50,7 +43,6 @@ export default class NewClass extends cc.Component {
         }
 
         this.initBtnEvent(this.btn_upgrade);
-        this.initBtnEvent(this.btn_rank);
         this.setLevel();
         this.showBtnUpGrade();
     }
@@ -58,7 +50,7 @@ export default class NewClass extends cc.Component {
     initBtnEvent(btn){
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
             if(e.target.getName()=="btn_upgrade"){
-               
+
                 if(cc.find("Canvas").getChildByName("levelUpgrade")){return;}
                 let levelUpgrade=cc.instantiate(this.levelUpgrade);
                 levelUpgrade.parent=cc.find("Canvas");
@@ -66,19 +58,11 @@ export default class NewClass extends cc.Component {
                 levelUpgrade.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0)));
                 GameCtr.getInstance().getGame().setMaskVisit(true);
                 AudioManager.getInstance().playSound("audio/btn_click");
-            }else if(e.target.getName()=="btn_rank"){
-                if(cc.find("Canvas").getChildByName("rank")){return;}
-                let rank=cc.instantiate(this.rank);
-                rank.parent=cc.find("Canvas");
-                rank.y=-1218;
-                rank.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0)));
-                GameCtr.getInstance().getGame().setMaskVisit(true);
             }
         })
     }
 
     upgrade(){
-        //GameCtr.money-=GameCtr.levelConfig[GameCtr.level-1].need;
         GameCtr.money+=GameCtr.levelConfig[GameCtr.level-1].award;
         GameCtr.levelMoney=0;
         this.setMoney();
@@ -89,15 +73,7 @@ export default class NewClass extends cc.Component {
         this.progress.getComponent(cc.ProgressBar).progress=0;
     }
 
-    // loadHeadImg(imgUrl){
-    //     let spr=this.headImg.getComponent(cc.Sprite);
-    //     cc.loader.load({
-    //         url: imgUrl,
-    //         type: 'png'
-    //     }, (err, texture) => {
-    //         spr.spriteFrame = new cc.SpriteFrame(texture);
-    //     });
-    // }
+
 
     setLevel(){
         this.lb_level.getComponent(cc.Label).string="Lv"+GameCtr.level;
@@ -138,7 +114,7 @@ export default class NewClass extends cc.Component {
             this.lb_time.getComponent(cc.Label).string= this.currentTime.getHours()+":"+this.currentTime.getMinutes();
         }
         this.scheduleOnce(this.updateTime.bind(this),30)
-    }   
+    }
 
     showBtnUpGrade(){
         if(GameCtr.levelMoney>=GameCtr.levelConfig[GameCtr.level-1].need){
@@ -151,6 +127,6 @@ export default class NewClass extends cc.Component {
     enabledBtn(isEffectable){
         this.btn_upgrade.getComponent(cc.Button).interactable=isEffectable;
     }
-    
+
 
 }
