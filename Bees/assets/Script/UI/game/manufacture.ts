@@ -109,6 +109,7 @@ export default class NewClass extends cc.Component {
             cc.callFunc(()=>{
                 jar.removeFromParent();
                 GameCtr.money+=GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus*GameCtr.incomeRate;
+                GameCtr.rich+=GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus*GameCtr.incomeRate;
                 GameCtr.levelMoney+=GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus*GameCtr.incomeRate;
                 GameCtr.getInstance().getLevel().setMoney();
                 GameCtr.getInstance().getLevel().updateLevelProgress();
@@ -233,7 +234,6 @@ export default class NewClass extends cc.Component {
         }
 
         
-
         if(!this._isWorking&&GameCtr.honeyValue>0){
             this.unschedule(this.doWork.bind(this));
             this.scheduleOnce(this.doWork.bind(this),1);
@@ -246,9 +246,11 @@ export default class NewClass extends cc.Component {
         if(this._upLine.x>=1080)  {this._upLine.x=0;}
         if(this._downLine.x<=-1080)  this._downLine.x=0;
 
-        for(let i=0;i<this._pulleyList.length;i++){
-            this._pulleyList[i].rotation+=360/(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].transferTime*60/(this._speed*GameCtr.globalSpeedRate));
-        }
+        // for(let i=0;i<this._pulleyList.length;i++){
+        //     this._pulleyList[i].rotation+=360/(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].transferTime*60/(this._speed*GameCtr.globalSpeedRate));
+        // }
+
+        
         for(let i=0;i<this._jarNode.children.length;i++){
             if(Math.abs(this._jarNode.children[i].y-365)<0.5){
                 this._jarNode.children[i].x+=1080/(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].transferTime*60/(this._speed*GameCtr.globalSpeedRate));

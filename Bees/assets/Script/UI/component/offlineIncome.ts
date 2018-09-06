@@ -39,6 +39,7 @@ export default class NewClass extends cc.Component {
                 this.node.destroy();
                 GameCtr.getInstance().getGame().setMaskVisit(false);
                 GameCtr.money+=Math.floor(this._offlineIncome);
+                GameCtr.rich+=Math.floor(this._offlineIncome);
                 GameCtr.getInstance().getLevel().setMoney();
             }
         })

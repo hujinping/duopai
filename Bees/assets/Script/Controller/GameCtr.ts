@@ -33,18 +33,21 @@ export default class GameCtr {
     public static reviveData=null;      
     public static maxPerCombLevel=30;                   //最大蜂巢等级
 
-    public static money=null;                        //玩家已经挣到的钱
-    public static honeyValue=0;                      //蜂蜜值
+    public static money=0;                           //玩家已经挣到的钱(只是还剩的钱，不包括生产线等级 和蜂巢 )
+    public static levelMoney=0;
+    public static rich=0;                               //玩家总财富
+    public static honeyValue=0;                         //蜂蜜值
     public static level=null;
     public static ManufactureLevel=null;
     public static comblevel=null;
     public static combsUnlock=null;
-    public static levelMoney=0;
-    
     public static levelConfig=null;
     public static manufactureConfig=null;
     public static combConfig=null;
     public static otherConfig=null;
+
+    public static upper_boundary=null;
+    public static lower_boundary=null;
 
 
     constructor() {
@@ -153,6 +156,14 @@ export default class GameCtr {
 
     getMoney(){
         return Number(window.localStorage.getItem("money"))
+    }
+
+    setRich(){
+        window.localStorage.setItem("rich",GameCtr.rich+"");
+    }
+
+    getRich(){
+        return Number(window.localStorage.getItem("rich"));
     }
 
     setLevelMoney(){

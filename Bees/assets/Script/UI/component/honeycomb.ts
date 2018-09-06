@@ -20,6 +20,7 @@ export default class NewClass extends cc.Component {
     _interval=0;
     _speed=1
     _unlock=false;
+    _hadRandom=false;
 
     @property(cc.Prefab)
     bee:cc.Prefab=null;
@@ -75,7 +76,7 @@ export default class NewClass extends cc.Component {
 
         for(let i=0;i<unlockNum;i++){
             this.unlockComb(i)
-            this.createBee(i,true);
+            this.createBee(i);
         }
         this.updateBtnState();
     }
@@ -130,7 +131,7 @@ export default class NewClass extends cc.Component {
 
     upgrade(){
         this.unlockComb(this._unlockNum)
-        this.createBee(this._unlockNum,false)
+        this.createBee(this._unlockNum)
         GameCtr.money-=GameCtr.combConfig[this._level-1].levelUpCost+GameCtr.combConfig[this._level-1].upMatrix*this._unlockNum
         GameCtr.getInstance().getLevel().setMoney();
         this._unlockNum++;
@@ -148,15 +149,13 @@ export default class NewClass extends cc.Component {
         comb.y=this._combPosArr[index].y;
     }
 
-    createBee(index,needDelay){
-        let delayTime=needDelay?Math.random()*4:0;
+    createBee(index){
         this.node.runAction(cc.sequence(
-            cc.delayTime(delayTime),
+            cc.delayTime(Math.random()*8),
             cc.callFunc(()=>{
                 let bee=cc.instantiate(this.bee);
                 bee.parent=this._beeNode;
                 bee.setLocalZOrder(1);
-        
                 bee.x=1000+this._combPosArr[index].x;
                 bee.y=this._combPosArr[index].y;
                 bee.getComponent("bee").init(this._level,this._combPosArr[index]);
@@ -223,8 +222,18 @@ export default class NewClass extends cc.Component {
         
     }
 
+    randPos(){
+        if(this._hadRandom){return}
+        if(this._beeNode.children.length<this._unlockNum){return;}
+        for(let i =0;i<this._beeNode.children.length;i++){
+            this._beeNode.children[i].x-=Math.random()*1000;
+            
+        }
+        this._hadRandom=true;
+    }
 
     doWork(dt){
+        //console.log("log----------------dowork level=:",this._level);
         this._interval+=dt;
         if(this._speedUpTime>0){
             if((Date.now()-this._speedUpTime)/1000>=1.0){
@@ -232,13 +241,15 @@ export default class NewClass extends cc.Component {
             }
         }
 
-        if(this._interval>=0.1){
+        if(this._interval>=0.15){
             this.updateBtnState();
             this._speed=this._speedUpTime>0?
             GameCtr.combConfig[GameCtr.comblevel-1].baseSpeed*(1-GameCtr.combConfig[GameCtr.comblevel-1].speedMatrix):
             GameCtr.combConfig[GameCtr.comblevel-1].baseSpeed;
 
             for(let i =0;i<this._beeNode.children.length;i++){
+                this._beeNode.children[i].getComponent("bee").fly();
+
                 if(this._beeNode.children[i].getComponent("bee").step==1){ // 飞向采蜜区
                     this._beeNode.children[i].x-=1000/(this._speed*60/GameCtr.globalSpeedRate)*6;
                     if(Math.floor(this._beeNode.children[i].x-this._beeNode.children[i].getComponent("bee").jobPos.x)<5){

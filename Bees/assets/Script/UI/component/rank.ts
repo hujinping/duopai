@@ -16,7 +16,6 @@ export default class NewClass extends cc.Component {
         this._content=this.node.getChildByName("scrollView").getChildByName("view").getChildByName("content");
 
         this.initBtnEvent(this._btnClose);
-        this.initRank(5);
     }
 
     initBtnEvent(btn){
@@ -30,7 +29,7 @@ export default class NewClass extends cc.Component {
     }
 
     initRank(ranklist){
-        for(let i=0;i<5;i++){
+        for(let i=0;i<ranklist.length;i++){
             let rankItem=cc.instantiate(this.rankItem);
             rankItem.parent=this._content;
             rankItem.y=-50-98*i;

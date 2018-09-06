@@ -40,7 +40,7 @@ export default class NewClass extends cc.Component {
         this._level=level;
         this.jobPos=jobPos;
         this.initBeeFrame();
-        this.fly();
+        //this.fly();
     }
 
     initBeeFrame(){
@@ -51,20 +51,8 @@ export default class NewClass extends cc.Component {
     }
 
     fly(){
-        this.node.runAction(cc.repeatForever(
-            cc.sequence(
-                cc.delayTime(0.2),
-                cc.callFunc(()=>{
-                    this._stage1.active=true;
-                    this._stage2.active=false;
-                }),
-                cc.delayTime(0.2),
-                cc.callFunc(()=>{
-                    this._stage1.active=false;
-                    this._stage2.active=true;
-                })
-            )
-        ))
+        this._stage1.active=!this._stage1.active;
+        this._stage2.active=!this._stage2.active;
     }
 
     playHoneyEft(){
@@ -72,6 +60,10 @@ export default class NewClass extends cc.Component {
         this._honey.x=this.jobPos.x;
         this._honey.y=this.jobPos.y;
         this._honey.getComponent("eft_honey").play();
+    }
+
+    randPos(){
+        this.node.x-=Math.random()*2000;
     }
 
     updateHoneyValue(){

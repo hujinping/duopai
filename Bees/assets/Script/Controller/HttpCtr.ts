@@ -400,12 +400,12 @@ export default class HttpCtr {
         });
     }
 
-    static setMoney(_money){
+    static setGold(_gold){
         Http.send({
             url: Http.UrlConfig.SET_GOLD_DATA,
             success: (res) => { 
                 if(res.ret==1){
-                    console.log("log-----------金币上报成功--------------");
+                    console.log("log-----------金币上报成功--------------_gold=:",_gold);
                 }else{
                     ViewManager.toast(res.msg);
                     console.log("log-----------金币上报失败--------------");
@@ -414,7 +414,7 @@ export default class HttpCtr {
             data:{
                 uid:UserManager.user_id,
                 voucher:UserManager.voucher,
-                money:_money
+                gold:_gold
             }
         });
     }

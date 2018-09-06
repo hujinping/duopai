@@ -64,6 +64,7 @@ export default class NewClass extends cc.Component {
 
     upgrade(){
         GameCtr.money+=GameCtr.levelConfig[GameCtr.level-1].award;
+        GameCtr.rich+=GameCtr.levelConfig[GameCtr.level-1].award;
         GameCtr.levelMoney=0;
         this.setMoney();
         this.showBtnUpGrade();

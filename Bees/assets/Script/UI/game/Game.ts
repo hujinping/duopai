@@ -5,8 +5,9 @@
 import GameCtr from "../../Controller/GameCtr";
 import WXCtr from "../../Controller/WXCtr";
 // import ViewManager from "../../Common/ViewManager";
-// import HttpCtr from "../../Controller/HttpCtr";
-// import UserManager from "../../Common/UserManager";
+import HttpCtr from "../../Controller/HttpCtr";
+import Http from "../../Common/Http";
+import UserManager from "../../Common/UserManager";
 import Util from "../../Common/Util";
 import AudioManager from "../../Common/AudioManager";
 import { MemoryDetector } from "../../Common/MemoryDetector";
@@ -27,7 +28,9 @@ export default class Game extends cc.Component {
     _adNode=null;
     _mask=null;
     _combUpgrade=null;
-    _interval=null;
+    _interval=0;
+    _interval1=0;
+    _interval2=0;
     _manufactureUpgrade=null;
     _speedTime=0;
     _timeCount=-1;
@@ -79,7 +82,7 @@ export default class Game extends cc.Component {
     }
 
     initData(){
-        //window.localStorage.clear();
+        window.localStorage.clear();
         if(window.localStorage.getItem("level")){
             GameCtr.level=Number(window.localStorage.getItem("level")); 
         }else{
@@ -108,9 +111,13 @@ export default class Game extends cc.Component {
             GameCtr.combsUnlock.push({level:1,unlock:true});
             GameCtr.getInstance().setCombsUnlock();
         }
-
+        GameCtr.rich=GameCtr.getInstance().getRich();
         GameCtr.money=GameCtr.getInstance().getMoney();
         GameCtr.levelMoney=GameCtr.getInstance().getLevelMoney();
+
+        if(!GameCtr.rich) GameCtr.rich=0;
+        if(!GameCtr.money) GameCtr.money=0;
+        if(!GameCtr.levelMoney) GameCtr.levelMoney=0;
     }
 
     initNode(){
@@ -149,14 +156,12 @@ export default class Game extends cc.Component {
             }else if(e.target.getName()=="btn_rank"){
                 if(!WXCtr.authed){
                     this.showAuthTip();
+                    WXCtr.createUserInfoBtn();
+                    WXCtr.onUserInfoBtnTap(this.hideAuthTip.bind(this));
                     return;
                 }
                 if(cc.find("Canvas").getChildByName("rank")){return;}
-                let rank=cc.instantiate(this.rank);
-                rank.parent=cc.find("Canvas");
-                rank.y=-1218;
-                rank.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0)));
-                GameCtr.getInstance().getGame().setMaskVisit(true);
+                this.showWorldRank();
             }
         })
     }
@@ -287,8 +292,33 @@ export default class Game extends cc.Component {
         return this._honeycombContent.getChildByTag(combLevel);
     }
 
+
     setMaskVisit(isVisit){
         this._mask.active=isVisit;
+    }
+
+    showWorldRank() {
+        console.log('获取世界排行数据???');
+        Http.send({
+            url: Http.UrlConfig.GET_RANK_LIST,
+            success: (resp) => {
+                console.log("getWorldList response == ", resp);
+                this.creatRankNode(resp.data);
+            },
+            data: {
+                uid: UserManager.user_id,
+                voucher:UserManager.voucher,
+            }
+        });
+    }
+
+    creatRankNode(rankList){
+        let rank=cc.instantiate(this.rank);
+        rank.parent=cc.find("Canvas");
+        rank.y=-1218;
+        rank.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0))); 
+        rank.getComponent("rank").initRank(rankList);
+        GameCtr.getInstance().getGame().setMaskVisit(true);
     }
 
     showAuthTip(){
@@ -315,6 +345,7 @@ export default class Game extends cc.Component {
         this._manufactureUpgrade=null;
     }
 
+    
     updateSpeedUpState(dt){
         if(this._speedTime>=0){
             this._speedTime+=dt;
@@ -325,25 +356,50 @@ export default class Game extends cc.Component {
         }
     }
 
-    update(dt){
-        this._interval++;
-        if(this._interval>0.3){
-            for(let i=0;i<this._combList.length;i++){
-                this._combList[i].getComponent("honeycomb").doWork(dt);
+    caculateHideHoney(){
+        let combsUnlock=GameCtr.getInstance().getCombsUnlock();
+        for(let i=0;i<GameCtr.comblevel;i++){//
+            if(this._honeycombContent.y>=(i+1)*408){  
+                GameCtr.honeyValue+=(GameCtr.combConfig[i].initialIncome+GameCtr.combConfig[i].incomeMatrix*(combsUnlock[i].level-1)*combsUnlock[i].level)/(GameCtr.combConfig[i].baseSpeed*2)
             }
+            if(i-Math.floor(this._honeycombContent.y/408)>2){
+                GameCtr.honeyValue+=(GameCtr.combConfig[i].initialIncome+GameCtr.combConfig[i].incomeMatrix*(combsUnlock[i].level-1)*combsUnlock[i].level)/(GameCtr.combConfig[i].baseSpeed*2)
+            }
+        }
+    }
+
+    update(dt){
+        this._interval+=dt;
+        this._interval1+=dt;
+        this._interval2+=dt;
+        GameCtr.getInstance().getManufacture().dowork(dt);
+        for(let i=0;i<GameCtr.comblevel;i++){//
+            if(this._honeycombContent.y>=(i+1)*408){ this._combList[i].getComponent("honeycomb").randPos(); continue;}
+            if(i-Math.floor(this._honeycombContent.y/408)>2){this._combList[i].getComponent("honeycomb").randPos();continue;}
+            this._combList[i].getComponent("honeycomb").doWork(dt);
+        }
+        
+        if(this._interval>=1){
+            GameCtr.getInstance().setRich();
+            GameCtr.getInstance().setMoney();
+            GameCtr.getInstance().setTimestamp();
+            GameCtr.getInstance().setLevelMoney();
+            this.updateSpeedUpState(this._interval);
+            this.caculateHideHoney();
+            this._interval=0
+        }
+        if(this._interval1>5){
+            HttpCtr.setGold(GameCtr.rich);
+            this._interval1=0;
+        }
+        if(this._interval2>=0.2){
             if(this._combUpgrade){
                 this._combUpgrade.getComponent("combUpgrade").doUpdate(dt)
             }
-    
             if(this._manufactureUpgrade){
                 this._manufactureUpgrade.getComponent("manufactureUpgrade").doUpdate(dt);
             }
-            GameCtr.getInstance().getManufacture().dowork(dt);
-            GameCtr.getInstance().setTimestamp();
-            GameCtr.getInstance().setMoney();
-            GameCtr.getInstance().setLevelMoney();
-            this.updateSpeedUpState(dt);
-            this._interval++;
+            this._interval2=0;
         }
     }
 
