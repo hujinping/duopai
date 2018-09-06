@@ -11,9 +11,7 @@ import UserManager from "../../Common/UserManager";
 import Util from "../../Common/Util";
 import AudioManager from "../../Common/AudioManager";
 import { MemoryDetector } from "../../Common/MemoryDetector";
-
-// import AudioManager from "../../Common/AudioManager";
-
+import pfTurntable from "../component/pfTurntable";
 const { ccclass, property } = cc._decorator;
 @ccclass
 export default class Game extends cc.Component {
@@ -22,6 +20,7 @@ export default class Game extends cc.Component {
     _pipelineNode=null;
     _glassPipelineNode=null;
     _authTipNode=null;
+    _btn_pfTurntable=null;
     _btn_upSpeed=null;
     _btn_rank=null;
     _lb_upSpeedTime=null;
@@ -59,6 +58,9 @@ export default class Game extends cc.Component {
     @property(cc.Prefab)
     rank:cc.Prefab=null;
 
+    @property(cc.Prefab)
+    pfTurntable:cc.Prefab=null;
+
     onLoad(){
         GameCtr.getInstance().setGame(this);
         GameCtr.getInstance().initEventTarget();
@@ -68,6 +70,8 @@ export default class Game extends cc.Component {
         AudioManager.getInstance().playMusic("audio/bgMusic");
         this.checkOffline();
         GameCtr.getInstance().setPlayTimes();
+        this.refreshMoreNewGame();
+        //GameCtr.getSliderConfig("nav");
         //MemoryDetector.showMemoryStatus();
     }
 
@@ -123,6 +127,7 @@ export default class Game extends cc.Component {
     initNode(){
         this._adNode=this.node.getChildByName("adNode");
         this._mask=this.node.getChildByName("otherNode").getChildByName("mask");
+        this._btn_pfTurntable=this.node.getChildByName("otherNode").getChildByName("btn_pfTurntable");
         this._btn_upSpeed=this.node.getChildByName("otherNode").getChildByName("btn_speedUp");
         this._btn_rank=this.node.getChildByName("otherNode").getChildByName("btn_rank");
         this._lb_upSpeedTime=this.node.getChildByName("otherNode").getChildByName("lb_upSpeedTime");
@@ -138,6 +143,7 @@ export default class Game extends cc.Component {
         this._glassPipelineNode.setLocalZOrder(0)
         this._pipelineNode.setLocalZOrder(10);
         this.initCombContentEvent();
+        this.initBtnEvent(this._btn_pfTurntable)
         this.initBtnEvent(this._btn_upSpeed);
         this.initBtnEvent(this._btn_rank)
         this.initCombs();
@@ -162,6 +168,10 @@ export default class Game extends cc.Component {
                 }
                 if(cc.find("Canvas").getChildByName("rank")){return;}
                 this.showWorldRank();
+            }else if(e.target.getName()=="btn_pfTurntable"){
+                if(cc.find("Canvas").getChildByName("pfTurntable")){return}
+                let pfTurntable=cc.instantiate(this.pfTurntable);
+                pfTurntable.parent=cc.find("Canvas");
             }
         })
     }
@@ -365,6 +375,30 @@ export default class Game extends cc.Component {
             if(i-Math.floor(this._honeycombContent.y/408)>2){
                 GameCtr.honeyValue+=(GameCtr.combConfig[i].initialIncome+GameCtr.combConfig[i].incomeMatrix*(combsUnlock[i].level-1)*combsUnlock[i].level)/(GameCtr.combConfig[i].baseSpeed*2)
             }
+        }
+    }
+
+    refreshMoreNewGame(){
+        console.log("log------------nav=:",GameCtr.setting.nav.banner);
+        if(!GameCtr.setting.nav.banner||GameCtr.setting.nav.banner<=0){return;}
+        this._adNode.active=true;
+        let children = this._adNode.getChildByName("adFrame").children;
+        //let nameChildren= this.moreNewGame.getChildByName("names").children;
+        //console.log("",nav)
+        for(let i=0;i<GameCtr.setting.nav.banner.length;i++){
+            if(i>=4)return;//排除数据异常
+            //根据远程图片更换精灵帧
+            let node = children[i];
+            let sp = node.getComponent(cc.Sprite);
+            GameCtr.loadImg(sp,GameCtr.setting.nav.banner[i].img)
+            //nameChildren[i].getComponent(cc.Label).string=nav[i].title;
+
+            //注册事件
+            let obj = {appid:GameCtr.setting.nav.banner[i].appid,path:GameCtr.setting.nav.banner[i].path}
+            console.log("%%%",obj)
+            node.on(cc.Node.EventType.TOUCH_START, ()=>{
+                WXCtr.gotoOther(obj);
+            });
         }
     }
 

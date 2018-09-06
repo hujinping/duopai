@@ -45,9 +45,10 @@ export default class GameCtr {
     public static manufactureConfig=null;
     public static combConfig=null;
     public static otherConfig=null;
-
+    public static setting=null;
     public static upper_boundary=null;
     public static lower_boundary=null;
+    public static newGameData=null;
 
 
     constructor() {
@@ -214,7 +215,16 @@ export default class GameCtr {
         }
     }
 
-    
+    //根据图片路径设置sprite的spriteFrame
+    static loadImg(spr, imgUrl) {
+        cc.loader.load({
+            url: imgUrl,
+            type: 'png'
+        }, (err, texture) => {
+            spr.spriteFrame = new cc.SpriteFrame(texture);
+        });
+    }
+
     //开始游戏
     static startGame() {
         GameCtr.score = 0;
@@ -275,6 +285,28 @@ export default class GameCtr {
         let selfInfo=window.localStorage.getItem("selfInfo");
         if(!selfInfo){return};
         return JSON.parse(selfInfo);
+    }
+
+     //获取广告配置
+     static getSliderConfig(slideType) {
+        Http.send({
+            url: Http.UrlConfig.GET_ALL_SLIDES,
+            success: (resp) => {
+                console.log("getSlider数据", resp);
+                if (slideType == "index") {
+                    // GameCtr.otherData=resp.data;
+                    // GameCtr.ins.mStart.showSlide(resp.data);
+                } else if (slideType == "settlement") {
+                    //GameCtr.ins.mEnd.showSlider(resp.data);
+                }else if (slideType == "nav") {
+                    GameCtr.newGameData=resp.data;
+                    GameCtr.getInstance().getGame().refreshMoreNewGame(resp.data);
+                }
+            },
+            data: {
+                slide_type: slideType
+            }
+        });
     }
 
     //分享到群检测

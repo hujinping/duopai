@@ -121,6 +121,7 @@ export default class HttpCtr {
             success: (resp) => {
                 //console.log("获取游戏配置=：", resp);
                 GameCtr.isAudited=resp.ok;
+                GameCtr.setting=resp;
             }
         });
     }
