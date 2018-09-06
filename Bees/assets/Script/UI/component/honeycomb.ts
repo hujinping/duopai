@@ -132,7 +132,7 @@ export default class NewClass extends cc.Component {
     upgrade(){
         this.unlockComb(this._unlockNum)
         this.createBee(this._unlockNum)
-        GameCtr.money-=GameCtr.combConfig[this._level-1].levelUpCost+GameCtr.combConfig[this._level-1].upMatrix*this._unlockNum
+        GameCtr.money-=GameCtr.combConfig[this._level-1].levelUpCost+GameCtr.combConfig[this._level-1].upMatrix*(this._unlockNum-1)
         GameCtr.getInstance().getLevel().setMoney();
         this._unlockNum++;
         GameCtr.combsUnlock[this._level-1].level++;
