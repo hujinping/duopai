@@ -21,6 +21,9 @@ export default class pfTurntable extends cc.Component {
     @property(cc.Label)
     labelTips:cc.Label=null
 
+    @property(cc.Prefab)
+    award:cc.Prefab=null
+
     //     0：鱼
     // 1||5小金币袋子
     // 2||6大金币袋子
@@ -32,7 +35,7 @@ export default class pfTurntable extends cc.Component {
     // private data = {type:2,num:20}
     // private data = {type:3,num:40}
     // private data = {type:4,num:40}
-    private data = {type:5,sum:null}
+    private data = {type:5}
     private active = true;
     // onLoad () {
     // }
@@ -61,6 +64,7 @@ export default class pfTurntable extends cc.Component {
             WXCtr.share({
                 callback: ()=>{
                     GameData.pfTurntable++;
+                    console.log("log-----------GameData.pfTurntable=:",GameData.pfTurntable);
                 }
             })
         }else{
@@ -75,15 +79,17 @@ export default class pfTurntable extends cc.Component {
             // }
             //GameCtr.turntableInfo(func);
 
-            this.data = {type:2,sum:20};
-
+            this.data = {type:3};//Math.floor(Math.random()*7)
             this.requestResults();
         }
         
     }
     showResult(type){
-        // if(type==0)ViewManager.showTurntableResult_fish(this.data);
-        // else      ViewManager.showTurntableResult_0(this.data);
+        let awardData=GameCtr.pfTurnTableConfig[type];
+        if(this.node.getChildByName("award")){return;}
+        let award=cc.instantiate(this.award);
+        award.parent=this.node;
+        award.getComponent("award").showAward(awardData)
     }
     requestResults(){
         let nowHours =new Date().getHours(); //获取当前小时数(0-23)

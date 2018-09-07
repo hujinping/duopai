@@ -61,6 +61,9 @@ export default class Game extends cc.Component {
     @property(cc.Prefab)
     pfTurntable:cc.Prefab=null;
 
+    @property(cc.Prefab)
+    toast:cc.Prefab=null;
+
     onLoad(){
         GameCtr.getInstance().setGame(this);
         GameCtr.getInstance().initEventTarget();
@@ -153,6 +156,11 @@ export default class Game extends cc.Component {
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
             AudioManager.getInstance().playSound("audio/btn_click");
             if(e.target.getName()=="btn_speedUp"){
+                if(GameCtr.globalSpeedRate>0){
+                    this.showToast("正在加速中...");
+                    return;
+                }
+                
                 GameCtr.globalSpeedRate=2;
                 this._speedTime=0;
                 this.startSpeedUpTimer(GameCtr.otherConfig.speedUpPersist);
@@ -355,6 +363,21 @@ export default class Game extends cc.Component {
         this._manufactureUpgrade=null;
     }
 
+
+    showToast(msg){
+        if(cc.find("Canvas").getChildByName("toast")){return}
+        let toast=cc.instantiate(this.toast);
+        toast.parent=cc.find("Canvas");
+        toast.getComponent("toast").show(msg);
+        toast.runAction(cc.sequence(
+            cc.delayTime(1.0),
+            cc.fadeOut(0.3),
+            cc.callFunc(()=>{
+                toast.destroy();
+            })
+        ));
+    }
+
     
     updateSpeedUpState(dt){
         if(this._speedTime>=0){
@@ -379,6 +402,7 @@ export default class Game extends cc.Component {
     }
 
     refreshMoreNewGame(){
+        if(!GameCtr.setting){return;}
         console.log("log------------nav=:",GameCtr.setting.nav.banner);
         if(!GameCtr.setting.nav.banner||GameCtr.setting.nav.banner<=0){return;}
         this._adNode.active=true;

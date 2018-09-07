@@ -393,27 +393,30 @@ export default class WXCtr {
     }
 
     //分享 revive是否是复活分享
-    static share(type) {
+    static share(data) {
         if (window.wx != undefined) {
             window.wx.shareAppMessage({
                 title: WXCtr.shareTitle,
                 imageUrl: WXCtr.shareImg,
                 query: "",
                 success: (res) => {
-                    //console.log("分享成功回调返回值", res);
-                    if (type=="revive") {
-                        GameCtr.getInstance().emitEvent("shareSuccess",null);
-                        if (res.shareTickets != undefined && res.shareTickets.length > 0) {
-                            console.log("分享到群成功");
-                            WXCtr.getWxShareInfo(res.shareTickets[0],'revive');
-                        } else {
-                            //GameCtr.getGold("friend");
-                        }
-                    }else if("morePower"){
-                        GameCtr.powerValue++;
-                        GameCtr.getInstance().emitEvent("morePowerSuccess",null);
-                        GameCtr.getInstance().emitEvent("morePowerSuccess1",null);
+                    console.log("分享成功回调返回值", res);
+                    if(data.callback){
+                        data.callback(true);
                     }
+                    // if (type=="revive") {
+                    //     GameCtr.getInstance().emitEvent("shareSuccess",null);
+                    //     if (res.shareTickets != undefined && res.shareTickets.length > 0) {
+                    //         console.log("分享到群成功");
+                    //         WXCtr.getWxShareInfo(res.shareTickets[0],'revive');
+                    //     } else {
+                    //         //GameCtr.getGold("friend");
+                    //     }
+                    // }else if("morePower"){
+                    //     GameCtr.powerValue++;
+                    //     GameCtr.getInstance().emitEvent("morePowerSuccess",null);
+                    //     GameCtr.getInstance().emitEvent("morePowerSuccess1",null);
+                    // }
                 },
             
             });
@@ -430,6 +433,21 @@ export default class WXCtr {
                     HttpCtr.shareGroupCheck(resp.encryptedData, resp.iv, callback);
                 },
             });
+        }
+    }
+
+    static showToast(msg){
+        if(window.wx != undefined){
+            window.wx.showToast({
+                title:msg,
+                duration:2,
+                fail:(res)=>{
+                    WXCtr.showToast(msg)
+                },
+                success:(res)=>{
+                    return;
+                }
+            })
         }
     }
 
