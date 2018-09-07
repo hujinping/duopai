@@ -75,7 +75,7 @@ export default class pfTurntable extends cc.Component {
             // }
             //GameCtr.turntableInfo(func);
 
-            this.data = {type:0,sum:20};
+            this.data = {type:2,sum:20};
 
             this.requestResults();
         }

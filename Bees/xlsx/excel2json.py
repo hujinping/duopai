@@ -6,7 +6,7 @@ import os
 
 Const_Xlsx_Format = [".xlsx"]
 fileList = []
-xlsxsDir="C:/Users/cici/Desktop/xlsx/"
+xlsxsDir="F:/developGame/duopaiGame/Bees/xlsx/"
 
 
 
