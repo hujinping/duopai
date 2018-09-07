@@ -133,20 +133,6 @@ export default class NewClass extends cc.Component {
 
 
     initBtnEvent(btn){
-        let move_x=0;
-        btn.on(cc.Node.EventType.TOUCH_START,(e)=>{
-            if(e.target.getName()!="mask"){return;}
-            move_x=-1;
-        })
-
-        btn.on(cc.Node.EventType.TOUCH_MOVE,(e)=>{
-            if(e.target.getName()!="mask"){return;}
-            move_x= e.touch._point.x - e.touch._prevPoint.x;
-            if(Math.abs(move_x)>=5){
-                return;
-            }
-        })
-
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
             if(e.target.getName()=="btn_upgrade"){
                 // if(GameCtr.money<GameCtr.manufactureConfig[GameCtr.ManufactureLevel].cost){return;}
@@ -170,10 +156,8 @@ export default class NewClass extends cc.Component {
                 GameCtr.incomeRate=2;
                 this.startDoubleTimer(GameCtr.otherConfig.doublePersist);
             }else if(e.target.getName()=="mask"){
-                if(Math.abs(move_x)>=5){
-                    this._speedUpTime=Date.now();
-                    this._speed=this._speedUpTime>0?GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].speed:1;
-                }
+                this._speedUpTime=Date.now();
+                this._speed=this._speedUpTime>0?GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].speed:1;
             }
         })
     }
