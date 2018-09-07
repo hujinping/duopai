@@ -121,17 +121,7 @@ export default class pfTurntable extends cc.Component {
     }
 
     close() {
-
+        AudioManager.getInstance().playSound("audio/btnClose");
         this.node.destroy();
-
-        // if (!this.node.parent) {
-        //     return;
-        // }
-        // let popupView = this.node.parent.getComponent(PopupView);
-        // if (!!popupView) {
-        //     popupView.dismiss();
-        // } else {
-        //     this.node.destroy();
-        // }
     }
 }

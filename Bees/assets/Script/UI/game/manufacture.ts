@@ -160,6 +160,10 @@ export default class NewClass extends cc.Component {
                 GameCtr.getInstance().getGame().setManufactureUpgrade(manufactureUpgrade);
                 AudioManager.getInstance().playSound("audio/btn_click");
             }else if(e.target.getName()=="btn_boubleIncome"){
+                if(GameCtr.incomeRate>1){
+                    GameCtr.getInstance().getGame().showToast("双倍收益中...");
+                    return;
+                }
                 if(!this._btn_doubleIncome.getComponent(cc.Button).interactable){return;}
                 this._doubleTime=0;
                 this._btn_doubleIncome.getComponent(cc.Button).interactable=false;

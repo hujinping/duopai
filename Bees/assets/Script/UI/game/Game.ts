@@ -156,16 +156,14 @@ export default class Game extends cc.Component {
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
             AudioManager.getInstance().playSound("audio/btn_click");
             if(e.target.getName()=="btn_speedUp"){
-                if(GameCtr.globalSpeedRate>0){
+                if(GameCtr.globalSpeedRate>1){
                     this.showToast("正在加速中...");
                     return;
                 }
-
                 GameCtr.globalSpeedRate=2;
                 this._speedTime=0;
                 this.startSpeedUpTimer(GameCtr.otherConfig.speedUpPersist);
                 this._btn_upSpeed.active=false;
-                AudioManager.getInstance().playMusic("audio/speeUp");
                 this.showRocketAction();
             }else if(e.target.getName()=="btn_rank"){
                 if(!WXCtr.authed){
@@ -263,6 +261,7 @@ export default class Game extends cc.Component {
     startSpeedUpTimer(_timeCount){
         this._timeCount=_timeCount;
         this._lb_upSpeedTime.active=true;
+        AudioManager.getInstance().playMusic("audio/speeUp");
         this.countDown();
     }
 
