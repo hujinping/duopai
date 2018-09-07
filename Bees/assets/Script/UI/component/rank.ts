@@ -29,15 +29,20 @@ export default class NewClass extends cc.Component {
     }
 
     initRank(ranklist){
-        for(let i=0;i<ranklist.length;i++){
+        let rankItemCount=0;
+        for(let i in ranklist){
+            rankItemCount++;
+        }
+        this._content.setContentSize(cc.size(800,rankItemCount*98));
+        for(let i in ranklist){
             let rankItem=cc.instantiate(this.rankItem);
             rankItem.parent=this._content;
-            rankItem.y=-50-98*i;
-            // rankItem.getComponent("rankItem").setRank();
-            // rankItem.getComponent("rankItem").setCity();
-            // rankItem.getComponent("rankItem").setName();
-            // rankItem.getComponent("rankItem").setMoney();
-            // rankItem.getComponent("rankItem").setHeadImg();
+            rankItem.y=-50-98*Number(i);
+            rankItem.getComponent("rankItem").setRank(ranklist[i].top);
+            rankItem.getComponent("rankItem").setCity(ranklist[i].City);
+            rankItem.getComponent("rankItem").setName(ranklist[i].nick);
+            rankItem.getComponent("rankItem").setMoney(ranklist[i].value);
+            rankItem.getComponent("rankItem").setHeadImg(ranklist[i].Icon);
         }
     }
 

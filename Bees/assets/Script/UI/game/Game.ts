@@ -392,7 +392,6 @@ export default class Game extends cc.Component {
             let sp = node.getComponent(cc.Sprite);
             GameCtr.loadImg(sp,GameCtr.setting.nav.banner[i].img)
             //nameChildren[i].getComponent(cc.Label).string=nav[i].title;
-
             //注册事件
             let obj = {appid:GameCtr.setting.nav.banner[i].appid,path:GameCtr.setting.nav.banner[i].path}
             console.log("%%%",obj)
