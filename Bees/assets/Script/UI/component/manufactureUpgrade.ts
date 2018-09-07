@@ -45,8 +45,8 @@ export default class NewClass extends cc.Component {
         let lb_value=speed.getChildByName("lb_value");
         let lb_add=speed.getChildByName("lb_add");
 
-        lb_value.getComponent(cc.Label).string=""+Util.formatNumber(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].speed);
-        lb_add.getComponent(cc.Label).string=("+"+(GameCtr.manufactureConfig[GameCtr.ManufactureLevel].speed-GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].speed)).substr(0,5);
+        lb_value.getComponent(cc.Label).string=""+GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].showSpeed*100+"%";
+        lb_add.getComponent(cc.Label).string="+"+Math.floor((GameCtr.manufactureConfig[GameCtr.ManufactureLevel].showSpeed-GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].showSpeed)*100)+"%";
     }
 
     showCapacity(){
