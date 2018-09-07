@@ -37,17 +37,18 @@ export default class NewClass extends cc.Component {
     }
 
     completeCallback(){
-        this.loadConfigs();
+        this.loadConf();
     }
 
-    loadConfigs(){
-        this.loadLevelConfig();
-        this.loadmanufacture();
-        this.loadCombConfig();
-        this.loadOtherConfig();
+    loadConf(){
+        this.loadLevelConf();
+        this.loadmanufactureConf();
+        this.loadCombConf();
+        this.loadPfTurntableConf()
+        this.loadOtherConf();
     }
 
-    loadLevelConfig(){
+    loadLevelConf(){
         cc.loader.loadRes("config/level",(err,res)=>{
             if(err){return}
             GameCtr.levelConfig=res;
@@ -55,7 +56,7 @@ export default class NewClass extends cc.Component {
         })
     }
 
-    loadmanufacture(){
+    loadmanufactureConf(){
         cc.loader.loadRes("config/manufacture",(err,res)=>{
             if(err){return}
             GameCtr.manufactureConfig=res;
@@ -63,7 +64,7 @@ export default class NewClass extends cc.Component {
         })
     }
 
-    loadCombConfig(){
+    loadCombConf(){
         cc.loader.loadRes("config/comb",(err,res)=>{
             if(err){return}
             GameCtr.combConfig=res;
@@ -71,7 +72,16 @@ export default class NewClass extends cc.Component {
         })
     }
 
-    loadOtherConfig(){
+    loadPfTurntableConf(){
+        cc.loader.loadRes("config/pfTurnTable",(err,res)=>{
+            if(err){return}
+            GameCtr.pfTurnTableConfig=res;
+            console.log("log----------GameCtr.pfTurnTableConfig=:",GameCtr.pfTurnTableConfig);
+            this.checkLoadConfigOver();
+        }) 
+    }
+
+    loadOtherConf(){
         cc.loader.loadRes("config/other",(err,res)=>{
             if(err){return}
             GameCtr.otherConfig=res;

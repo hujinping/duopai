@@ -44,6 +44,7 @@ export default class GameCtr {
     public static levelConfig=null;
     public static manufactureConfig=null;
     public static combConfig=null;
+    public static pfTurnTableConfig=null;
     public static otherConfig=null;
     public static setting=null;
     public static upper_boundary=null;
