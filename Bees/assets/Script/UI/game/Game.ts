@@ -89,7 +89,7 @@ export default class Game extends cc.Component {
     }
 
     initData(){
-        window.localStorage.clear();
+        //window.localStorage.clear();
         if(window.localStorage.getItem("level")){
             GameCtr.level=Number(window.localStorage.getItem("level")); 
         }else{
@@ -160,7 +160,7 @@ export default class Game extends cc.Component {
                     this.showToast("正在加速中...");
                     return;
                 }
-                
+
                 GameCtr.globalSpeedRate=2;
                 this._speedTime=0;
                 this.startSpeedUpTimer(GameCtr.otherConfig.speedUpPersist);
