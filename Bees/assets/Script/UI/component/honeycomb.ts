@@ -97,6 +97,9 @@ export default class NewClass extends cc.Component {
                     this.onUnlockComb();
                 }else{//升级蜂巢
                     this.onUpgradeComb();
+                    if(!GameCtr.getInstance().getGame().isGuideStepOver(2)){
+                        GameCtr.getInstance().getGame().completeGuideStep(this.node,2);
+                    }
                 }
                 AudioManager.getInstance().playSound("audio/btn_click");
             }else if(e.target.getName()=="totalComb"){
@@ -213,8 +216,17 @@ export default class NewClass extends cc.Component {
             this._word_levelUp.active=true;
             if(GameCtr.money>=GameCtr.combConfig[this._level-1].levelUpCost+GameCtr.combConfig[this._level-1].upMatrix*this._unlockNum){
                 this._btn_upgrade.getComponent(cc.Button).interactable=true;
+
+                //新手引导2
+                if(!this.node.getChildByTag(GameCtr.tipHandTag+2) &&! GameCtr.getInstance().getGame().isGuideStepOver(2)){
+                    GameCtr.getInstance().getGame().showGuideStep2();
+                }
             }else{
                 this._btn_upgrade.getComponent(cc.Button).interactable=false;
+
+                if(!GameCtr.getInstance().getGame().isGuideStepOver(2)){
+                    GameCtr.getInstance().getGame().closeGuideStep(this.node,2);
+                }
             }
         }else{//蜂巢满级
             this.showFullFillBtn();

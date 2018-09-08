@@ -74,6 +74,10 @@ export default class NewClass extends cc.Component {
 
     setHoneyValue(){
         this._lb_honey.getComponent(cc.Label).string=Util.formatNumber(GameCtr.honeyValue);
+        //新手引导1
+        if(!cc.find("Canvas").getChildByTag(GameCtr.tipHandTag+1) &&! GameCtr.getInstance().getGame().isGuideStepOver(1)){
+            GameCtr.getInstance().getGame().showGuideStep1();
+        }
     }
 
     doWork(){
@@ -137,6 +141,10 @@ export default class NewClass extends cc.Component {
             if(e.target.getName()=="btn_upgrade"){
                 // if(GameCtr.money<GameCtr.manufactureConfig[GameCtr.ManufactureLevel].cost){return;}
                 if(cc.find("Canvas").getChildByName("manufactureUpgrade")){return;}
+
+                if(!GameCtr.getInstance().getGame().isGuideStepOver(3)){
+                    GameCtr.getInstance().getGame().completeGuideStep(this.node,3);
+                }
                 
                 let manufactureUpgrade=cc.instantiate(this.manufactureUpgrade);
                 manufactureUpgrade.parent=cc.find("Canvas");
@@ -158,6 +166,10 @@ export default class NewClass extends cc.Component {
             }else if(e.target.getName()=="mask"){
                 this._speedUpTime=Date.now();
                 this._speed=this._speedUpTime>0?GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].speed:1;
+
+                if(!GameCtr.getInstance().getGame().isGuideStepOver(1)){
+                    GameCtr.getInstance().getGame().completeGuideStep(cc.find("Canvas"),1);
+                }
             }
         })
     }
@@ -172,8 +184,15 @@ export default class NewClass extends cc.Component {
     showBtn(){
         if(GameCtr.money>=GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].cost){
             this.enableBtn(true);
+            //新手引导3
+            if(!this.node.getChildByTag(GameCtr.tipHandTag+3) &&! GameCtr.getInstance().getGame().isGuideStepOver(3)){
+                GameCtr.getInstance().getGame().showGuideStep3();
+            }
         }else{
             this.enableBtn(false);
+            if(!GameCtr.getInstance().getGame().isGuideStepOver(3)){
+                GameCtr.getInstance().getGame().closeGuideStep(this.node,3);
+            }
         }
     }
 

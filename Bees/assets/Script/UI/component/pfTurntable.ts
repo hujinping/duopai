@@ -79,7 +79,7 @@ export default class pfTurntable extends cc.Component {
             // }
             //GameCtr.turntableInfo(func);
 
-            this.data = {type:3};//Math.floor(Math.random()*7)
+            this.data = {type:Math.floor(Math.random()*7)};
             this.requestResults();
         }
         

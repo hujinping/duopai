@@ -23,6 +23,8 @@ export default class Game extends cc.Component {
     _btn_pfTurntable=null;
     _btn_upSpeed=null;
     _btn_rank=null;
+    _btn_sevenLogin=null;
+    _btn_invite=null;
     _lb_upSpeedTime=null;
     _adNode=null;
     _mask=null;
@@ -64,6 +66,12 @@ export default class Game extends cc.Component {
     @property(cc.Prefab)
     toast:cc.Prefab=null;
 
+    @property(cc.Prefab)
+    tipHand:cc.Prefab=null;
+
+    @property(cc.Prefab)
+    signIn:cc.Prefab=null;
+
     onLoad(){
         GameCtr.getInstance().setGame(this);
         GameCtr.getInstance().initEventTarget();
@@ -89,23 +97,23 @@ export default class Game extends cc.Component {
     }
 
     initData(){
-        //window.localStorage.clear();
-        if(window.localStorage.getItem("level")){
-            GameCtr.level=Number(window.localStorage.getItem("level")); 
+        window.localStorage.clear();
+        if(GameCtr.getInstance().getPlayerLevel()){
+            GameCtr.level=GameCtr.getInstance().getPlayerLevel(); 
         }else{
             GameCtr.level=1;
             GameCtr.getInstance().setPlayerLevel();
         }
 
-        if(window.localStorage.getItem("ManufactureLevel")){
-            GameCtr.ManufactureLevel=Number(window.localStorage.getItem("ManufactureLevel")); 
+        if(GameCtr.getInstance().getManufactureLevel()){
+            GameCtr.ManufactureLevel=GameCtr.getInstance().getManufactureLevel(); 
         }else{
             GameCtr.ManufactureLevel=1;
             GameCtr.getInstance().setManufactureLevel();
         }
 
-        if(window.localStorage.getItem("comblevel")){
-            GameCtr.comblevel=Number(window.localStorage.getItem("comblevel")); 
+        if(GameCtr.getInstance().getCombLevel()){
+            GameCtr.comblevel=GameCtr.getInstance().getCombLevel(); 
         }else{
             GameCtr.comblevel=1;
             GameCtr.getInstance().setCombLevel();
@@ -118,9 +126,19 @@ export default class Game extends cc.Component {
             GameCtr.combsUnlock.push({level:1,unlock:true});
             GameCtr.getInstance().setCombsUnlock();
         }
+
+        if(window.localStorage.getItem("guide")){
+            GameCtr.guide=JSON.parse(window.localStorage.getItem("guide"))
+        }else{
+            GameCtr.guide=[];
+            GameCtr.getInstance().setGuide();
+        }
+
+
         GameCtr.rich=GameCtr.getInstance().getRich();
         GameCtr.money=GameCtr.getInstance().getMoney();
         GameCtr.levelMoney=GameCtr.getInstance().getLevelMoney();
+        GameCtr.guide=GameCtr.getInstance().getGuide();
 
         if(!GameCtr.rich) GameCtr.rich=0;
         if(!GameCtr.money) GameCtr.money=0;
@@ -131,6 +149,8 @@ export default class Game extends cc.Component {
         this._adNode=this.node.getChildByName("adNode");
         this._mask=this.node.getChildByName("otherNode").getChildByName("mask");
         this._btn_pfTurntable=this.node.getChildByName("otherNode").getChildByName("btn_pfTurntable");
+        this._btn_sevenLogin=this.node.getChildByName("otherNode").getChildByName("btn_sevenLogin");
+        this._btn_invite=this.node.getChildByName("otherNode").getChildByName("btn_invite");
         this._btn_upSpeed=this.node.getChildByName("otherNode").getChildByName("btn_speedUp");
         this._btn_rank=this.node.getChildByName("otherNode").getChildByName("btn_rank");
         this._lb_upSpeedTime=this.node.getChildByName("otherNode").getChildByName("lb_upSpeedTime");
@@ -146,7 +166,9 @@ export default class Game extends cc.Component {
         this._glassPipelineNode.setLocalZOrder(0)
         this._pipelineNode.setLocalZOrder(10);
         this.initCombContentEvent();
-        this.initBtnEvent(this._btn_pfTurntable)
+        this.initBtnEvent(this._btn_pfTurntable);
+        this.initBtnEvent(this._btn_sevenLogin);
+        this.initBtnEvent(this._btn_invite);
         this.initBtnEvent(this._btn_upSpeed);
         this.initBtnEvent(this._btn_rank)
         this.initCombs();
@@ -178,6 +200,15 @@ export default class Game extends cc.Component {
                 if(cc.find("Canvas").getChildByName("pfTurntable")){return}
                 let pfTurntable=cc.instantiate(this.pfTurntable);
                 pfTurntable.parent=cc.find("Canvas");
+            }else if(e.target.getName()=="btn_sevenLogin"){
+                if(cc.find("Canvas").getChildByName("signIn")){return}
+                let signin=cc.instantiate(this.signIn);
+                signin.parent=cc.find("Canvas");
+                signin.setLocalZOrder(50);
+            }else if(e.target.getName()=="btn_invite"){
+                // if(cc.find("Canvas").getChildByName("pfTurntable")){return}
+                // let pfTurntable=cc.instantiate(this.pfTurntable);
+                // pfTurntable.parent=cc.find("Canvas");
             }
         })
     }
@@ -376,8 +407,82 @@ export default class Game extends cc.Component {
             })
         ));
     }
+    /**********************guide start *********************/
+    createTipHand(parent){
+        let tipHand=cc.instantiate(this.tipHand);
+        tipHand.parent=parent;
+        tipHand.runAction(cc.repeatForever(cc.sequence(
+            cc.delayTime(0.3),
+            cc.callFunc(()=>{
+                tipHand.y+=40;
+            }),
+            cc.delayTime(0.3),
+            cc.callFunc(()=>{
+                tipHand.y-=40;
+            }),
+        )))
+        return tipHand;
+    }
+
+    showGuideStep1(){
+        let hand=this.createTipHand(cc.find("Canvas"));
+        hand.tag=GameCtr.tipHandTag+1;
+        hand.scale=0.6;
+        hand.x=400;
+        hand.y=300;
+    }
+
+    showGuideStep2(){
+        let hand=this.createTipHand(this.getComb(1));
+        hand.setLocalZOrder(50);
+        hand.tag=GameCtr.tipHandTag+2
+        hand.scale=0.6;
+        hand.x=300;
+        hand.y=0;
+    }
+
+    showGuideStep3(){
+        let hand=this.createTipHand(GameCtr.getInstance().getManufacture().node);
+        hand.tag=GameCtr.tipHandTag+3
+        hand.scale=0.6;
+        hand.x=-400;
+        hand.y=150;
+    }
+
+    showGuideStep4(){
+        let hand=this.createTipHand(this.node);
+        hand.tag=GameCtr.tipHandTag+4
+        hand.scale=0.6;
+        hand.x=380;
+        hand.y=650;
+    }
+
+    closeGuideStep(parent,step){
+        while(parent.getChildByTag(GameCtr.tipHandTag+step)){
+            parent.removeChildByTag(GameCtr.tipHandTag+step)
+        }
+    }
+
+    completeGuideStep(parent,step){
+        this.closeGuideStep(parent,step);
+        GameCtr.guide.push(step);
+        GameCtr.getInstance().setGuide();
+    }
+
+
 
     
+    isGuideStepOver(step){
+        for(let i =0;i<GameCtr.guide.length;i++){
+            if(step==GameCtr.guide[i]){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**********************guide end*********************/
+
     updateSpeedUpState(dt){
         if(this._speedTime>=0){
             this._speedTime+=dt;

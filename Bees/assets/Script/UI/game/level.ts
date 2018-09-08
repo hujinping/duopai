@@ -58,6 +58,10 @@ export default class NewClass extends cc.Component {
                 levelUpgrade.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0)));
                 GameCtr.getInstance().getGame().setMaskVisit(true);
                 AudioManager.getInstance().playSound("audio/btn_click");
+
+                if(!GameCtr.getInstance().getGame().isGuideStepOver(4)){
+                    GameCtr.getInstance().getGame().completeGuideStep(GameCtr.getInstance().getGame().node,4);
+                }
             }
         })
     }
@@ -120,8 +124,15 @@ export default class NewClass extends cc.Component {
     showBtnUpGrade(){
         if(GameCtr.levelMoney>=GameCtr.levelConfig[GameCtr.level-1].need){
             this.enabledBtn(true);
+            //新手引导4
+            if(!cc.find("Canvas").getChildByTag(GameCtr.tipHandTag+4) &&! GameCtr.getInstance().getGame().isGuideStepOver(4)){
+                GameCtr.getInstance().getGame().showGuideStep4();
+            }
         }else{
             this.enabledBtn(false);
+            if(!GameCtr.getInstance().getGame().isGuideStepOver(4)){
+                GameCtr.getInstance().getGame().closeGuideStep(GameCtr.getInstance().getGame().node,4);
+            }
         }
     }
 

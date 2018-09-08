@@ -50,6 +50,8 @@ export default class GameCtr {
     public static upper_boundary=null;
     public static lower_boundary=null;
     public static newGameData=null;
+    public static guide=null;
+    public static tipHandTag=1500;
 
 
     constructor() {
@@ -121,12 +123,24 @@ export default class GameCtr {
         window.localStorage.setItem("level",GameCtr.level);
     }
 
+    getPlayerLevel(){
+        return Number(window.localStorage.getItem("level"))
+    }
+
     setManufactureLevel(){
         window.localStorage.setItem("ManufactureLevel",GameCtr.ManufactureLevel);
     }
 
+    getManufactureLevel(){
+        return Number(window.localStorage.getItem("ManufactureLevel"));
+    }
+
     setCombLevel(){
-        window.localStorage.setItem("comblevel",GameCtr.comblevel)
+        window.localStorage.setItem("comblevel",GameCtr.comblevel);
+    }
+
+    getCombLevel(){
+        return Number(window.localStorage.getItem("comblevel"))
     }
 
     setTimestamp(){
@@ -175,6 +189,15 @@ export default class GameCtr {
     getLevelMoney(){
         return Number(window.localStorage.getItem("levelMoney"));
     }
+
+    setGuide(){
+        window.localStorage.setItem("guide",JSON.stringify(GameCtr.guide))
+    }
+
+    getGuide(){
+        return JSON.parse(window.localStorage.getItem("guide"));
+    }
+
 
     getGame(){
         return this.mGame;
