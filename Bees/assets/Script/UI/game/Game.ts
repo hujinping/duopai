@@ -72,6 +72,9 @@ export default class Game extends cc.Component {
     @property(cc.Prefab)
     signIn:cc.Prefab=null;
 
+    @property(cc.Prefab)
+    invite:cc.Prefab=null;
+
     onLoad(){
         GameCtr.getInstance().setGame(this);
         GameCtr.getInstance().initEventTarget();
@@ -202,13 +205,15 @@ export default class Game extends cc.Component {
                 pfTurntable.parent=cc.find("Canvas");
             }else if(e.target.getName()=="btn_sevenLogin"){
                 if(cc.find("Canvas").getChildByName("signIn")){return}
+                this.setMaskVisit(true);
                 let signin=cc.instantiate(this.signIn);
                 signin.parent=cc.find("Canvas");
                 signin.setLocalZOrder(50);
             }else if(e.target.getName()=="btn_invite"){
-                // if(cc.find("Canvas").getChildByName("pfTurntable")){return}
-                // let pfTurntable=cc.instantiate(this.pfTurntable);
-                // pfTurntable.parent=cc.find("Canvas");
+                if(cc.find("Canvas").getChildByName("invite")){return}
+                this.setMaskVisit(true);
+                let invite=cc.instantiate(this.invite);
+                invite.parent=cc.find("Canvas");
             }
         })
     }
