@@ -1,5 +1,7 @@
 import AudioManager from "../../Common/AudioManager";
 import GameCtr from "../../Controller/GameCtr";
+import Http from "../../Common/Http";
+import HttpCtr from "../../Controller/HttpCtr";
 const {ccclass, property} = cc._decorator;
 
 @ccclass
@@ -16,7 +18,7 @@ export default class NewClass extends cc.Component {
 
     onLoad(){
         this.initNode();
-        this.initRedPackages();
+        HttpCtr.getLoginAwardList(this.initRedPackages.bind(this));
     }
 
     initNode(){
@@ -35,16 +37,20 @@ export default class NewClass extends cc.Component {
                 this.node.destroy();
             }else if(e.target.getName()=="btn_getRedPackage"){
                 AudioManager.getInstance().playSound("audio/btn_click");
-                this.getPackage();
+                HttpCtr.sign( this.getPackage.bind(this))
+               
             }else if(e.target.getName()=="redPackage"){
                 //console.log("log-------点击红包------",e.target.tag);
                 AudioManager.getInstance().playSound("audio/btn_click");
-                this.getPackage();
+                HttpCtr.sign(this.getPackage.bind(this))
             }
         })
     }
 
-    initRedPackages(){
+    
+
+    initRedPackages(data){
+        console.log("log--------initRedPackages--->data=:",data);
         for(let i=0;i<7;i++){
             let redPackage=cc.instantiate(this.redPackage);
             redPackage.parent=this.node;
@@ -53,20 +59,20 @@ export default class NewClass extends cc.Component {
 
             redPackage.tag=1000+i;
             redPackage.getComponent("redPackage").setTitle("第"+(i+1)+"天");
-            if(i<2){
+            if(i<data.todaySum){
                 redPackage.getComponent("redPackage").setState("on");
             }else{
                 redPackage.getComponent("redPackage").setState("off");
-                this.initBtnEvent(redPackage);
+                //this.initBtnEvent(redPackage);
             }
-            
         }
     }
 
-    getPackage(){
+    getPackage(data){
         if(this.node.getChildByName("getRedPackage")){return}
         let getPackage=cc.instantiate(this.getRedPackage);
         getPackage.parent=this.node;
+        getPackage.getComponent("getRedPackage").setValue(data.m);
     }
 
     

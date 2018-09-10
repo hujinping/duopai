@@ -38,4 +38,5 @@ export default class UrlConfig {
     static MONEY_TOTICES="/weixinapi.php?method=moneynotices";                //金币操作通知
     static GET_TODAY="/weixinapi.php?method=getToday";                        //获取签到列表
     static DO_TODAY="/weixinapi.php?method=doToday";                          //签到奖励领取
+    static OPEN_RED="/weixinapi.php?method=openRed";                          //红包获得                 
 }

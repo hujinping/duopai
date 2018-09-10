@@ -754,7 +754,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 183,
+      "width": 177,
       "height": 43
     },
     "_rotationX": 0,
@@ -1276,8 +1276,8 @@
       "width": 1080,
       "height": 1110
     },
-    "_rotationX": 0,
-    "_rotationY": 0,
+    "_rotationX": 0.1,
+    "_rotationY": 0.1,
     "_scaleX": 1,
     "_scaleY": 1,
     "_position": {
@@ -2072,7 +2072,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 183,
+      "width": 177,
       "height": 43
     },
     "_rotationX": 0,
@@ -4803,8 +4803,8 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 386,
-      "y": 691
+      "x": 482,
+      "y": 646
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -4846,8 +4846,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 300,
-      "height": 59
+      "width": 102,
+      "height": 117
     },
     "_rotationX": 0,
     "_rotationY": 0,
@@ -5015,8 +5015,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 95,
-      "height": 47
+      "width": 111,
+      "height": 97
     },
     "_rotationX": 0,
     "_rotationY": 0,
@@ -5024,8 +5024,8 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 385,
-      "y": 616
+      "x": -481,
+      "y": 572
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -5162,8 +5162,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 95,
-      "height": 47
+      "width": 101,
+      "height": 100
     },
     "_rotationX": 0,
     "_rotationY": 0,
@@ -5171,8 +5171,8 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 281,
-      "y": 616
+      "x": -481,
+      "y": 459
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -5309,8 +5309,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 95,
-      "height": 47
+      "width": 112,
+      "height": 122
     },
     "_rotationX": 0,
     "_rotationY": 0,
@@ -5319,7 +5319,7 @@
     "_position": {
       "__type__": "cc.Vec2",
       "x": 490,
-      "y": 616
+      "y": 520
     },
     "_skewX": 0,
     "_skewY": 0,

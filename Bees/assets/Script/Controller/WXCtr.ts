@@ -55,11 +55,7 @@ export default class WXCtr {
 
             WXCtr.launchOption = window.wx.getLaunchOptionsSync();
             console.log("获取启动参数", WXCtr.launchOption);
-            if(WXCtr.launchOption.query){
-                if(WXCtr.launchOption.query.invite){
-                    HttpCtr.invitedByFriend(WXCtr.launchOption.query);
-                }
-            }
+           
 
             let fileMgr = wx.getFileSystemManager();
             fileMgr.getSavedFileList({

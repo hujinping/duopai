@@ -82,7 +82,7 @@ export default class Game extends cc.Component {
         this.initData();
         this.initNode();
         AudioManager.getInstance().playMusic("audio/bgMusic");
-        this.checkOffline();
+        
         GameCtr.getInstance().setPlayTimes();
         this.refreshMoreNewGame();
         //GameCtr.getSliderConfig("nav");
@@ -103,9 +103,11 @@ export default class Game extends cc.Component {
         //window.localStorage.clear();
         if(GameCtr.getInstance().getPlayerLevel()){
             GameCtr.level=GameCtr.getInstance().getPlayerLevel(); 
+            //this.checkOffline();
         }else{
             GameCtr.level=1;
             GameCtr.getInstance().setPlayerLevel();
+            ///this.checkOffline();
         }
 
         if(GameCtr.getInstance().getManufactureLevel()){
@@ -403,6 +405,7 @@ export default class Game extends cc.Component {
         if(cc.find("Canvas").getChildByName("toast")){return}
         let toast=cc.instantiate(this.toast);
         toast.parent=cc.find("Canvas");
+        toast.setLocalZOrder(1000);
         toast.getComponent("toast").show(msg);
         toast.runAction(cc.sequence(
             cc.delayTime(1.0),

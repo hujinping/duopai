@@ -16,6 +16,7 @@ export default class NewClass extends cc.Component {
 
 
     init(offlineTime){
+        
         let combsUnlock=GameCtr.getInstance().getCombsUnlock();
         let manufactures_speed=GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus/
                                 (GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].productTime+
@@ -28,8 +29,6 @@ export default class NewClass extends cc.Component {
         let finalSpeed =combs_speed>=manufactures_speed?manufactures_speed:combs_speed;
         this._offlineIncome =offlineTime*finalSpeed;
         this._lb_bonus.getComponent(cc.Label).string="￥"+Math.floor(this._offlineIncome);
-        console.log("log-----------offlineTime=:",offlineTime);
-        console.log("log-----------manufactures_speed combs_speed  离线收益=:",manufactures_speed,combs_speed,this._offlineIncome,);
     }
 
     initBtn(btn){

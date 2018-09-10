@@ -267,7 +267,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "lb_title",
+    "_name": "lb_name",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -642,7 +642,7 @@
     "zoomScale": 0.95,
     "clickEvents": [],
     "_N$interactable": true,
-    "_N$enableAutoGrayEffect": false,
+    "_N$enableAutoGrayEffect": true,
     "_N$normalColor": {
       "__type__": "cc.Color",
       "r": 255,
@@ -697,7 +697,10 @@
     "node": {
       "__id__": 1
     },
-    "_enabled": true
+    "_enabled": true,
+    "getRedPackage": {
+      "__uuid__": "124020bc-6e52-4748-b1d4-700f2088e523"
+    }
   },
   {
     "__type__": "cc.PrefabInfo",
