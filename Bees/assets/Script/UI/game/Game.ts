@@ -100,7 +100,7 @@ export default class Game extends cc.Component {
     }
 
     initData(){
-        window.localStorage.clear();
+        //window.localStorage.clear();
         if(GameCtr.getInstance().getPlayerLevel()){
             GameCtr.level=GameCtr.getInstance().getPlayerLevel(); 
         }else{
@@ -282,9 +282,6 @@ export default class Game extends cc.Component {
         honeyComb.setLocalZOrder(2);
         honeyComb.getComponent("honeycomb").setLevel(level+1,unlockNum,unlock);
         honeyComb.getComponent("honeycomb").initBtn();
-        if(level<30){
-            honeyComb.getComponent("honeycomb").initFlyBees();
-        }
         this._combList.push(honeyComb);
     }
 
@@ -415,6 +412,12 @@ export default class Game extends cc.Component {
             })
         ));
     }
+
+    noticeMoneyUpdate(){
+        for(let i=0;i<GameCtr.comblevel;i++){
+            GameCtr.getInstance().emitEvent("moneyUpdate"+(i+1),null)
+        }
+    }
     /**********************guide start *********************/
     createTipHand(parent){
         let tipHand=cc.instantiate(this.tipHand);
@@ -542,10 +545,10 @@ export default class Game extends cc.Component {
         this._interval1+=dt;
         this._interval2+=dt;
         GameCtr.getInstance().getManufacture().dowork(dt);
-        for(let i=0;i<GameCtr.comblevel;i++){//
-            if(this._honeycombContent.y>=(i+1)*408){ this._combList[i].getComponent("honeycomb").randPos(); continue;}
-            if(i-Math.floor(this._honeycombContent.y/408)>2){this._combList[i].getComponent("honeycomb").randPos();continue;}
-            this._combList[i].getComponent("honeycomb").doWork(dt);
+        for(let i=0;i<GameCtr.comblevel;i++){
+            if(this._honeycombContent.y>=(i+1)*408){ this._combList[i].getComponent("honeycomb").stopWork(); continue;}
+            if(i-Math.floor(this._honeycombContent.y/408)>2){this._combList[i].getComponent("honeycomb").stopWork();continue;}
+            this._combList[i].getComponent("honeycomb").startWork();
         }
         
         if(this._interval>=1){

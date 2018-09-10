@@ -90,6 +90,7 @@ export default class NewClass extends cc.Component {
 
     setMoney(){
         this.lb_money.getComponent(cc.Label).string=Util.formatNumber(GameCtr.money);
+        GameCtr.getInstance().getGame().noticeMoneyUpdate();
     }
 
     updateLevelProgress(){

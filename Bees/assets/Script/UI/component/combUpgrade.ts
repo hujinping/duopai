@@ -25,8 +25,11 @@ export default class NewClass extends cc.Component {
     init(level,unlockNum){
         this._level=level;
         this._unlockNum=unlockNum;
-
         this._lb_des.getComponent(cc.Label).string=this._unlockNum+1;
+        if(this._unlockNum>=GameCtr.maxPerCombLevel){
+            this._lb_des.getComponent(cc.Label).string=this._unlockNum;
+        }
+        
         this.showCells();
         this.showSpeed();
         this.showhoneyProduction();
@@ -101,12 +104,14 @@ export default class NewClass extends cc.Component {
     }
 
     updateBtnState(){
-        if(GameCtr.money<GameCtr.combConfig[this._level-1].levelUpCost+GameCtr.combConfig[this._level-1].upMatrix*this._unlockNum){
+        if(GameCtr.money<GameCtr.combConfig[this._level-1].levelUpCost+GameCtr.combConfig[this._level-1].upMatrix*(this._unlockNum-1)){
             this._btn_upgrade.getComponent(cc.Button).interactable=false;
         }else{
             this._btn_upgrade.getComponent(cc.Button).interactable=true;
         }
-
+        if(this._unlockNum>=GameCtr.maxPerCombLevel){
+            this._btn_upgrade.getComponent(cc.Button).interactable=false;
+        }
     }
 
     doUpdate(dt){
