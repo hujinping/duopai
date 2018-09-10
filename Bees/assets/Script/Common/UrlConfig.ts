@@ -31,8 +31,8 @@ export default class UrlConfig {
     static SET_GOLD_DATA="/weixinapi.php?method=setData";                     //数据上报存储
     static GET_PROFIT="/weixinapi.php?method=getprofit";                      //下线后重新登录收益
     static SET_FORMID="/weixinapi.php?method=setformId";                      //提交formid
-    static INVITED_BY_FRIEND = "/weixinapi.php?method=addSeek";               //邀请朋友获得金币
-    static SEEK_LOG="/weixinapi.php?method=SeekLog";                          //获取分享的朋友结果
+    static INVITED_BY_FRIEND = "/weixinapi.php?method=addSeek";               //邀请朋友
+    static SEEK_LOG="/weixinapi.php?method=SeekLog";                          //获取邀请的朋友结果
     static SHARE_GROUP = "/weixinapi.php?method=shareGroup";                  //分享到群
     static GET_RANK_LIST="/weixinapi.php?method=getRankList";                 //获取排行榜
     static MONEY_TOTICES="/weixinapi.php?method=moneynotices";                //金币操作通知

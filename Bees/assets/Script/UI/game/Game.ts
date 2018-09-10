@@ -251,7 +251,7 @@ export default class Game extends cc.Component {
     }
 
     initCombs(){
-        for(let level=0;level<GameCtr.comblevel+5;level++){
+        for(let level=0;level<GameCtr.comblevel+29;level++){
             this.initComb(level);
         }
         this._honeycombContent.setContentSize(cc.size(1080,408*(GameCtr.comblevel+5)+200))
@@ -282,6 +282,9 @@ export default class Game extends cc.Component {
         honeyComb.setLocalZOrder(2);
         honeyComb.getComponent("honeycomb").setLevel(level+1,unlockNum,unlock);
         honeyComb.getComponent("honeycomb").initBtn();
+        if(level<30){
+            honeyComb.getComponent("honeycomb").initFlyBees();
+        }
         this._combList.push(honeyComb);
     }
 

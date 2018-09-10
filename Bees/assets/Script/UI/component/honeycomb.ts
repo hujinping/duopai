@@ -26,6 +26,9 @@ export default class NewClass extends cc.Component {
     bee:cc.Prefab=null;
 
     @property(cc.Prefab)
+    flyBee:cc.Prefab=null;
+
+    @property(cc.Prefab)
     unlockcomb:cc.Prefab=null;
     
     @property(cc.Prefab)
@@ -41,6 +44,8 @@ export default class NewClass extends cc.Component {
         this.initData();
         this.initNode();
         this._combsUnlock=GameCtr.getInstance().getCombsUnlock();
+
+        
     }
 
     initData(){
@@ -65,6 +70,30 @@ export default class NewClass extends cc.Component {
         this._word_levelFull=this._btn_upgrade.getChildByName("word_levelFull");
 
         this._beeNode.setLocalZOrder(2);
+    }
+
+    initFlyBees(){
+        return;
+        for (let i=0;i<30;i++){
+            this.node.runAction(cc.sequence(
+                cc.delayTime(Math.random()*4),
+                cc.callFunc(()=>{
+                    let flyBee=cc.instantiate(this.flyBee);
+                    flyBee.parent=this.node;
+                    flyBee.setLocalZOrder(50);
+                    flyBee.x= this._combPosArr[i].x+290;
+                    flyBee.y= this._combPosArr[i].y+40;
+
+                //     //let sp_skeleton=flyBee.getComponent(sp.Skeleton);  
+                //     //sp_skeleton.setL
+                //     // sp_skeleton.setEventListener((e)=>{
+                //     //     console.log("log---------------e=:");
+                //     // })
+                //     // sp_skeleton.setAnimationListener(){
+                //     // }
+                // })
+            ))
+        }
     }
 
     setLevel(level,unlockNum,unlock){

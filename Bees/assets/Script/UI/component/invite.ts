@@ -1,5 +1,7 @@
 import GameCtr from "../../Controller/GameCtr";
 import AudioManager from "../../Common/AudioManager";
+import WXCtr from "../../Controller/WXCtr";
+import HttpCtr from "../../Controller/HttpCtr";
 
 
 const {ccclass, property} = cc._decorator;
@@ -15,6 +17,7 @@ export default class NewClass extends cc.Component {
     onLoad(){
         this.initNode();
         this.initFriendItems();
+        HttpCtr.getInviteResult(null);
     }
 
     initNode(){
@@ -33,6 +36,9 @@ export default class NewClass extends cc.Component {
                 AudioManager.getInstance().playSound("audio/btnClose")
             }else if(e.target.getName()=="btn_invite"){
                 AudioManager.getInstance().playSound("audio/btn_click");
+                WXCtr.share({invite:true,callback:()=>{
+                    console.log("log----------------邀请好友---------");
+                }})
             }
         })
     }

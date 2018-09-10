@@ -176,20 +176,23 @@ export default class HttpCtr {
                 }
             },
             data: {
-                user_id: UserManager.user_id
+                uid: UserManager.user_id
             }
         });
     }
 
      // 邀请好友
      static invitedByFriend(query) {
+        console.log("log------------好友邀请-------query.invite=:",query.invite);
         Http.send({
             url: Http.UrlConfig.INVITED_BY_FRIEND,
-            success: () => { },
+            success: (res) => { 
+                console.log("log------------好友邀请-------query.invite=:",query.invite);
+            },
             data: {
-                user_id: UserManager.user_id,
+                uid: UserManager.user_id,
                 voucher: UserManager.voucher,
-                friend_user_id: query.invite
+                touid: Number(query.invite)
             }
         });
     }
@@ -197,12 +200,14 @@ export default class HttpCtr {
     //邀请好友结果
     static getInviteResult(callback = null) {
         Http.send({
-            url: Http.UrlConfig.INVITE_RESULT,
+            url: Http.UrlConfig.SEEK_LOG,
             success: (res)=>{
+                console.log('log-----------邀请好友结果-=:',res);
 
             },
             data: {
-                user_id: UserManager.user_id,
+                uid: UserManager.user_id,
+                voucher: UserManager.voucher,
             }
         });
     }

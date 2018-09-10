@@ -55,6 +55,11 @@ export default class WXCtr {
 
             WXCtr.launchOption = window.wx.getLaunchOptionsSync();
             console.log("获取启动参数", WXCtr.launchOption);
+            if(WXCtr.launchOption.query){
+                if(WXCtr.launchOption.query.invite){
+                    HttpCtr.invitedByFriend(WXCtr.launchOption.query);
+                }
+            }
 
             let fileMgr = wx.getFileSystemManager();
             fileMgr.getSavedFileList({
@@ -392,37 +397,41 @@ export default class WXCtr {
         }
     }
 
-    //分享 revive是否是复活分享
-    static share(data) {
+    //分享 
+    static share(data?: {
+        invite?: boolean,                               //邀请好友
+        Challenge?: boolean,                            //挑战 
+        callback?: Function
+    }) {
+        let qureyInfo = "";
+        if (data && data.invite) {
+            qureyInfo = "invite=";
+        }
+        if (data && data.Challenge){
+            qureyInfo = "Challenge=";
+        }
         if (window.wx != undefined) {
             window.wx.shareAppMessage({
                 title: WXCtr.shareTitle,
                 imageUrl: WXCtr.shareImg,
-                query: "",
+                query: qureyInfo + UserManager.user_id,
                 success: (res) => {
-                    console.log("分享成功回调返回值", res);
-                    if(data.callback){
-                        data.callback(true);
+                    if (res.shareTickets != undefined && res.shareTickets.length > 0) {
+                        console.log("shareTickets == ", res.shareTickets);
+                        WXCtr.getWxShareInfo(res.shareTickets[0], data.callback);
+                    } else {
+                        ViewManager.toast("请分享到群！");
                     }
-                    // if (type=="revive") {
-                    //     GameCtr.getInstance().emitEvent("shareSuccess",null);
-                    //     if (res.shareTickets != undefined && res.shareTickets.length > 0) {
-                    //         console.log("分享到群成功");
-                    //         WXCtr.getWxShareInfo(res.shareTickets[0],'revive');
-                    //     } else {
-                    //         //GameCtr.getGold("friend");
-                    //     }
-                    // }else if("morePower"){
-                    //     GameCtr.powerValue++;
-                    //     GameCtr.getInstance().emitEvent("morePowerSuccess",null);
-                    //     GameCtr.getInstance().emitEvent("morePowerSuccess1",null);
-                    // }
                 },
-            
+                complete: () => {
+
+                }
             });
         } else {
+
         }
     }
+
     //获取分享转发详细信息
     static getWxShareInfo(shareTicket, callback) {
         if (window.wx != undefined) {
