@@ -208,8 +208,6 @@ export default class NewClass extends cc.Component {
         this.countDown1();
     }
 
-    
-
     countDown1(){
         if(this._timeCount1<0){
             GameCtr.incomeRate=1;

@@ -10,8 +10,6 @@ export default class NewClass extends cc.Component {
     _btn_upgrade=null;
     _lb_cost=null;
 
-
-
     onLoad(){
         this.initNode()
     }

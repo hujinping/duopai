@@ -24,8 +24,11 @@ export default class Game extends cc.Component {
     _btn_upSpeed=null;
     _btn_rank=null;
     _btn_sevenLogin=null;
+    _btn_exchange=null;
     _btn_invite=null;
+    _btn_more=null;
     _lb_upSpeedTime=null;
+    _lb_money=null;
     _adNode=null;
     _mask=null;
     _combUpgrade=null;
@@ -75,18 +78,19 @@ export default class Game extends cc.Component {
     @property(cc.Prefab)
     invite:cc.Prefab=null;
 
+    @property(cc.Prefab)
+    exchange:cc.Prefab=null;
+
     onLoad(){
         GameCtr.getInstance().setGame(this);
         GameCtr.getInstance().initEventTarget();
         this.initEvent();
-        this.initData();
         this.initNode();
+        this.setRealMoney();
         AudioManager.getInstance().playMusic("audio/bgMusic");
-        
-        GameCtr.getInstance().setPlayTimes();
         this.refreshMoreNewGame();
-        //GameCtr.getSliderConfig("nav");
-        //MemoryDetector.showMemoryStatus();
+        this.checkOffline();
+        GameCtr.getInstance().setPlayTimes();
     }
 
     initEvent(){
@@ -99,57 +103,6 @@ export default class Game extends cc.Component {
         });
     }
 
-    initData(){
-        //window.localStorage.clear();
-        if(GameCtr.getInstance().getPlayerLevel()){
-            GameCtr.level=GameCtr.getInstance().getPlayerLevel(); 
-            //this.checkOffline();
-        }else{
-            GameCtr.level=1;
-            GameCtr.getInstance().setPlayerLevel();
-            ///this.checkOffline();
-        }
-
-        if(GameCtr.getInstance().getManufactureLevel()){
-            GameCtr.ManufactureLevel=GameCtr.getInstance().getManufactureLevel(); 
-        }else{
-            GameCtr.ManufactureLevel=1;
-            GameCtr.getInstance().setManufactureLevel();
-        }
-
-        if(GameCtr.getInstance().getCombLevel()){
-            GameCtr.comblevel=GameCtr.getInstance().getCombLevel(); 
-        }else{
-            GameCtr.comblevel=1;
-            GameCtr.getInstance().setCombLevel();
-        }
-
-        if(window.localStorage.getItem("combsUnlock")){
-            GameCtr.combsUnlock=JSON.parse(window.localStorage.getItem("combsUnlock")); 
-        }else{
-            GameCtr.combsUnlock=[];
-            GameCtr.combsUnlock.push({level:1,unlock:true});
-            GameCtr.getInstance().setCombsUnlock();
-        }
-
-        if(window.localStorage.getItem("guide")){
-            GameCtr.guide=JSON.parse(window.localStorage.getItem("guide"))
-        }else{
-            GameCtr.guide=[];
-            GameCtr.getInstance().setGuide();
-        }
-
-
-        GameCtr.rich=GameCtr.getInstance().getRich();
-        GameCtr.money=GameCtr.getInstance().getMoney();
-        GameCtr.levelMoney=GameCtr.getInstance().getLevelMoney();
-        GameCtr.guide=GameCtr.getInstance().getGuide();
-
-        if(!GameCtr.rich) GameCtr.rich=0;
-        if(!GameCtr.money) GameCtr.money=0;
-        if(!GameCtr.levelMoney) GameCtr.levelMoney=0;
-    }
-
     initNode(){
         this._adNode=this.node.getChildByName("adNode");
         this._mask=this.node.getChildByName("otherNode").getChildByName("mask");
@@ -158,6 +111,9 @@ export default class Game extends cc.Component {
         this._btn_invite=this.node.getChildByName("otherNode").getChildByName("btn_invite");
         this._btn_upSpeed=this.node.getChildByName("otherNode").getChildByName("btn_speedUp");
         this._btn_rank=this.node.getChildByName("otherNode").getChildByName("btn_rank");
+        this._btn_more=this.node.getChildByName("otherNode").getChildByName("btn_more");
+        this._btn_exchange=this.node.getChildByName("otherNode").getChildByName("exchange").getChildByName("btn_exchange");
+        this._lb_money=this.node.getChildByName("otherNode").getChildByName("exchange").getChildByName("lb_money");
         this._lb_upSpeedTime=this.node.getChildByName("otherNode").getChildByName("lb_upSpeedTime");
         this._authTipNode=this.node.getChildByName("authTipNode");
         this._honeycombContent=this.node.getChildByName("honeycombNode").getChildByName("content");
@@ -175,7 +131,9 @@ export default class Game extends cc.Component {
         this.initBtnEvent(this._btn_sevenLogin);
         this.initBtnEvent(this._btn_invite);
         this.initBtnEvent(this._btn_upSpeed);
-        this.initBtnEvent(this._btn_rank)
+        this.initBtnEvent(this._btn_rank);
+        this.initBtnEvent(this._btn_exchange);
+        this.initBtnEvent(this._btn_more);
         this.initCombs();
     }
 
@@ -216,7 +174,18 @@ export default class Game extends cc.Component {
                 this.setMaskVisit(true);
                 let invite=cc.instantiate(this.invite);
                 invite.parent=cc.find("Canvas");
+            }else if(e.target.getName()=="btn_exchange"){
+                if(cc.find("Canvas").getChildByName("exchange1")){return}
+                let exchange=cc.instantiate(this.exchange);
+                exchange.parent=cc.find("Canvas");
+            }else if(e.target.getName()=="btn_more"){
+                // if(cc.find("Canvas").getChildByName("exchange1")){return}
+                // let exchange=cc.instantiate(this.exchange);
+                // exchange.parent=cc.find("Canvas");
+
+                console.log("log---------更多游戏---------");
             }
+
         })
     }
 
@@ -300,14 +269,19 @@ export default class Game extends cc.Component {
         this._timeCount=_timeCount;
         this._lb_upSpeedTime.active=true;
         AudioManager.getInstance().playMusic("audio/speeUp");
+        GameCtr.getInstance().emitEvent("startSpeedUp",null);
+        this.setCombsSpeed(2);
         this.countDown();
+        
     }
 
     countDown(){
         if(this._timeCount<0){
+            this.setCombsSpeed(1);
             GameCtr.globalSpeedRate=1;
             this._lb_upSpeedTime.active=false;
             AudioManager.getInstance().playMusic("audio/bgMusic");
+            GameCtr.getInstance().emitEvent("stopSpeedUp",null);
             return;
         }
         let minStr=Math.floor(this._timeCount/60)<10?"0"+Math.floor(this._timeCount/60):""+Math.floor(this._timeCount/60);
@@ -350,6 +324,12 @@ export default class Game extends cc.Component {
 
     setMaskVisit(isVisit){
         this._mask.active=isVisit;
+    }
+
+    setRealMoney(){
+        if(GameCtr.realMoney){
+            this._lb_money.getComponent(cc.Label).string="￥"+(GameCtr.realMoney/100).toFixed(2);
+        }
     }
 
     showWorldRank() {
@@ -419,6 +399,12 @@ export default class Game extends cc.Component {
     noticeMoneyUpdate(){
         for(let i=0;i<GameCtr.comblevel;i++){
             GameCtr.getInstance().emitEvent("moneyUpdate"+(i+1),null)
+        }
+    }
+
+    setCombsSpeed(rate){
+        for(let i =0;i<this._combList.length;i++){
+            this._combList[i].getComponent("honeycomb").setSpeedRate(rate);
         }
     }
     /**********************guide start *********************/

@@ -63,11 +63,8 @@ export default class HttpCtr {
             success: (resp) => {
                 if (resp.success == Http.Code.OK) {
                     UserManager.user = resp.user;
-                    window.localStorage.setItem("money", resp.user.money);
-                    console.log("log------------UserManager.user=:", resp);
-                    GameCtr.chickenCount = resp.user.Sum;
-                    GameCtr.joinGameCount = resp.user.SumLog;
-                    GameCtr.money = resp.user.money;
+                    GameCtr.realMoney=resp.user.money;
+                    
                     if (callBack) {
                         callBack(resp.user);
                     }
@@ -466,6 +463,24 @@ export default class HttpCtr {
                 uid: UserManager.user_id,
                 voucher: UserManager.voucher,
                 clickid:clickID
+            }
+        });
+    }
+
+    
+    static doExchange(phoneNumber){
+        console.log("log------doExchange phone=:",phoneNumber);
+        Http.send({
+            url: Http.UrlConfig.DO_EXCHANGE,
+            success: (res) => {
+                console.log("log----------doExchange=:",res);
+                GameCtr.getInstance().getGame().showToast("兑换成功");
+            },
+            data: {
+                uid: UserManager.user_id,
+                voucher: UserManager.voucher,
+                rewardid:1,
+                exchangeUser:phoneNumber,
             }
         });
     }

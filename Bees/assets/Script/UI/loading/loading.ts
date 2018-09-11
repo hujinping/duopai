@@ -12,6 +12,7 @@ export default class NewClass extends cc.Component {
     onLoad(){
         this._progress=this.node.getChildByName("progress");
         this._btnStart=this.node.getChildByName("btn_start");
+        this.initData();
         this.loadResource();
         this.initBtnStart();
         GameCtr.getInstance();
@@ -94,6 +95,51 @@ export default class NewClass extends cc.Component {
     }
 
 
+    initData(){
+        if(GameCtr.getInstance().getPlayerLevel()){
+            GameCtr.level=GameCtr.getInstance().getPlayerLevel(); 
+        }else{
+            GameCtr.level=1;
+            GameCtr.getInstance().setPlayerLevel();
+        }
 
-   
+        if(GameCtr.getInstance().getManufactureLevel()){
+            GameCtr.ManufactureLevel=GameCtr.getInstance().getManufactureLevel(); 
+        }else{
+            GameCtr.ManufactureLevel=1;
+            GameCtr.getInstance().setManufactureLevel();
+        }
+
+        if(GameCtr.getInstance().getCombLevel()){
+            GameCtr.comblevel=GameCtr.getInstance().getCombLevel(); 
+        }else{
+            GameCtr.comblevel=1;
+            GameCtr.getInstance().setCombLevel();
+        }
+
+        if(window.localStorage.getItem("combsUnlock")){
+            GameCtr.combsUnlock=JSON.parse(window.localStorage.getItem("combsUnlock")); 
+        }else{
+            GameCtr.combsUnlock=[];
+            GameCtr.combsUnlock.push({level:1,unlock:true});
+            GameCtr.getInstance().setCombsUnlock();
+        }
+
+        if(window.localStorage.getItem("guide")){
+            GameCtr.guide=JSON.parse(window.localStorage.getItem("guide"))
+        }else{
+            GameCtr.guide=[];
+            GameCtr.getInstance().setGuide();
+        }
+
+
+        GameCtr.rich=GameCtr.getInstance().getRich();
+        GameCtr.money=GameCtr.getInstance().getMoney();
+        GameCtr.levelMoney=GameCtr.getInstance().getLevelMoney();
+        GameCtr.guide=GameCtr.getInstance().getGuide();
+
+        if(!GameCtr.rich) GameCtr.rich=0;
+        if(!GameCtr.money) GameCtr.money=0;
+        if(!GameCtr.levelMoney) GameCtr.levelMoney=0;
+    }
 }

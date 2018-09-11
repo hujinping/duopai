@@ -54,7 +54,7 @@ export default class NewClass extends cc.Component {
             friendItem.y=20;
             let key="data_"+friendItem.tag;
             if(UserManager.user[key]>0){
-                friendItem.getComponent("inviteFriendItem").enableBtn(false);
+                friendItem.getComponent("inviteFriendItem").disableBtn();
             }
         }
     }

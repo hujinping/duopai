@@ -33,7 +33,7 @@ export default class GameCtr {
     public static reviveData=null;      
     public static maxPerCombLevel=30;                   //最大蜂巢等级
 
-    public static money=0;                           //玩家已经挣到的钱(只是还剩的钱，不包括生产线等级 和蜂巢 )
+    public static money=0;                              //玩家已经挣到的钱(只是还剩的钱，不包括生产线等级 和蜂巢 )
     public static levelMoney=0;
     public static rich=0;                               //玩家总财富
     public static honeyValue=0;                         //蜂蜜值
@@ -52,6 +52,7 @@ export default class GameCtr {
     public static newGameData=null;
     public static guide=null;
     public static tipHandTag=1500;
+    public static realMoney=null;
 
 
     constructor() {
@@ -144,7 +145,6 @@ export default class GameCtr {
     }
 
     setTimestamp(){
-        //console.log("log------------timestamp=:",Date.now().toString());
         window.localStorage.setItem("timestamp",Date.now().toString());
     }
 
@@ -167,10 +167,12 @@ export default class GameCtr {
 
 
     setMoney(){
+        console.log("seyMoney---:",GameCtr.money);
         window.localStorage.setItem("money",GameCtr.money+"");
     }
 
     getMoney(){
+        console.log("getMoney---:",Number(window.localStorage.getItem("money")));
         return Number(window.localStorage.getItem("money"))
     }
 

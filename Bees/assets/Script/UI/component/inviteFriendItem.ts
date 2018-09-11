@@ -1,5 +1,6 @@
 import AudioManager from "../../Common/AudioManager";
 import HttpCtr from "../../Controller/HttpCtr";
+import GameCtr from "../../Controller/GameCtr";
 
 const {ccclass, property} = cc._decorator;
 
@@ -37,17 +38,22 @@ export default class NewClass extends cc.Component {
         })
     }
 
-    enableBtn(bool){
-        this._btn_get.active=bool;
+    disableBtn(){
+        this._btn_get.active=true;
+        this._btn_get.getComponent(cc.Button).interactable=false;
+        let icon_get=this._btn_get.getChildByName("icon_get");
+        icon_get.active=true;
     }
 
     showRedPackage(money){
-        
         if(cc.find("Canvas").getChildByName("getRedPackage")){return}
         let getPackage=cc.instantiate(this.getRedPackage);
         getPackage.parent=cc.find("Canvas");
         getPackage.getComponent("getRedPackage").setValue(money);
+        GameCtr.realMoney+=money;
+        GameCtr.getInstance().getGame().setRealMoney();
         HttpCtr.setFriendBonusState(this.node.tag,10);
+        this.disableBtn();
     }
 
     setName(name){

@@ -73,6 +73,8 @@ export default class NewClass extends cc.Component {
         let getPackage=cc.instantiate(this.getRedPackage);
         getPackage.parent=this.node;
         getPackage.getComponent("getRedPackage").setValue(data.m);
+        GameCtr.realMoney+=data.m;
+        GameCtr.getInstance().getGame().setRealMoney();
     }
 
     

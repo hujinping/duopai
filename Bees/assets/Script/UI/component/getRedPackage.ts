@@ -1,4 +1,5 @@
 import AudioManager from "../../Common/AudioManager";
+import GameCtr from "../../Controller/GameCtr";
 const {ccclass, property} = cc._decorator;
 @ccclass
 export default class NewClass extends cc.Component {
@@ -29,8 +30,9 @@ export default class NewClass extends cc.Component {
                 this.node.destroy();
                 AudioManager.getInstance().playSound("audio/btnClose");
             }else if(e.target.getName()=="btn_storage"){
-
                 AudioManager.getInstance().playSound("audio/btn_click");
+                GameCtr.getInstance().getGame().showToast("存入成功");
+                this.node.destroy();
             }
         })
     }

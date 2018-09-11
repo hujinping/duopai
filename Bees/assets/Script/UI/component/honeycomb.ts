@@ -26,8 +26,8 @@ export default class NewClass extends cc.Component {
     @property(cc.Prefab)
     bee:cc.Prefab=null;
 
-    @property(cc.Prefab)
-    flyBee:cc.Prefab=null;
+    // @property(cc.Prefab)
+    // flyBee:cc.Prefab=null;
 
     @property(cc.Prefab)
     unlockcomb:cc.Prefab=null;
@@ -40,6 +40,9 @@ export default class NewClass extends cc.Component {
 
     @property(cc.Prefab)
     unlockCombTip:cc.Prefab=null;
+
+    @property(cc.Prefab)
+    flyBees:cc.Prefab[]=[];
 
     onLoad(){
         this.initData();
@@ -73,7 +76,7 @@ export default class NewClass extends cc.Component {
     }
 
     initEvent(){
-        GameCtr.getInstance().addListener("moneyUpdate"+this._level,this.onMoneyUpdate.bind(this))
+        GameCtr.getInstance().addListener("moneyUpdate"+this._level,this.onMoneyUpdate.bind(this));
     }
 
     setLevel(level,unlockNum,unlock){
@@ -166,13 +169,14 @@ export default class NewClass extends cc.Component {
         this.node.runAction(cc.sequence(
             cc.delayTime(Math.random()*3),
             cc.callFunc(()=>{
-                let flyBee=cc.instantiate(this.flyBee);
+                let flyBee=cc.instantiate(this.flyBees[this._level-1]);
                 flyBee.parent=this._beeNode;
                 flyBee.tag=index;
                 flyBee.setLocalZOrder(1);
                 flyBee.x= this._combPosArr[index].x+292;
                 flyBee.y= this._combPosArr[index].y+39;
-                let sp_skeleton=flyBee.getComponent(sp.Skeleton);  
+                let sp_skeleton=flyBee.getComponent(sp.Skeleton);
+                //sp_skeleton.timeScale=3;
                 sp_skeleton.setEventListener((e)=>{
                     this.doBubbleHoney();
                 })
@@ -220,7 +224,6 @@ export default class NewClass extends cc.Component {
     }
 
     updateBtnState(){
-        console.log("log----------this._unlockNum  GameCtr.maxPerCombLevel=:",this._unlockNum,GameCtr.maxPerCombLevel)
         if(this._unlockNum==0 && !this._unlock){// 此蜂巢还未解锁
             if(GameCtr.level>=GameCtr.combConfig[this._level-1].needLevel){//此蜂巢满足解锁条件
                 this.showUnlockBtn(true);
@@ -270,65 +273,10 @@ export default class NewClass extends cc.Component {
     }
 
 
-    // randPos(){
-    //     if(this._hadRandom){return}
-    //     if(this._beeNode.children.length<this._unlockNum){return;}
-    //     for(let i =0;i<this._beeNode.children.length;i++){
-    //         this._beeNode.children[i].x-=Math.random()*1000;
-            
-    //     }
-    //     this._hadRandom=true;
-    // }
-
-    // doWork(dt){
-    //     //console.log("log----------------dowork level=:",this._level);
-    //     this._interval+=dt;
-    //     if(this._speedUpTime>0){
-    //         if((Date.now()-this._speedUpTime)/1000>=1.0){
-    //             this._speedUpTime=-1;
-    //         }
-    //     }
-    //     if(this._interval>=0.15){
-    //         this.updateBtnState();
-    //         // this._speed=this._speedUpTime>0?
-    //         // GameCtr.combConfig[GameCtr.comblevel-1].baseSpeed*(1-GameCtr.combConfig[GameCtr.comblevel-1].speedMatrix):
-    //         // GameCtr.combConfig[GameCtr.comblevel-1].baseSpeed;
-
-    //         // for(let i =0;i<this._beeNode.children.length;i++){
-    //         //     this._beeNode.children[i].getComponent("bee").fly();
-
-    //         //     if(this._beeNode.children[i].getComponent("bee").step==1){ // 飞向采蜜区
-    //         //         this._beeNode.children[i].x-=1000/(this._speed*60/GameCtr.globalSpeedRate)*6;
-    //         //         if(Math.floor(this._beeNode.children[i].x-this._beeNode.children[i].getComponent("bee").jobPos.x)<5){
-    //         //             this.doBubbleHoney();
-    //         //             this.updateHoneyValue();
-    //         //             this._beeNode.children[i].x=this._beeNode.children[i].getComponent("bee").jobPos.x;
-    //         //             this._beeNode.children[i].getComponent("bee").playHoneyEft();
-    //         //             this._beeNode.children[i].getComponent("bee").step++;
-    //         //         }
-    //         //     }
-    //         //     if(this._beeNode.children[i].getComponent("bee").step==2){//采蜜
-    //         //         if(this._beeNode.children[i].rotation<-45){
-    //         //             this._beeNode.children[i].rotation-=45*60/(90/GameCtr.globalSpeedRate*(1-GameCtr.combConfig[GameCtr.comblevel-1].speedMatrix));
-    //         //         }else{
-    //         //             this._beeNode.children[i].rotation-=135*60/(90/GameCtr.globalSpeedRate*(1-GameCtr.combConfig[GameCtr.comblevel-1].speedMatrix));
-    //         //         }
-    //         //         if(Math.abs(this._beeNode.children[i].rotation+270)<135*60/(90/GameCtr.globalSpeedRate*(1-GameCtr.combConfig[GameCtr.comblevel-1].speedMatrix))){
-    //         //             this._beeNode.children[i].rotation=-270;
-    //         //             this._beeNode.children[i].getComponent("bee").step++;
-    //         //         }
-    //         //     }
-
-    //         //     if(this._beeNode.children[i].getComponent("bee").step==3){//离开采蜜区
-    //         //         this._beeNode.children[i].x+=1000/(this._speed*60/GameCtr.globalSpeedRate)*6;
-    //         //         if(Math.abs(this._beeNode.children[i].x-this._beeNode.children[i].getComponent("bee").jobPos.x-1000)<=1000/(this._speed*60/GameCtr.globalSpeedRate)*6){
-    //         //             this._beeNode.children[i].rotation=-90;
-    //         //             this._beeNode.children[i].x=this._beeNode.children[i].getComponent("bee").jobPos.x+1000;
-    //         //             this._beeNode.children[i].getComponent("bee").step=1;
-    //         //         }
-    //         //     }
-    //         // }
-    //         this._interval=0
-    //     }
-    // }
+    setSpeedRate(rate){
+        for(let i=0;i<this._beeNode.children.length;i++){
+            let sp_skeleton=this._beeNode.children[i].getComponent(sp.Skeleton);
+            sp_skeleton.timeScale=rate;
+        }
+    }
 }
