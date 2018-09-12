@@ -81,6 +81,9 @@ export default class Game extends cc.Component {
     @property(cc.Prefab)
     exchange:cc.Prefab=null;
 
+    @property(cc.Prefab)
+    moreNode:cc.Prefab=null;
+
     onLoad(){
         GameCtr.getInstance().setGame(this);
         GameCtr.getInstance().initEventTarget();
@@ -88,9 +91,9 @@ export default class Game extends cc.Component {
         this.initNode();
         this.setRealMoney();
         AudioManager.getInstance().playMusic("audio/bgMusic");
-        this.refreshMoreNewGame();
         this.checkOffline();
         GameCtr.getInstance().setPlayTimes();
+        this.refreshMoreNewGame();
     }
 
     initEvent(){
@@ -179,11 +182,10 @@ export default class Game extends cc.Component {
                 let exchange=cc.instantiate(this.exchange);
                 exchange.parent=cc.find("Canvas");
             }else if(e.target.getName()=="btn_more"){
-                // if(cc.find("Canvas").getChildByName("exchange1")){return}
-                // let exchange=cc.instantiate(this.exchange);
-                // exchange.parent=cc.find("Canvas");
+                if(cc.find("Canvas").getChildByName("moreNode")){return}
+                let moreNode=cc.instantiate(this.moreNode);
+                moreNode.parent=cc.find("Canvas");
 
-                console.log("log---------更多游戏---------");
             }
 
         })
@@ -507,6 +509,7 @@ export default class Game extends cc.Component {
 
     refreshMoreNewGame(){
         if(!GameCtr.setting){return;}
+        console.log("log------------nav=:",GameCtr.setting.nav)
         console.log("log------------nav=:",GameCtr.setting.nav.banner);
         if(!GameCtr.setting.nav.banner||GameCtr.setting.nav.banner<=0){return;}
         this._adNode.active=true;

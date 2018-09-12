@@ -326,7 +326,7 @@ export default class GameCtr {
                     //GameCtr.ins.mEnd.showSlider(resp.data);
                 }else if (slideType == "nav") {
                     GameCtr.newGameData=resp.data;
-                    GameCtr.getInstance().getGame().refreshMoreNewGame(resp.data);
+                    GameCtr.getInstance().getGame().refreshMoreNewGame();
                 }
             },
             data: {

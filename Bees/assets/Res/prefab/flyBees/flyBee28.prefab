@@ -69,7 +69,7 @@
     },
     "_enabled": true,
     "_paused": false,
-    "defaultSkin": "skin1",
+    "defaultSkin": "skin29",
     "defaultAnimation": "run",
     "loop": true,
     "_premultipliedAlpha": false,
@@ -86,7 +86,7 @@
       "__id__": 1
     },
     "asset": {
-      "__uuid__": "c0f8a8e7-d59c-400e-bfd6-346a3ae0c7d4"
+      "__uuid__": "106d507d-5194-43d3-9b53-71736a1e67fd"
     },
     "fileId": "c8xK/H4kRDY655bDeq+KXi",
     "sync": false
