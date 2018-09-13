@@ -37,12 +37,11 @@ export default class NewClass extends cc.Component {
                 this.node.destroy();
             }else if(e.target.getName()=="btn_getRedPackage"){
                 AudioManager.getInstance().playSound("audio/btn_click");
-                HttpCtr.sign( this.getPackage.bind(this))
-               
+                HttpCtr.sign( this.getPackage.bind(this));
             }else if(e.target.getName()=="redPackage"){
-                //console.log("log-------点击红包------",e.target.tag);
+
                 AudioManager.getInstance().playSound("audio/btn_click");
-                HttpCtr.sign(this.getPackage.bind(this))
+                HttpCtr.sign(this.getPackage.bind(this));
                 
             }
         })

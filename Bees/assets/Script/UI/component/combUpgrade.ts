@@ -83,11 +83,14 @@ export default class NewClass extends cc.Component {
                 GameCtr.getInstance().getGame().clearCombUpGrade();
                 AudioManager.getInstance().playSound("audio/btnClose");
             }else if(e.target.getName()=="btn_upgrade"){
+                //console.log("log00000000000解锁蜂巢-------");
                 if(!this._btn_upgrade.getComponent(cc.Button).interactable){return}
                 AudioManager.getInstance().playSound("audio/btn_click");
                 let comb=GameCtr.getInstance().getGame().getComb(this._level);
+                //console.log('log------------log00000000000解锁蜂巢-------combLevel=:',this._level);
                 comb.getComponent("honeycomb").upgrade();
                 this._unlockNum++;
+                //console.log("log111111111111解锁蜂巢-------");
                 this._lb_des.getComponent(cc.Label).string=this._unlockNum+1;
                 if(this._unlockNum==GameCtr.maxPerCombLevel){
                     this._btn_upgrade.getComponent(cc.Button).interactable=false;
@@ -99,6 +102,8 @@ export default class NewClass extends cc.Component {
                 this.showhoneyProduction();
                 this.showUpgrade();
                 this.updateBtnState();
+
+                //console.log("log33333333333333333解锁蜂巢-------");
             }
         })
     }

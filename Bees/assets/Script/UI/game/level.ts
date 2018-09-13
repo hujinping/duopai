@@ -76,6 +76,8 @@ export default class NewClass extends cc.Component {
         this.setLevel();
         GameCtr.getInstance().setPlayerLevel();
         this.progress.getComponent(cc.ProgressBar).progress=0;
+        console.log("upgrade --> GameCtr.level  GameCtr.combConfig[GameCtr.comblevel].needLevel=:",GameCtr.level,GameCtr.combConfig[GameCtr.comblevel].needLevel)
+
     }
 
 

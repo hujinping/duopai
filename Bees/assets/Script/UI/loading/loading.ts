@@ -117,6 +117,8 @@ export default class NewClass extends cc.Component {
             GameCtr.getInstance().setCombLevel();
         }
 
+        console.log("log-------GameCtr.comblebel=:",GameCtr.comblevel);
+
         if(window.localStorage.getItem("combsUnlock")){
             GameCtr.combsUnlock=JSON.parse(window.localStorage.getItem("combsUnlock")); 
         }else{

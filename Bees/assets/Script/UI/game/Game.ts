@@ -224,7 +224,7 @@ export default class Game extends cc.Component {
     }
 
     initCombs(){
-        for(let level=0;level<GameCtr.comblevel+29;level++){
+        for(let level=0;level<GameCtr.comblevel+5;level++){//
             this.initComb(level);
         }
         this._honeycombContent.setContentSize(cc.size(1080,408*(GameCtr.comblevel+5)+200))
@@ -251,7 +251,7 @@ export default class Game extends cc.Component {
 
         let unlockNum=combsUnlock[level]?combsUnlock[level].level:0;
         let unlock=combsUnlock[level]?combsUnlock[level].unlock:false;
-        honeyComb.tag=GameCtr.comblevel+level;
+        honeyComb.tag=level;
         honeyComb.setLocalZOrder(2);
         honeyComb.getComponent("honeycomb").setLevel(level+1,unlockNum,unlock);
         honeyComb.getComponent("honeycomb").initBtn();
@@ -259,12 +259,13 @@ export default class Game extends cc.Component {
     }
 
     unlockComb(){
-        let comb=this._honeycombContent.getChildByTag(GameCtr.comblevel+1);
+        let comb=this._honeycombContent.getChildByTag(GameCtr.comblevel);
         comb.getComponent("honeycomb").setCanUnlock(true);
         comb.getComponent("honeycomb").showUnlockBtn(true);
         GameCtr.comblevel++;
         this.initComb(GameCtr.comblevel+4);
         this._honeycombContent.setContentSize(cc.size(1080,408*(GameCtr.comblevel+5)+200))
+        GameCtr.getInstance().setCombLevel();
     }
 
     startSpeedUpTimer(_timeCount){
@@ -320,7 +321,7 @@ export default class Game extends cc.Component {
     }
 
     getComb(combLevel){
-        return this._honeycombContent.getChildByTag(combLevel);
+        return this._honeycombContent.getChildByTag(combLevel-1);
     }
 
 
@@ -571,7 +572,7 @@ export default class Game extends cc.Component {
             GameCtr.getInstance().setLevelMoney();
             this.updateSpeedUpState(this._interval);
             this.updateUfoTime(this._interval);
-            this.caculateHideHoney();
+            //this.caculateHideHoney();
             this._interval=0
         }
         if(this._interval1>5){

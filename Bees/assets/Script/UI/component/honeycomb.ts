@@ -71,7 +71,7 @@ export default class NewClass extends cc.Component {
         this._word_unlock=this._btn_upgrade.getChildByName("word_unlock");
         this._word_levelUp=this._btn_upgrade.getChildByName("word_LeveUP");
         this._word_levelFull=this._btn_upgrade.getChildByName("word_levelFull");
-
+        this.showUnlockBtn(false);
         this._beeNode.setLocalZOrder(2);
     }
 
@@ -83,7 +83,6 @@ export default class NewClass extends cc.Component {
         this._level=level;
         this._unlock=unlock;
         this._unlockNum=unlockNum;
-
         this._lb_level.getComponent(cc.Label).string=level+'';
 
         for(let i=0;i<unlockNum;i++){
@@ -146,11 +145,13 @@ export default class NewClass extends cc.Component {
     }
 
     upgrade(){
+        console.log("log---------GameCtr.combsUnlock this._level=:",GameCtr.combsUnlock,this._level);
         this.unlockComb(this._unlockNum)
         this.createBee(this._unlockNum)
         GameCtr.money-=GameCtr.combConfig[this._level-1].levelUpCost+GameCtr.combConfig[this._level-1].upMatrix*(this._unlockNum-1)
         GameCtr.getInstance().getLevel().setMoney();
         this._unlockNum++;
+
         GameCtr.combsUnlock[this._level-1].level++;
         GameCtr.getInstance().setCombsUnlock();
         this.updateBtnState();
@@ -224,13 +225,15 @@ export default class NewClass extends cc.Component {
     }
 
     updateBtnState(){
+        console.log("log-----updateBtnState   this._level=:",this._level);
         if(this._unlockNum==0 && !this._unlock){// 此蜂巢还未解锁
-            if(GameCtr.level>=GameCtr.combConfig[this._level-1].needLevel){//此蜂巢满足解锁条件
-                this.showUnlockBtn(true);
-            }else{//此蜂巢不满足解锁条件
-                this.showUnlockBtn(false);
-            }
+            // if(GameCtr.level>=GameCtr.combConfig[this._level-1].needLevel){//此蜂巢满足解锁条件
+            //     this.showUnlockBtn(true);
+            // }else{//此蜂巢不满足解锁条件
+            //     this.showUnlockBtn(false);
+            // }
         }else if(this._unlockNum<GameCtr.maxPerCombLevel){ //此蜂巢已经解锁,但未满级
+            this._btn_upgrade.active=true;
             this._word_unlock.active=false;
             this._word_levelUp.active=true;
             if(GameCtr.money>=GameCtr.combConfig[this._level-1].levelUpCost+GameCtr.combConfig[this._level-1].upMatrix*(this._unlockNum-1)){

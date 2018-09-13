@@ -119,7 +119,17 @@ export default class Util {
 
     //数值格式化
     static formatNumber(number:number){
-        if(number>1000000000){//十亿
+        if(number>1000000000000000000000000){
+            return (number/1000000000000000000000000).toFixed(1)+"dd"
+        }else if(number>1000000000000000000000){
+            return (number/1000000000000000000000).toFixed(1)+"cc"
+        }else if(number>1000000000000000000){
+            return (number/1000000000000000000).toFixed(1)+"bb"
+        }else if(number>1000000000000000){
+            return (number/1000000000000000).toFixed(1)+"aa"
+        }else if(number>1000000000000){
+            return (number/1000000000000).toFixed(1)+"T"
+        }else if(number>1000000000){//十亿
             return (number/1000000000).toFixed(1)+"B"
         }else if(number>1000000){//百万
             return (number/1000000).toFixed(1)+"M"
