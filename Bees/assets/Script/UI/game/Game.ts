@@ -37,6 +37,7 @@ export default class Game extends cc.Component {
     _interval2=0;
     _manufactureUpgrade=null;
     _speedTime=0;
+    _ufoTime=0;
     _timeCount=-1;
     _combList=[];
 
@@ -78,6 +79,9 @@ export default class Game extends cc.Component {
 
     @property(cc.Prefab)
     moreNode:cc.Prefab=null;
+
+    @property(cc.Prefab)
+    ufo:cc.Prefab=null;
 
     onLoad(){
         GameCtr.getInstance().setGame(this);
@@ -158,7 +162,6 @@ export default class Game extends cc.Component {
                 // }
                 // if(cc.find("Canvas").getChildByName("rank")){return;}
                 // this.showWorldRank();
-
                 GameCtr.gotoScene("Ranking");
             }else if(e.target.getName()=="btn_pfTurntable"){
                 if(cc.find("Canvas").getChildByName("pfTurntable")){return}
@@ -183,7 +186,6 @@ export default class Game extends cc.Component {
                 if(cc.find("Canvas").getChildByName("moreNode")){return}
                 let moreNode=cc.instantiate(this.moreNode);
                 moreNode.parent=cc.find("Canvas");
-
             }
 
         })
@@ -493,6 +495,27 @@ export default class Game extends cc.Component {
         }
     }
 
+    updateUfoTime(dt){
+        if(this._ufoTime>=0){
+            this._ufoTime+=dt;
+            if(this._ufoTime>=GameCtr.otherConfig.ufoInterval){
+                let ufo =cc.instantiate(this.ufo);
+                ufo.parent=this.node;
+                ufo.x=-600;
+                ufo.y=-300;
+                let bezier = [cc.v2(-600, -300), cc.v2(0, -200), cc.v2(900, 600)];
+                let bezierTo = cc.bezierTo(GameCtr.otherConfig.ufoPersist, bezier);  
+                ufo.runAction(cc.sequence(
+                    bezierTo,
+                    cc.callFunc((e)=>{
+                        ufo.destroy();
+                    })
+                ));
+                this._ufoTime=-1;
+            }
+        }
+    }
+
     caculateHideHoney(){
         let combsUnlock=GameCtr.getInstance().getCombsUnlock();
         for(let i=0;i<GameCtr.comblevel;i++){//
@@ -547,6 +570,7 @@ export default class Game extends cc.Component {
             GameCtr.getInstance().setTimestamp();
             GameCtr.getInstance().setLevelMoney();
             this.updateSpeedUpState(this._interval);
+            this.updateUfoTime(this._interval);
             this.caculateHideHoney();
             this._interval=0
         }

@@ -2,5 +2,7 @@
     "speedUpInterval": 60,
     "speedUpPersist": 30,
     "doubleInterval": 120,
-    "doublePersist": 60
+    "doublePersist": 60,
+    "ufoInterval": 20,
+    "ufoPersist": 7
 }

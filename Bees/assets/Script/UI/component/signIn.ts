@@ -43,6 +43,7 @@ export default class NewClass extends cc.Component {
                 //console.log("log-------点击红包------",e.target.tag);
                 AudioManager.getInstance().playSound("audio/btn_click");
                 HttpCtr.sign(this.getPackage.bind(this))
+                
             }
         })
     }
