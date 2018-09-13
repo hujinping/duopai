@@ -43,7 +43,7 @@ export default class NewClass extends cc.Component {
             }else if(e.target.getName()=="btn_exchange"){
                 AudioManager.getInstance().playSound("audio/btn_click");
                 if(GameCtr.realMoney<100){
-                    GameCtr.getInstance().getGame().showToast("金币不足10元,无法兑换");
+                    GameCtr.getInstance().getGame().showToast("金额不足10元,无法兑换");
                     return;
                 }
                 if(this.node.getChildByName("exchange2")){return}

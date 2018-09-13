@@ -414,14 +414,15 @@ export default class Game extends cc.Component {
     createTipHand(parent){
         let tipHand=cc.instantiate(this.tipHand);
         tipHand.parent=parent;
-        tipHand.runAction(cc.repeatForever(cc.sequence(
+        let sp=tipHand.getChildByName("sp");
+        sp.runAction(cc.repeatForever(cc.sequence(
             cc.delayTime(0.3),
             cc.callFunc(()=>{
-                tipHand.y+=40;
+                sp.y+=40;
             }),
             cc.delayTime(0.3),
             cc.callFunc(()=>{
-                tipHand.y-=40;
+                sp.y-=40;
             }),
         )))
         return tipHand;

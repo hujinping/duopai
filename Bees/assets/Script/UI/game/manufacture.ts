@@ -90,9 +90,12 @@ export default class NewClass extends cc.Component {
         if(GameCtr.honeyValue>GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus){
             jar=cc.instantiate(this.jar_full);
             GameCtr.honeyValue-=GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus;
+            jar.getComponent("jar").honey=GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus;
         }else{
             jar=cc.instantiate(this.jar_noFull);
+            jar.getComponent("jar").honey=GameCtr.honeyValue
             GameCtr.honeyValue-=GameCtr.honeyValue;
+            
         }
         this.setHoneyValue();
 
@@ -111,15 +114,17 @@ export default class NewClass extends cc.Component {
             cc.moveTo(0.2,cc.p(-203,365)),
             cc.delayTime(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].transferTime/(this._speed*GameCtr.globalSpeedRate)),
             cc.callFunc(()=>{
+               
+                GameCtr.money+=jar.getComponent("jar").honey*GameCtr.incomeRate;//GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus
+                GameCtr.rich+=jar.getComponent("jar").honey*GameCtr.incomeRate;
+                GameCtr.levelMoney+=jar.getComponent("jar").honey*GameCtr.incomeRate;
                 jar.removeFromParent();
-                GameCtr.money+=GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus*GameCtr.incomeRate;
-                GameCtr.rich+=GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus*GameCtr.incomeRate;
-                GameCtr.levelMoney+=GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus*GameCtr.incomeRate;
+
                 GameCtr.getInstance().getLevel().setMoney();
                 GameCtr.getInstance().getLevel().updateLevelProgress();
                 GameCtr.getInstance().getLevel().showBtnUpGrade();
                 this.showBtn()
-                this.showBubbleMoney(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus*GameCtr.incomeRate);
+                this.showBubbleMoney(jar.getComponent("jar").honey*GameCtr.incomeRate);
             })
         ))
         this.scheduleOnce(this.doWork.bind(this),GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].productTime/(this._speed*GameCtr.globalSpeedRate));
@@ -225,7 +230,7 @@ export default class NewClass extends cc.Component {
     dowork(dt){
         if(!this._upLine){return}
         if(this._speedUpTime>0){
-            if((Date.now()-this._speedUpTime)/1000>=1.0){
+            if((Date.now()-this._speedUpTime)/1000>=2.0){
                 this._speedUpTime=-1;
                 this._speed=1;
             }
