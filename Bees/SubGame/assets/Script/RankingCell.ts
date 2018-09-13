@@ -1,5 +1,5 @@
 
-const { ccclass, property } = cc._decorator;
+const {ccclass, property} = cc._decorator;
 
 @ccclass
 export default class RankingCell extends cc.Component {
@@ -16,104 +16,40 @@ export default class RankingCell extends cc.Component {
     lbName: cc.Label = null;
     @property(cc.Label)
     lbScore: cc.Label = null;
-    @property(cc.Label)
-    lbGrade: cc.Label = null;
-    @property(cc.Label)
-    lbtitle: cc.Label = null;
     @property([cc.SpriteFrame])
     medalFrames: cc.SpriteFrame[] = [];
     @property([cc.SpriteFrame])
     bgFrames: cc.SpriteFrame[] = [];
 
-    private gradeList = ["王\n者", "宗\n师", "大\n师", "进\n阶", "入\n门", "渣\n渣"];
-
     // LIFE-CYCLE CALLBACKS:
 
     // onLoad () {}
 
-    setData(rank, data, boolSetBg) {
+    setData(rank, data) {
         this.createImage(data.avatarUrl);
         this.lbName.string = this.cutstr(data.nickname, 10);
         this.setMedal(rank);
-        if (boolSetBg) {
-            this.setBg(rank);
-        }
-        if (!data.KVDataList) {
+        this.setBg(rank);
+        if(!data.KVDataList) {
             return;
         }
         let score = data.KVDataList.length != 0 ? data.KVDataList[0].value : 0;
         this.lbScore.string = score;
-    }
-
-    setOverData(rank, data) {
-        if (!data.KVDataList) {
-            return;
-        }
-        this.createImage(data.avatarUrl);
-        this.lbName.string = this.cutstr(data.nickname, 10);
-        this.setMedal(rank);
-
-        let idx = rank % 2;
-        if (idx == 0) this.sprBg.spriteFrame = this.bgFrames[idx];
-        else this.sprBg.spriteFrame = null;
-
-        let score = data.KVDataList.length != 0 ? data.KVDataList[0].value : 0;
-        this.lbScore.string = score;
-
-        return this.setLbGrade(score);
-    }
-
-    setSelfOverData(data) {
-        if (!data.KVDataList) {
-            return;
-        }
-        this.createImage(data.avatarUrl);
-        this.lbName.string = this.cutstr(data.nickname, 10);
-        let score = data.KVDataList.length != 0 ? data.KVDataList[0].value : 0;
-        this.setLbGrade(score);
-    }
-
-    setLbGrade(score) {
-        let lb = this.lbGrade.getComponent(cc.Label);
-        if (score < 2000) {
-            lb.string = this.gradeList[5];
-            return 5;
-        } else if (score >= 2000 && score < 10000) {
-            lb.string = this.gradeList[4];
-            return 4;
-        } else if (score >= 10000 && score < 30000) {
-            lb.string = this.gradeList[3];
-            return 3;
-        } else if (score >= 30000 && score < 50000) {
-            lb.string = this.gradeList[2];
-            return 2;
-        } else if (score >= 50000 && score < 80000) {
-            lb.string = this.gradeList[1];
-            return 1;
-        } else if (score >= 100000) {
-            lb.string = this.gradeList[0];
-            return 0;
-        }
-    }
-
-    setTitle(string) {
-        this.sprBg.node.active = false;
-        this.lbtitle.getComponent(cc.Label).string = string;
     }
 
     setBg(idx) {
-        idx = 0;
+        idx = idx % 2;
         this.sprBg.spriteFrame = this.bgFrames[idx];
     }
 
     setMedal(idx) {
-        if (idx < 3) {
+        if(idx < 3) {
             this.sprMedal.node.active = true;
             this.sprMedal.spriteFrame = this.medalFrames[idx];
             this.lbRank.node.active = false;
-        } else {
+        }else{
             this.lbRank.node.active = true;
-            this.lbRank.string = idx + 1;
+            this.lbRank.string = idx+1;
             this.sprMedal.node.active = false;
         }
     }

@@ -63,8 +63,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 780,
-      "height": 138
+      "width": 900,
+      "height": 120
     },
     "_rotationX": 0,
     "_rotationY": 0,
@@ -120,8 +120,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 780,
-      "height": 138
+      "width": 900,
+      "height": 120
     },
     "_rotationX": 0,
     "_rotationY": 0,
@@ -148,9 +148,9 @@
     },
     "_enabled": true,
     "_spriteFrame": {
-      "__uuid__": "5e55fa15-738c-4bca-81cb-74323209fba4"
+      "__uuid__": "12a676d6-1487-48e5-94b9-54adfdb0f300"
     },
-    "_type": 1,
+    "_type": 0,
     "_sizeMode": 0,
     "_fillType": 0,
     "_fillCenter": {
@@ -237,8 +237,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 62,
-      "height": 90
+      "width": 50,
+      "height": 85
     },
     "_rotationX": 0,
     "_rotationY": 0,
@@ -246,7 +246,7 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": -312,
+      "x": -393,
       "y": 0
     },
     "_skewX": 0,
@@ -337,7 +337,7 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": -197,
+      "x": -278,
       "y": 0
     },
     "_skewX": 0,
@@ -406,9 +406,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 0,
-      "g": 0,
-      "b": 0,
+      "r": 14,
+      "g": 4,
+      "b": 4,
       "a": 255
     },
     "_cascadeOpacityEnabled": true,
@@ -428,7 +428,7 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": -312,
+      "x": -393,
       "y": 0
     },
     "_skewX": 0,
@@ -515,7 +515,7 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": -88,
+      "x": -169,
       "y": 0
     },
     "_skewX": 0,
@@ -602,7 +602,7 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 250.6,
+      "x": 309,
       "y": 0
     },
     "_skewX": 0,
@@ -671,8 +671,6 @@
     "lbScore": {
       "__id__": 19
     },
-    "lbGrade": null,
-    "lbtitle": null,
     "medalFrames": [
       {
         "__uuid__": "c1c4f4b5-0f78-444c-8dba-3f8fce45253c"
@@ -686,7 +684,10 @@
     ],
     "bgFrames": [
       {
-        "__uuid__": "5e55fa15-738c-4bca-81cb-74323209fba4"
+        "__uuid__": "2ddd2bd9-daf6-4b79-ac54-3f7d60adcd0e"
+      },
+      {
+        "__uuid__": "12a676d6-1487-48e5-94b9-54adfdb0f300"
       }
     ]
   },
@@ -704,7 +705,7 @@
     "_left": 0,
     "_right": 0,
     "_top": 0,
-    "_bottom": -9,
+    "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": true,

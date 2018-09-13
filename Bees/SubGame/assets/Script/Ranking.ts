@@ -11,10 +11,6 @@ export default class Ranking extends cc.Component {
     @property(cc.Prefab)
     pfCell: cc.Prefab = null;
 
-    private gradeList = ["王者", "宗师", "大师", "进阶", "入门", "渣渣"];
-    private level = 0;
-
-
     // LIFE-CYCLE CALLBACKS:
 
     loadRanking(data) {
@@ -23,39 +19,8 @@ export default class Ranking extends cc.Component {
             this.ndContent.addChild(cell);
             let info = data[i];
             let comp = cell.getComponent(RankingCell);
-            comp.setData(i, info, true);
+            comp.setData(i, info);
         }
-    }
-
-    loadOverRanking(data) {
-        this.level = 0;
-        this.setTitle();
-        for (let i = 0; i < data.length; i++) {
-            let cell = cc.instantiate(this.pfCell);
-            let info = data[i];
-            let comp = cell.getComponent(RankingCell);
-            let k = comp.setOverData(i, info);
-            if (this.level != k) {
-                if (i == data.length - 1) {
-                    k = 5;
-                }
-                while (true) {
-                    this.level++;
-                    this.setTitle();
-                    if (this.level >= k) {
-                        break;
-                    }
-                }
-            }
-            this.ndContent.addChild(cell);
-        }
-    }
-
-    setTitle() {
-        let cell = cc.instantiate(this.pfCell);
-        this.ndContent.addChild(cell);
-        let comp = cell.getComponent(RankingCell);
-        comp.setTitle(this.gradeList[this.level]);
     }
 
     clear() {
