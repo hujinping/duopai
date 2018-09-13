@@ -131,6 +131,7 @@ export default class NewClass extends cc.Component {
         let bubbleMoney=cc.instantiate(this.bubbleMoney);
         bubbleMoney.parent=this.node;
         bubbleMoney.x=450;
+        bubbleMoney.y=400;
         bubbleMoney.getComponent("bubbleMoney").setMoney(money);
         AudioManager.getInstance().playSound("audio/gold");
     }

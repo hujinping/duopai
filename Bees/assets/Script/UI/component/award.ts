@@ -3,9 +3,6 @@ import GameCtr from "../../Controller/GameCtr";
 const {ccclass, property} = cc._decorator;
 @ccclass
 export default class NewClass extends cc.Component {
-    @property(cc.SpriteAtlas)
-    atlas:cc.SpriteAtlas=null;
-
     _btn_getAward=null;
     _lb_des=null;
     _award=null;
@@ -50,15 +47,15 @@ export default class NewClass extends cc.Component {
 
     showAward(awardData){
         this._awarData=awardData;
-        let sp=this.atlas.getSpriteFrame("award_"+(awardData.id-1));
-        this._award.getComponent(cc.Sprite).spriteFrame=sp;
-        this._lb_des.getComponent(cc.Label).string=awardData.des;
-
-        if(awardData.gold){
+        cc.loader.loadRes("textures/game1/award_"+(awardData.id-1), cc.SpriteFrame,  (err, spriteFrame)=> {
+            this._award.getComponent(cc.Sprite).spriteFrame=spriteFrame;
             this._lb_des.getComponent(cc.Label).string=awardData.des;
-            let speed=this.getIncomeSpeed();
-            this._lb_des.getComponent(cc.Label).string=Math.floor(speed*awardData.gold*60)+"金币";
-        }
+            if(awardData.gold){
+                this._lb_des.getComponent(cc.Label).string=awardData.des;
+                let speed=this.getIncomeSpeed();
+                this._lb_des.getComponent(cc.Label).string=Math.floor(speed*awardData.gold*60)+"金币";
+            }
+        });
     }
 
     getAward(){

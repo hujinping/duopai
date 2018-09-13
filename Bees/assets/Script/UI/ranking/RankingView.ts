@@ -45,21 +45,21 @@ export default class RankingView extends cc.Component {
 
     //初始化界面
     initRank() {
-        // if (this.friendToggle.isChecked) {
-        //     this.showFreindRanking();
-        // } else if (this.worldToggle.isChecked) {
-        //     this.showWorldRanking();
-        // }
-
-        this.showWorldRanking();
+        if (this.friendToggle.isChecked) {
+            this.showFreindRanking();
+        } else if (this.worldToggle.isChecked) {
+            this.showWorldRanking();
+        }
     }
 
     //返回结束
     back() {
+
+        console.log('show-------back-----');
         this.showAuthTip(false);
         this.isGetFriendList = false;
         WXCtr.closeFriendRanking();
-        GameCtr.gotoScene(GameCtr.rankingEntrance);
+        GameCtr.gotoScene("Game");
     }
 
     //显示世界排行
@@ -67,13 +67,13 @@ export default class RankingView extends cc.Component {
         console.log('点击了世界排行榜');
         this.ndWorldScr.active = true;
         this.sprFreindRankScroll.node.active = false;
-        if (!WXCtr.wxLoginSuccess) {
+        if (!WXCtr.authed) {
             console.log("未授权，引导获取授权！！！");
             this.showAuthTip(true);
             return;
         }
         if (!this.isGetWorldList) {
-            this.getWorldRankingData();
+            this.getWorldRankingData(1);
         }
     }
 
@@ -88,14 +88,14 @@ export default class RankingView extends cc.Component {
     }
 
     //获取世界排行数据
-    getWorldRankingData() {
-        console.log('获取世界排行数据???');
+    getWorldRankingData(page) {
         Http.send({
             url: Http.UrlConfig.GET_RANK_LIST,
             success: (resp) => {
                 console.log("getWorldList response == ", resp);
                 this.isGetWorldList = true;
-                this.setWorldList(resp.data,resp.metop,resp.metopvalue);
+                this.setWorldList(resp.data);
+                //this.setSelfWorldData(resp.data.user_record.sort - 1, resp.data.user_record);
             },
             data: {
                 uid: UserManager.user_id,
@@ -105,16 +105,24 @@ export default class RankingView extends cc.Component {
     }
 
     //设置世界排行
-    setWorldList(worldRanks,selfRank,selfChickenValue) {
-        // UILoader.loadRes("prefab/totalRank", cc.Prefab, (prefab) => {
-        //     UILoader.instantiate(prefab, this.node, (node) => {
-        //         node.getComponent("totalRank").init(worldRanks,selfRank,selfChickenValue)
-        //     });
-        // });
-
+    setWorldList(list) {
+        console.log("worldRankingList == ", list);
+        for (let i in list) {
+            let nd = cc.instantiate(this.pfCell);
+            this.ndWorldContent.addChild(nd);
+            let rankingCell: RankingCell = nd.getComponent(RankingCell);
+            let data = list[i];
+            rankingCell.setData(i, data);
+        }
     }
 
-
+    //设置世界排行自己数据
+    setSelfWorldData(rank, data) {
+        let nd = this.ndWorldScr.getChildByName("SelfRanking");
+        nd.active = true;
+        let rankingCell: RankingCell = nd.getComponent(RankingCell);
+        rankingCell.setData(rank, data);
+    }
 
     //显示好友排行
     showFreindRanking() {
@@ -127,10 +135,11 @@ export default class RankingView extends cc.Component {
         }
     }
 
-    //关闭世界排行
-    onCloseRank() {
+     //关闭世界排行
+     onCloseRank() {
         this.ndRanking.active = false;
     }
+
 
 
     // 刷新子域的纹理

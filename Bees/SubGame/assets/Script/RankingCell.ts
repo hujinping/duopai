@@ -27,7 +27,7 @@ export default class RankingCell extends cc.Component {
 
     setData(rank, data) {
         this.createImage(data.avatarUrl);
-        this.lbName.string = this.cutstr(data.nickname, 10);
+        this.lbName.string = this.cutstr(data.nickName, 10);
         this.setMedal(rank);
         this.setBg(rank);
         if(!data.KVDataList) {

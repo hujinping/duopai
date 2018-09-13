@@ -110,29 +110,38 @@ export default class WXCtr {
     //创建用户授权按钮
     static createUserInfoBtn() {
         if (window.wx != undefined) {
-            console.log("创建用户授权按钮");
-
-            let model;
+            let screenWidth;
+            let screenHeight;
+            let widthRatio;
+            let heightRatio;
             wx.getSystemInfo({
-                success: (res)=>{
+                success: (res) => {
+                    WXCtr.Height = res.windowHeight;
                     console.log("获取设备信息成功", res);
-                    model = res.model
-                    WXCtr.screenWidth = res.screenWidth;
-                    WXCtr.screenHeight = res.screenHeight;
-                    WXCtr.widthRatio = WXCtr.screenWidth / I6P.w;
-                    WXCtr.heightRatio = WXCtr.screenHeight / I6P.h;
-                    //GameCtr.getPhone(model)
+                    screenWidth = res.screenWidth;
+                    screenHeight = res.screenHeight;
+                    widthRatio = screenWidth / I6P.w;
+                    heightRatio = screenHeight / I6P.h;
                 }
             });
 
             WXCtr.userInfoBtn = wx.createUserInfoButton({
                 type: 'image',
-                image: 'res/raw-assets/resources/textures/authBtn.png',
+                image: 'res/raw-assets/resources/textures/ranking/authBtn.png',
                 style: {
-                    left: (WXCtr.screenWidth / 2-80),
-                    top: (WXCtr.screenHeight / 2-40) + (50 * WXCtr.heightRatio),
-                    width: 160 * WXCtr.widthRatio,
-                    height: 40 * WXCtr.heightRatio,
+                    left: (screenWidth / 2-80) ,
+                    top: (screenHeight / 2-40) + (50 * heightRatio),
+                    width: 160 * widthRatio,
+                    height: 40 * heightRatio,
+                }
+            });
+
+            WXCtr.userInfoBtn.hide();
+            WXCtr.userInfoBtn.onTap((res) => {
+                console.log("UserInfoBtn tap", res);
+                if (res.userInfo) {
+                    GameCtr.getInstance().getRanking().showAuthTip(false)
+                    WXCtr.wxOnLogin(res.userInfo,true);
                 }
             });
         }
@@ -177,15 +186,17 @@ export default class WXCtr {
     }
 
     //登录微信
-    static wxOnLogin() {
-        console.log("----------------------wxOnLogin-----------")
+    static wxOnLogin(userInfo = null,showWorldRanking=false) {
         if (window.wx != undefined) {
             //登录微信
-           
+            if (userInfo) {
+                WXCtr.wxLoginSuccess = true;
+            }
+
             window.wx.login({
                 success: function (loginResp) {
                     console.log("微信登录返回值res", loginResp);
-                    HttpCtr.login(loginResp.code);
+                    HttpCtr.login(loginResp.code,showWorldRanking);
                     WXCtr.getUserInfo();
                     WXCtr.getSelfData();
                     WXCtr.getShareConfig();

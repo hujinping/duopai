@@ -5,7 +5,7 @@ import WXCtr from "./WXCtr";
 import Game from "../UI/game/Game";
 import Manufacture from "../UI/game/manufacture";
 import Level from "../UI/game/level";
-
+import RankingView from "../UI/ranking/RankingView";
 import HttpCtr from "./HttpCtr";
 import Http from "../Common/Http";
 //import Collide from "../View/game/Collide";
@@ -18,6 +18,7 @@ export default class GameCtr {
     private mGame: Game;
     private mManufacture: Manufacture;
     private mLevel: Level;
+    private mRanking:RankingView;
     private eventTarget=null;
     
     public static selfInfo=null;
@@ -58,6 +59,7 @@ export default class GameCtr {
     constructor() {
         GameCtr.ins = this;
         WXCtr.getLaunchOptionsSync();
+        WXCtr.createUserInfoBtn();
         WXCtr.getAuthSetting();
         WXCtr.showShareMenu();
         WXCtr.wxOnLogin();
@@ -110,6 +112,14 @@ export default class GameCtr {
     //设置end实例（结束）
     setLevel(level: Level) {
         this.mLevel = level;
+    }
+
+    setRanking(ranking: RankingView){
+        this.mRanking = ranking;
+    }
+
+    getRanking(){
+        return this.mRanking;
     }
 
     setCombsUnlock(){
@@ -216,7 +226,7 @@ export default class GameCtr {
     //场景切换
     static gotoScene(sceneName) {
         cc.director.loadScene(sceneName);
-        AudioManager.getInstance().stopAll();
+        //AudioManager.getInstance().stopAll();
     }
 
     //显示结束界面
@@ -365,4 +375,48 @@ export default class GameCtr {
             }
         });
     }
+
+        //登录游戏
+        static login(code, info, showWorldRanking = false) {
+            Http.send({
+                url: Http.UrlConfig.LOGIN,
+                success: (resp) => {
+                    if (resp.code == Http.Code.OK) {
+                        UserManager.user_id = resp.data.user_id;
+                        if (showWorldRanking) {
+                            GameCtr.getInstance().getRanking().showWorldRanking();
+                        }
+                        // Http.send({
+                        //     url: Http.UrlConfig.SAVE_INFO,
+                        //     data:
+                        //     {
+                        //         avatar_url: info.avatarUrl,
+                        //         city: info.city,
+                        //         country: info.country,
+                        //         gender: info.gender,
+                        //         language: info.language,
+                        //         nick_name: info.nickName,
+                        //         user_id: UserManager.user_id,
+                        //         province: info.province,
+                        //     },
+                        //     success: () => {
+                        //         GameCtr.getShareSwitch();               //登录成功，获取分享开关
+                        //         GameCtr.getRandomUser();
+                        //         GameCtr.getGameOverShareSwitch();
+                        //         console.log("渠道验证成功111", WXCtr.launchOption.query);
+                        //         GameCtr.chanelCheck(WXCtr.launchOption.query.channel_id, UserManager.user_id);
+                        //         GameCtr.seekJion(WXCtr.launchOption.query.Send_user_id, WXCtr.launchOption.query.isInvite);
+                        //         GameCtr.getToolInfo();
+                        //         WXCtr.getAdConfig();
+                        //         GameCtr.getUserInfoCtr();
+                        //     }
+                        // });
+                    }
+                },
+                data: {
+                    code: code
+                }
+            });
+    
+        }
 }

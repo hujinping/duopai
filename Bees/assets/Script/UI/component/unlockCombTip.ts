@@ -4,9 +4,6 @@ const {ccclass, property} = cc._decorator;
 
 @ccclass
 export default class NewClass extends cc.Component {
-    @property(cc.SpriteAtlas)
-    beeAtlas:cc.SpriteAtlas=null;
-
     @property(cc.Prefab)
     celebrate:cc.Prefab=null;
 
@@ -34,9 +31,10 @@ export default class NewClass extends cc.Component {
     }
 
     initBee(){
-        let sp=this.beeAtlas.getSpriteFrame(this._level+"-1");
-        this._bee.getComponent(cc.Sprite).spriteFrame=sp;
-        this._bee.scale=4.0;
+        cc.loader.loadRes("textures/bees/"+this._level+"-1", cc.SpriteFrame,  (err, spriteFrame)=> {
+            this._bee.getComponent(cc.Sprite).spriteFrame=spriteFrame;
+            this._bee.scale=4.0;
+        });
     }
 
     showCelebrate(){

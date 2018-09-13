@@ -14,7 +14,7 @@ const { ccclass, property } = cc._decorator;
 export default class HttpCtr {
 
     //登录游戏
-    static login(code) {
+    static login(code,showWorldRanking=false) {
         Http.send({
             url: Http.UrlConfig.LOGIN,
             success: (resp) => {
@@ -24,7 +24,9 @@ export default class HttpCtr {
                     UserManager.voucher = resp.data.voucher
                     HttpCtr.getUserInfo();
                     HttpCtr.getSettingConfig();
-
+                    if(showWorldRanking){
+                        GameCtr.getInstance().getRanking().showWorldRanking();
+                    }
                     if (WXCtr.launchOption.query) {
                         HttpCtr.invitedByFriend(WXCtr.launchOption.query);
                     }

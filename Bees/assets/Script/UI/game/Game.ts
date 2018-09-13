@@ -39,11 +39,6 @@ export default class Game extends cc.Component {
     _speedTime=0;
     _timeCount=-1;
     _combList=[];
-    @property(cc.Prefab)
-    test:cc.Prefab=null;
-
-    @property(cc.Prefab)
-    test1:cc.Prefab=null;
 
     @property(cc.Prefab)
     honeyComb:cc.Prefab=null;
@@ -94,6 +89,7 @@ export default class Game extends cc.Component {
         this.checkOffline();
         GameCtr.getInstance().setPlayTimes();
         this.refreshMoreNewGame();
+        WXCtr.getFriendRankingData();                   //获取好友排行榜数据
     }
 
     initEvent(){
@@ -154,14 +150,16 @@ export default class Game extends cc.Component {
                 this._btn_upSpeed.active=false;
                 this.showRocketAction();
             }else if(e.target.getName()=="btn_rank"){
-                if(!WXCtr.authed){
-                    this.showAuthTip();
-                    WXCtr.createUserInfoBtn();
-                    WXCtr.onUserInfoBtnTap(this.hideAuthTip.bind(this));
-                    return;
-                }
-                if(cc.find("Canvas").getChildByName("rank")){return;}
-                this.showWorldRank();
+                // if(!WXCtr.authed){
+                //     this.showAuthTip();
+                //     WXCtr.createUserInfoBtn();
+                //     WXCtr.onUserInfoBtnTap(this.hideAuthTip.bind(this));
+                //     return;
+                // }
+                // if(cc.find("Canvas").getChildByName("rank")){return;}
+                // this.showWorldRank();
+
+                GameCtr.gotoScene("Ranking");
             }else if(e.target.getName()=="btn_pfTurntable"){
                 if(cc.find("Canvas").getChildByName("pfTurntable")){return}
                 let pfTurntable=cc.instantiate(this.pfTurntable);

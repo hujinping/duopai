@@ -151,7 +151,7 @@
     },
     "_enabled": true,
     "_spriteFrame": {
-      "__uuid__": "5b088dc8-a9c9-4aba-b658-87d71ebd1f5c"
+      "__uuid__": "ba67aed2-0e83-4cee-a5af-456ed7d88611"
     },
     "_type": 1,
     "_sizeMode": 0,
@@ -166,9 +166,7 @@
     "_isTrimmedMode": true,
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_atlas": {
-      "__uuid__": "d321c3c6-aaa5-4b1a-b7fa-dad7a18404d7"
-    }
+    "_atlas": null
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -244,7 +242,7 @@
     },
     "_enabled": true,
     "_spriteFrame": {
-      "__uuid__": "1552a37d-05f2-4f10-8f0b-7d0591fc67ab"
+      "__uuid__": "1784d30b-1503-4fe9-83d9-be94b09ab067"
     },
     "_type": 0,
     "_sizeMode": 1,
@@ -259,9 +257,7 @@
     "_isTrimmedMode": true,
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_atlas": {
-      "__uuid__": "d321c3c6-aaa5-4b1a-b7fa-dad7a18404d7"
-    }
+    "_atlas": null
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -584,7 +580,7 @@
     },
     "_enabled": true,
     "_spriteFrame": {
-      "__uuid__": "ee02d806-2945-4fd4-8566-96b0d884bb72"
+      "__uuid__": "8865cf57-6036-4419-9dbc-49e7cee4caea"
     },
     "_type": 0,
     "_sizeMode": 1,
@@ -599,9 +595,7 @@
     "_isTrimmedMode": true,
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_atlas": {
-      "__uuid__": "d321c3c6-aaa5-4b1a-b7fa-dad7a18404d7"
-    }
+    "_atlas": null
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -649,7 +643,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 132,
+      "width": 129,
       "height": 42
     },
     "_rotationX": 0,
@@ -677,7 +671,7 @@
     },
     "_enabled": true,
     "_spriteFrame": {
-      "__uuid__": "9ca3d628-6a89-45a3-86f2-36136449f00f"
+      "__uuid__": "6780beec-3741-4d8f-9080-961d0a86a9a1"
     },
     "_type": 0,
     "_sizeMode": 1,
@@ -692,9 +686,7 @@
     "_isTrimmedMode": true,
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_atlas": {
-      "__uuid__": "d321c3c6-aaa5-4b1a-b7fa-dad7a18404d7"
-    }
+    "_atlas": null
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -770,7 +762,7 @@
     },
     "_enabled": true,
     "_spriteFrame": {
-      "__uuid__": "6e27a040-7517-428b-82e5-1430ac17b871"
+      "__uuid__": "d2c26b88-15e5-4489-845c-ef279341885a"
     },
     "_type": 0,
     "_sizeMode": 1,
@@ -785,9 +777,7 @@
     "_isTrimmedMode": true,
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_atlas": {
-      "__uuid__": "d321c3c6-aaa5-4b1a-b7fa-dad7a18404d7"
-    }
+    "_atlas": null
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -809,7 +799,7 @@
     },
     "_enabled": true,
     "_spriteFrame": {
-      "__uuid__": "412f9590-4972-40da-9884-e66f5f904cee"
+      "__uuid__": "f3537412-5fbf-4598-b0f2-03c77359c950"
     },
     "_type": 1,
     "_sizeMode": 0,
@@ -824,9 +814,7 @@
     "_isTrimmedMode": true,
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_atlas": {
-      "__uuid__": "d321c3c6-aaa5-4b1a-b7fa-dad7a18404d7"
-    }
+    "_atlas": null
   },
   {
     "__type__": "cc.Button",
@@ -966,7 +954,7 @@
     },
     "_enabled": true,
     "_spriteFrame": {
-      "__uuid__": "a277a380-d4a0-4ac4-9701-d628f2a85ccb"
+      "__uuid__": "bb0c52cd-f838-4475-91c8-576c05832460"
     },
     "_type": 0,
     "_sizeMode": 1,
@@ -981,9 +969,7 @@
     "_isTrimmedMode": true,
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_atlas": {
-      "__uuid__": "d321c3c6-aaa5-4b1a-b7fa-dad7a18404d7"
-    }
+    "_atlas": null
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -1059,7 +1045,7 @@
     },
     "_enabled": true,
     "_spriteFrame": {
-      "__uuid__": "55656581-5d85-4d9c-8655-4e49f59a62c1"
+      "__uuid__": "e4c35b86-57bc-4938-9abb-5ce3969e2031"
     },
     "_type": 0,
     "_sizeMode": 1,
@@ -1074,9 +1060,7 @@
     "_isTrimmedMode": true,
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_atlas": {
-      "__uuid__": "d321c3c6-aaa5-4b1a-b7fa-dad7a18404d7"
-    }
+    "_atlas": null
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -1184,9 +1168,7 @@
       "__id__": 1
     },
     "_enabled": true,
-    "bee": {
-      "__uuid__": "7f5774d7-9c2f-49bf-9520-e2d344bc86d7"
-    },
+    "bee": null,
     "unlockcomb": {
       "__uuid__": "a79df03e-40c1-44fd-8c9a-20bd9609453f"
     },
