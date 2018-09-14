@@ -1,6 +1,7 @@
 import AudioManager from "../../Common/AudioManager";
 import HttpCtr from "../../Controller/HttpCtr";
 import GameCtr from "../../Controller/GameCtr";
+import WXCtr from "../../Controller/WXCtr";
 
 const {ccclass, property} = cc._decorator;
 
@@ -10,6 +11,9 @@ export default class NewClass extends cc.Component {
     _lb_name=null;
     _lb_count=null;
     _head=null;
+
+    _name=null;
+    _url=null;
   
 
     @property(cc.Prefab)
@@ -26,16 +30,25 @@ export default class NewClass extends cc.Component {
         this._head=this.node.getChildByName("head");
         
         this.initBtnEvent(this._btn_get);
+
         this._btn_get.active=false;
     }
 
     initBtnEvent(btn){
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
-            if(!this._btn_get.getComponent(cc.Button).interactable){return}
-
+            if(e.target.getName()=="btn_get"){
+                HttpCtr.openRed(2,this.showRedPackage.bind(this));
+            }else if(e.target.getName()=="head"){
+                WXCtr.share({invite:true,callback:()=>{
+                    console.log("log----------------邀请好友---------");
+                }})
+            }
             AudioManager.getInstance().playSound("audio/btn_click");
-            HttpCtr.openRed(2,this.showRedPackage.bind(this));
         })
+    }
+
+    initHeadEvent(){
+        this.initBtnEvent(this._head);
     }
 
     disableBtn(){
@@ -57,6 +70,9 @@ export default class NewClass extends cc.Component {
     }
 
     setName(name){
+        if(this._name){return}
+
+        this._name=name;
         this._btn_get.active=true;
         this._lb_name.getComponent(cc.Label).string=name;
     }
@@ -66,6 +82,9 @@ export default class NewClass extends cc.Component {
     }
 
     setHeadImg(url){
+        if(this._url){return}
+
+        this._url=url
         let sp=this._head.getComponent(cc.Sprite);
         cc.loader.load({
             url: url,

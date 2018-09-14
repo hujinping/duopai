@@ -24,23 +24,10 @@ export default class pfTurntable extends cc.Component {
     @property(cc.Prefab)
     award:cc.Prefab=null
 
-    //     0：鱼
-    // 1||5小金币袋子
-    // 2||6大金币袋子
-    // 3小钻石袋子
-    // 4大钻石袋子
-    // 7再来一次
-    // private data = {type:0,num:20}
-    // private data = {type:1,num:20}
-    // private data = {type:2,num:20}
-    // private data = {type:3,num:40}
-    // private data = {type:4,num:40}
     private data = {type:5}
     private active = true;
-    // onLoad () {
-    // }
-    // start () {
-    // }
+    private isTurning=false;
+
     //根据数据初始化
     myInit(again){
         // if(again) return;//如果是“再来一次”，则无需判断时间
@@ -61,12 +48,7 @@ export default class pfTurntable extends cc.Component {
     // update (dt) {},
     callBack_btn(){
         if(GameData.pfTurntable < 1){
-            WXCtr.share({
-                callback: ()=>{
-                    GameData.pfTurntable++;
-                    console.log("log-----------GameData.pfTurntable=:",GameData.pfTurntable);
-                }
-            })
+            WXCtr.share({pfTurnable:true})
         }else{
             GameData.pfTurntable--;
             //按钮禁用
@@ -90,8 +72,10 @@ export default class pfTurntable extends cc.Component {
         let award=cc.instantiate(this.award);
         award.parent=this.node;
         award.getComponent("award").showAward(awardData)
+        this.isTurning=false;
     }
     requestResults(){
+        this.isTurning=true;
         let nowHours =new Date().getHours(); //获取当前小时数(0-23)
         cc.sys.localStorage.setItem("hours",nowHours);
 
@@ -121,6 +105,8 @@ export default class pfTurntable extends cc.Component {
     }
 
     close() {
+        if(this.isTurning){return}
+
         AudioManager.getInstance().playSound("audio/btnClose");
         this.node.destroy();
     }

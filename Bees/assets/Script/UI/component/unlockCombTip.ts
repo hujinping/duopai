@@ -31,7 +31,7 @@ export default class NewClass extends cc.Component {
     }
 
     initBee(){
-        cc.loader.loadRes("textures/bees/"+this._level+"-1", cc.SpriteFrame,  (err, spriteFrame)=> {
+        cc.loader.loadRes("textures/bees/00"+this._level, cc.SpriteFrame,  (err, spriteFrame)=> {
             this._bee.getComponent(cc.Sprite).spriteFrame=spriteFrame;
             this._bee.scale=4.0;
         });

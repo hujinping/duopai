@@ -4,6 +4,7 @@ import UserManager from "../Common/UserManager";
 import ViewManager from "../Common/ViewManager";
 import HttpCtr from "./HttpCtr";
 import GameCtr from "./GameCtr";
+import GameData from "../Common/GameData";
 
 const { ccclass, property } = cc._decorator;
 
@@ -408,6 +409,7 @@ export default class WXCtr {
     static share(data?: {
         invite?: boolean,                               //邀请好友
         Challenge?: boolean,                            //挑战 
+        pfTurnable?:boolean,
         callback?: Function
     }) {
         let qureyInfo = "";
@@ -416,6 +418,9 @@ export default class WXCtr {
         }
         if (data && data.Challenge){
             qureyInfo = "Challenge=";
+        }
+        if (data &&  data.pfTurnable){
+            GameData.pfTurntable++;
         }
         if (window.wx != undefined) {
             window.wx.shareAppMessage({

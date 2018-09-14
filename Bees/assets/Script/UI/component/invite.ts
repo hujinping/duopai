@@ -65,6 +65,8 @@ export default class NewClass extends cc.Component {
                 if(friendList[i].Icon && this._friendNode.children[i]){
                     this._friendNode.children[i].getComponent("inviteFriendItem").setName(friendList[i].nick);
                     this._friendNode.children[i].getComponent("inviteFriendItem").setHeadImg(friendList[i].Icon);
+                }else {
+                    this._friendNode.children[i].getComponent("inviteFriendItem").initHeadEvent();
                 }
             }
         });
