@@ -85,7 +85,7 @@ export default class NewClass extends cc.Component {
             }else if(e.target.getName()=="btn_upgrade"){
                 //console.log("log00000000000解锁蜂巢-------");
                 if(!this._btn_upgrade.getComponent(cc.Button).interactable){return}
-                AudioManager.getInstance().playSound("audio/btn_click");
+                AudioManager.getInstance().playSound("audio/levelup");
                 let comb=GameCtr.getInstance().getGame().getComb(this._level);
                 //console.log('log------------log00000000000解锁蜂巢-------combLevel=:',this._level);
                 comb.getComponent("honeycomb").upgrade();

@@ -16,7 +16,7 @@ export default class NewClass extends cc.Component {
         this._btn_sure=this.node.getChildByName("btn_sure");
 
         this._btn_sure.on(cc.Node.EventType.TOUCH_END,(e)=>{
-            AudioManager.getInstance().playSound("audio/btn_click");
+            AudioManager.getInstance().playSound("audio/unlock_hive");
             GameCtr.getInstance().getGame().setMaskVisit(false);
             let comb=GameCtr.getInstance().getGame().getComb(this._level);
             comb.getComponent("honeycomb").upgrade();

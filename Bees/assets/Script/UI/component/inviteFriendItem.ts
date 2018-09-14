@@ -43,7 +43,7 @@ export default class NewClass extends cc.Component {
                     console.log("log----------------邀请好友---------");
                 }})
             }
-            AudioManager.getInstance().playSound("audio/btn_click");
+            AudioManager.getInstance().playSound("audio/open_panel");
         })
     }
 

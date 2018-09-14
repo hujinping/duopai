@@ -143,7 +143,7 @@ export default class Game extends cc.Component {
 
     initBtnEvent(btn){
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
-            AudioManager.getInstance().playSound("audio/btn_click");
+            AudioManager.getInstance().playSound("audio/open_panel");
             if(e.target.getName()=="btn_speedUp"){
                 if(GameCtr.globalSpeedRate>1){
                     this.showToast("正在加速中...");
@@ -233,7 +233,8 @@ export default class Game extends cc.Component {
     }
 
     initComb(level){
-        let combsUnlock=GameCtr.getInstance().getCombsUnlock();
+        let combsUnlock=JSON.parse(GameCtr.getInstance().getCombsUnlock());
+        
         let pipeline=cc.instantiate(this.pipeline);
         let honeyComb=cc.instantiate(this.honeyComb);
         let glassPipeline=cc.instantiate(this.glassPipeline);
@@ -526,7 +527,7 @@ export default class Game extends cc.Component {
     }
 
     caculateHideHoney(){
-        let combsUnlock=GameCtr.getInstance().getCombsUnlock();
+        let combsUnlock=JSON.parse(GameCtr.getInstance().getCombsUnlock());
         for(let i=0;i<GameCtr.comblevel;i++){//
             if(this._honeycombContent.y>=(i+1)*408){  
                 GameCtr.honeyValue+=(GameCtr.combConfig[i].initialIncome+GameCtr.combConfig[i].incomeMatrix*(combsUnlock[i].level-1)*combsUnlock[i].level)/(GameCtr.combConfig[i].baseSpeed*2)
@@ -582,7 +583,7 @@ export default class Game extends cc.Component {
             GameCtr.getInstance().setLevelMoney();
             this.updateSpeedUpState(this._interval);
             this.updateUfoTime(this._interval);
-            //this.caculateHideHoney();
+            this.caculateHideHoney();
             this._interval=0
         }
         if(this._interval1>5){

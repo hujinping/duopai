@@ -98,7 +98,7 @@ export default class pfTurntable extends cc.Component {
         let seq =cc.sequence(rotateBy,finish);
         var actionstepA = this.wheelSp.runAction(seq);
         //播放音效
-        AudioManager.getInstance().playSound("audio/luck_bg", false);
+        AudioManager.getInstance().playSound("audio/lottery_draw", false);
     }
     callBack_test(){
         this.btn.interactable = true;

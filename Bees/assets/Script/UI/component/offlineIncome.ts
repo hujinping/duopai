@@ -16,15 +16,12 @@ export default class NewClass extends cc.Component {
 
 
     init(offlineTime){
-        
-        let combsUnlock=GameCtr.getInstance().getCombsUnlock();
+        let combsUnlock=JSON.parse(GameCtr.getInstance().getCombsUnlock());
         let manufactures_speed=GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus/
                                 (GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].productTime+
                                     GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].transferTime);
-
         let combs_speed=0;
-        
-        for(let i=0;i<GameCtr.level;i++){
+        for(let i=0;i<GameCtr.comblevel;i++){
             combs_speed+=(GameCtr.combConfig[i].initialIncome+GameCtr.combConfig[i].incomeMatrix*(combsUnlock[i].level-1)*combsUnlock[i].level)/(GameCtr.combConfig[i].baseSpeed*2)
         }
         let finalSpeed =combs_speed>=manufactures_speed?manufactures_speed:combs_speed;

@@ -37,7 +37,7 @@ export default class NewClass extends cc.Component {
                 GameCtr.getInstance().getGame().setMaskVisit(false);
                 AudioManager.getInstance().playSound("audio/btnClose")
             }else if(e.target.getName()=="btn_invite"){
-                AudioManager.getInstance().playSound("audio/btn_click");
+                AudioManager.getInstance().playSound("audio/open_panel");
                 WXCtr.share({invite:true,callback:()=>{
                     console.log("log----------------邀请好友---------");
                 }})

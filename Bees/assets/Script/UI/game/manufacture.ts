@@ -157,7 +157,7 @@ export default class NewClass extends cc.Component {
                 manufactureUpgrade.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0)));
                 GameCtr.getInstance().getGame().setMaskVisit(true);
                 GameCtr.getInstance().getGame().setManufactureUpgrade(manufactureUpgrade);
-                AudioManager.getInstance().playSound("audio/btn_click");
+                AudioManager.getInstance().playSound("audio/open_panel");
             }else if(e.target.getName()=="btn_boubleIncome"){
                 if(GameCtr.incomeRate>1){
                     GameCtr.getInstance().getGame().showToast("双倍收益中...");

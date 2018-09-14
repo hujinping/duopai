@@ -36,13 +36,11 @@ export default class NewClass extends cc.Component {
                 GameCtr.getInstance().getGame().setMaskVisit(false);
                 this.node.destroy();
             }else if(e.target.getName()=="btn_getRedPackage"){
-                AudioManager.getInstance().playSound("audio/btn_click");
+                AudioManager.getInstance().playSound("audio/open_panel");
                 HttpCtr.sign( this.getPackage.bind(this));
             }else if(e.target.getName()=="redPackage"){
-
-                AudioManager.getInstance().playSound("audio/btn_click");
+                AudioManager.getInstance().playSound("audio/open_panel");
                 HttpCtr.sign(this.getPackage.bind(this));
-                
             }
         })
     }
@@ -69,12 +67,16 @@ export default class NewClass extends cc.Component {
     }
 
     getPackage(data){
+        console.log("log------------sign data=:",data);
         if(this.node.getChildByName("getRedPackage")){return}
         let getPackage=cc.instantiate(this.getRedPackage);
         getPackage.parent=this.node;
         getPackage.getComponent("getRedPackage").setValue(data.m);
         GameCtr.realMoney+=data.m;
         GameCtr.getInstance().getGame().setRealMoney();
+
+        let redPackage=this.node.getChildByTag(1000+data.todaySum-1);
+        redPackage.getComponent("redPackage").setState("on");
     }
 
     

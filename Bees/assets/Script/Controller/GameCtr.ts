@@ -127,7 +127,7 @@ export default class GameCtr {
     }
 
     getCombsUnlock(){
-        return  JSON.parse(window.localStorage.getItem("combsUnlock"));
+        return  window.localStorage.getItem("combsUnlock");
     }
 
     setPlayerLevel(){

@@ -77,7 +77,7 @@ export default class NewClass extends cc.Component {
                 if(!this._btn_upgrade.getComponent(cc.Button).interactable){return;}
 
                 GameCtr.getInstance().getManufacture().upgrade();
-                AudioManager.getInstance().playSound("audio/btn_click");
+                AudioManager.getInstance().playSound("audio/levelup");
                 this.lb_des.getComponent(cc.Label).string=GameCtr.ManufactureLevel+1;
                 this.showHoneyProfit();
                 this.showSpeed();

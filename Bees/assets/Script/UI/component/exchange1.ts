@@ -41,7 +41,7 @@ export default class NewClass extends cc.Component {
                 this.node.destroy();
                 AudioManager.getInstance().playSound("audio/btnClose");
             }else if(e.target.getName()=="btn_exchange"){
-                AudioManager.getInstance().playSound("audio/btn_click");
+                AudioManager.getInstance().playSound("audio/open_panel");
                 console.log("log----------GameCtr.realMoney=:",GameCtr.realMoney);
                 if(GameCtr.realMoney<1000){
                     GameCtr.getInstance().getGame().showToast("金额不足10元,无法兑换");
@@ -51,7 +51,7 @@ export default class NewClass extends cc.Component {
                 let exchange2=cc.instantiate(this.exchange2);
                 exchange2.parent=this.node;
             }else if(e.target.getName()=="btn_exchangeRecord"){
-                AudioManager.getInstance().playSound("audio/btn_click");
+                AudioManager.getInstance().playSound("audio/open_panel");
                 if(this.node.getChildByName("exchangeRecord")){return}
                 let exchangeRecord=cc.instantiate(this.exchangeRecord);
                 exchangeRecord.parent=this.node;

@@ -29,7 +29,7 @@ export default class NewClass extends cc.Component {
                 AudioManager.getInstance().playSound("audio/btnClose");
             }else if(e.target.getName()=="btn_get"){
 
-                AudioManager.getInstance().playSound("audio/btn_click");
+                AudioManager.getInstance().playSound("audio/open_panel");
                 GameCtr.money+=this._bonusValue;
                 GameCtr.rich+=this._bonusValue;
                 this.node.destroy();
@@ -39,7 +39,7 @@ export default class NewClass extends cc.Component {
     }
 
     initBonusValue(){
-        let combsUnlock=GameCtr.getInstance().getCombsUnlock();
+        let combsUnlock=JSON.parse(GameCtr.getInstance().getCombsUnlock());
         let manufactures_speed=GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus/
                                 (GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].productTime+
                                     GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].transferTime);

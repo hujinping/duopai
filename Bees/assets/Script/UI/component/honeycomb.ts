@@ -48,7 +48,7 @@ export default class NewClass extends cc.Component {
         this.initData();
         this.initNode();
         
-        this._combsUnlock=GameCtr.getInstance().getCombsUnlock();
+        this._combsUnlock=JSON.parse(GameCtr.getInstance().getCombsUnlock());
     }
 
     initData(){
@@ -113,7 +113,7 @@ export default class NewClass extends cc.Component {
                         GameCtr.getInstance().getGame().completeGuideStep(this.node,2);
                     }
                 }
-                AudioManager.getInstance().playSound("audio/btn_click");
+                AudioManager.getInstance().playSound("audio/open_panel");
             }else if(e.target.getName()=="totalComb"){
                 this._speedUpTime=Date.now();
             }
@@ -155,7 +155,7 @@ export default class NewClass extends cc.Component {
         GameCtr.combsUnlock[this._level-1].level++;
         GameCtr.getInstance().setCombsUnlock();
         this.updateBtnState();
-        this._combsUnlock=GameCtr.getInstance().getCombsUnlock();
+        this._combsUnlock=JSON.parse(GameCtr.getInstance().getCombsUnlock());
     }
 
     unlockComb(index){

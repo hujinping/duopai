@@ -29,7 +29,7 @@ export default class NewClass extends cc.Component {
             }else if(e.target.getName()=="btn_upgrade"){
                 if(this._btn_upgrade.getComponent(cc.Button).interactable){
                     GameCtr.getInstance().getLevel().upgrade();
-                    AudioManager.getInstance().playSound("audio/btn_click");
+                    AudioManager.getInstance().playSound("audio/user_levelup");
                     //this.showBtn();
                 }   
             }

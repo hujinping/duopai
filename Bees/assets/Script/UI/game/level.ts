@@ -60,7 +60,7 @@ export default class NewClass extends cc.Component {
                 levelUpgrade.y=-1218;
                 levelUpgrade.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0)));
                 GameCtr.getInstance().getGame().setMaskVisit(true);
-                AudioManager.getInstance().playSound("audio/btn_click");
+                AudioManager.getInstance().playSound("audio/open_panel");
 
                 if(!GameCtr.getInstance().getGame().isGuideStepOver(4)){
                     GameCtr.getInstance().getGame().completeGuideStep(GameCtr.getInstance().getGame().node,4);

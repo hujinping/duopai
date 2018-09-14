@@ -31,7 +31,7 @@ export default class NewClass extends cc.Component {
                 this.node.destroy();
                 AudioManager.getInstance().playSound("audio/btnClose");
             }else if(e.target.getName()=="btn_exchange"){
-                AudioManager.getInstance().playSound("audio/btn_click");
+                AudioManager.getInstance().playSound("audio/open_panel");
                 this.requestExchange(this._editeBox_phoneNum.getComponent(cc.EditBox).string);
             }
         })

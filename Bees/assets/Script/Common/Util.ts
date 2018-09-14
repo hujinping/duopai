@@ -119,7 +119,13 @@ export default class Util {
 
     //数值格式化
     static formatNumber(number:number){
-        if(number>1000000000000000000000000){
+        if(number>1000000000000000000000000000000000){
+            return (number/1000000000000000000000000000000000).toFixed(1)+"gg"
+        }if(number>1000000000000000000000000000000){
+            return (number/1000000000000000000000000000000).toFixed(1)+"ff"
+        }else if(number>1000000000000000000000000000){
+            return (number/1000000000000000000000000000).toFixed(1)+"ee"
+        }else if(number>1000000000000000000000000){
             return (number/1000000000000000000000000).toFixed(1)+"dd"
         }else if(number>1000000000000000000000){
             return (number/1000000000000000000000).toFixed(1)+"cc"

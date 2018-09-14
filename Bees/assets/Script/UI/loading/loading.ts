@@ -20,7 +20,7 @@ export default class NewClass extends cc.Component {
 
     initBtnStart(){
         this._btnStart.on(cc.Node.EventType.TOUCH_END,(e)=>{
-            AudioManager.getInstance().playSound("audio/btn_click");
+            AudioManager.getInstance().playSound("audio/open_panel");
             if(this._configIndex<this._configTotalCount){
                 //todo 提示
                 return;
@@ -119,8 +119,8 @@ export default class NewClass extends cc.Component {
 
         console.log("log-------GameCtr.comblebel=:",GameCtr.comblevel);
 
-        if(window.localStorage.getItem("combsUnlock")){
-            GameCtr.combsUnlock=JSON.parse(window.localStorage.getItem("combsUnlock")); 
+        if(GameCtr.getInstance().getCombsUnlock()){
+            GameCtr.combsUnlock=JSON.parse(GameCtr.getInstance().getCombsUnlock()); 
         }else{
             GameCtr.combsUnlock=[];
             GameCtr.combsUnlock.push({level:1,unlock:true});
