@@ -262,13 +262,19 @@ export default class Game extends cc.Component {
     }
 
     unlockComb(){
+        if(GameCtr.comblevel>=10){return}
+        
         let comb=this._honeycombContent.getChildByTag(GameCtr.comblevel);
         comb.getComponent("honeycomb").setCanUnlock(true);
         comb.getComponent("honeycomb").showUnlockBtn(true);
-        GameCtr.comblevel++;
-        this.initComb(GameCtr.comblevel+4);
-        this._honeycombContent.setContentSize(cc.size(1080,408*(GameCtr.comblevel+5)+200))
-        GameCtr.getInstance().setCombLevel();
+        if(GameCtr.comblevel<10){
+            GameCtr.comblevel++;
+        }
+        if(GameCtr.comblevel+4<10){
+            this.initComb(GameCtr.comblevel+4);
+            this._honeycombContent.setContentSize(cc.size(1080,408*(GameCtr.comblevel+5)+200))
+            GameCtr.getInstance().setCombLevel();
+        }
     }
 
     startSpeedUpTimer(_timeCount){
@@ -583,7 +589,7 @@ export default class Game extends cc.Component {
             GameCtr.getInstance().setLevelMoney();
             this.updateSpeedUpState(this._interval);
             this.updateUfoTime(this._interval);
-            this.caculateHideHoney();
+            //this.caculateHideHoney();
             this._interval=0
         }
         if(this._interval1>5){

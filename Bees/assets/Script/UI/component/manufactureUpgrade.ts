@@ -99,6 +99,9 @@ export default class NewClass extends cc.Component {
         }else{
             this._btn_upgrade.getComponent(cc.Button).interactable=false;
         }
+        if(GameCtr.ManufactureLevel>=300){
+            this._btn_upgrade.getComponent(cc.Button).interactable=false;
+        }
     }
 
 
