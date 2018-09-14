@@ -32,15 +32,15 @@ export default class RankingCell extends cc.Component {
         this.setMedal(rank);
         this.createImage(data.Icon);
         this.lbName.string = Util.cutstr(data.nick, 10);
-        this.lbScore.string = data.value +"";
+        this.lbScore.string =Util.formatNumber(data.value)+"";
     }
 
     setMedal(idx) {
         if(idx < 3) {
             this.sprMedal.node.active = true;
-            this.sprMedal.spriteFrame = this.medalFrames[idx];
+            this.sprMedal.spriteFrame = this.medalFrames[idx-1];
             this.lbRank.node.active = true;
-            this.lbRank.string = idx+1;
+            this.lbRank.string = "";
             
         }else{
             this.lbRank.node.active = true;

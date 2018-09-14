@@ -35,6 +35,7 @@ export default class Game extends cc.Component {
     _interval=0;
     _interval1=0;
     _interval2=0;
+    _interval3=0;
     _manufactureUpgrade=null;
     _speedTime=0;
     _ufoTime=0;
@@ -152,6 +153,7 @@ export default class Game extends cc.Component {
                 this._speedTime=0;
                 this.startSpeedUpTimer(GameCtr.otherConfig.speedUpPersist);
                 this._btn_upSpeed.active=false;
+                this._btn_upSpeed.stopAllActions();
                 this.showRocketAction();
             }else if(e.target.getName()=="btn_rank"){
                 // if(!WXCtr.authed){
@@ -492,6 +494,10 @@ export default class Game extends cc.Component {
             this._speedTime+=dt;
             if(this._speedTime>=GameCtr.otherConfig.speedUpInterval){
                 this._btn_upSpeed.active=true;
+                this._btn_upSpeed.runAction(cc.repeatForever(cc.sequence(
+                    cc.scaleTo(0.2,1.15),
+                    cc.scaleTo(0.2,1.0)
+                )))
                 this._speedTime=-1;
             }
         }
@@ -503,6 +509,7 @@ export default class Game extends cc.Component {
             if(this._ufoTime>=GameCtr.otherConfig.ufoInterval){
                 let ufo =cc.instantiate(this.ufo);
                 ufo.parent=this.node;
+                ufo.scale=2.0;
                 ufo.x=-600;
                 ufo.y=-300;
                 let bezier = [cc.v2(-600, -300), cc.v2(0, -200), cc.v2(900, 600)];
@@ -559,7 +566,9 @@ export default class Game extends cc.Component {
         this._interval+=dt;
         this._interval1+=dt;
         this._interval2+=dt;
+        this._interval3+=dt;
         GameCtr.getInstance().getManufacture().dowork(dt);
+        
         for(let i=0;i<GameCtr.comblevel;i++){
             if(this._honeycombContent.y>=(i+1)*408){ this._combList[i].getComponent("honeycomb").stopWork(); continue;}
             if(i-Math.floor(this._honeycombContent.y/408)>2){this._combList[i].getComponent("honeycomb").stopWork();continue;}
@@ -580,7 +589,13 @@ export default class Game extends cc.Component {
             HttpCtr.setGold(GameCtr.rich);
             this._interval1=0;
         }
+
+        if(this._interval3>=0.1){
+            GameCtr.getInstance().getLevel().updateMoney();
+            this._interval3=0;
+        }
         if(this._interval2>=0.2){
+            
             if(this._combUpgrade){
                 this._combUpgrade.getComponent("combUpgrade").doUpdate(dt)
             }

@@ -16,6 +16,8 @@ export default class NewClass extends cc.Component {
     private icon_Arrow=null;
     private progress=null;
     private currentTime=null;
+    private money_up=null;
+    private curMoney=null;
 
     onLoad(){
         GameCtr.getInstance().setLevel(this);
@@ -45,6 +47,7 @@ export default class NewClass extends cc.Component {
         this.initBtnEvent(this.btn_upgrade);
         this.setLevel();
         this.showBtnUpGrade();
+        this.initMoneyVal();
     }
 
     initBtnEvent(btn){
@@ -91,8 +94,40 @@ export default class NewClass extends cc.Component {
     }
 
     setMoney(){
-        this.lb_money.getComponent(cc.Label).string=Util.formatNumber(GameCtr.money);
+        this.lb_money.target=GameCtr.money;
+        if(this.lb_money.value>this.lb_money.target){
+            this.lb_money.getComponent(cc.Label).string=Util.formatNumber(this.lb_money.target);
+            this.lb_money.value=this.lb_money.target;
+        }
         GameCtr.getInstance().getGame().noticeMoneyUpdate();
+    } 
+
+    initMoneyVal(){
+        this.lb_money.getComponent(cc.Label).string=Util.formatNumber(GameCtr.money);
+        this.lb_money.value=GameCtr.money;
+    }
+
+    updateMoney(){
+        if(this.lb_money.target && this.lb_money.target!=this.lb_money.value){
+            this.money_up=null;
+            if(Math.abs(this.lb_money.target-this.lb_money.value)<10){
+                this.money_up=1;
+            }else if(Math.abs(this.lb_money.target-this.lb_money.value)<100){ 
+                this.money_up=10;
+            }else if(Math.abs(this.lb_money.target-this.lb_money.value)<1000){ 
+                this.money_up=100;
+            }else if(Math.abs(this.lb_money.target-this.lb_money.value)<10000){ 
+                this.money_up=1000;
+            }else if(Math.abs(this.lb_money.target-this.lb_money.value)<100000){ 
+                this.money_up=10000;
+            }else if(Math.abs(this.lb_money.target-this.lb_money.value)<1000000){ 
+                this.money_up=100000;
+            }else if(Math.abs(this.lb_money.target-this.lb_money.value)<10000000){ 
+                this.money_up=1000000;
+            }
+            this.lb_money.getComponent(cc.Label).string=Util.formatNumber(this.lb_money.value+this.money_up);
+            this.lb_money.value+=this.money_up;
+        }
     }
 
     updateLevelProgress(){

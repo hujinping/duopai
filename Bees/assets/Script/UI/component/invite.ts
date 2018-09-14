@@ -71,7 +71,7 @@ export default class NewClass extends cc.Component {
             }
         });
 
-        this.scheduleOnce(this.requestFriendList.bind(this),2.0);
+        this.scheduleOnce(this.requestFriendList.bind(this),1.0);
     }
 
 }

@@ -75,6 +75,7 @@ export default class NewClass extends cc.Component {
         this._name=name;
         this._btn_get.active=true;
         this._lb_name.getComponent(cc.Label).string=name;
+        this.disableBtn();
     }
 
     setCount(count){

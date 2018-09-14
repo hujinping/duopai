@@ -166,6 +166,7 @@ export default class NewClass extends cc.Component {
                 if(!this._btn_doubleIncome.getComponent(cc.Button).interactable){return;}
                 this._doubleTime=0;
                 this._btn_doubleIncome.getComponent(cc.Button).interactable=false;
+                this._btn_doubleIncome.stopAllActions();
                 GameCtr.incomeRate=2;
                 this.startDoubleTimer(GameCtr.otherConfig.doublePersist);
             }else if(e.target.getName()=="mask"){
@@ -184,6 +185,7 @@ export default class NewClass extends cc.Component {
         GameCtr.ManufactureLevel+=1;
         this.showBtn();
         GameCtr.getInstance().setManufactureLevel();
+        GameCtr.getInstance().getLevel().setMoney();
     }
 
     showBtn(){
@@ -239,6 +241,10 @@ export default class NewClass extends cc.Component {
             this._doubleTime+=dt;
             if(this._doubleTime>=GameCtr.otherConfig.doubleInterval){
                 this._btn_doubleIncome.getComponent(cc.Button).interactable=true;
+                this._btn_doubleIncome.runAction(cc.repeatForever(cc.sequence(
+                    cc.scaleTo(0.4,1.1),
+                    cc.scaleTo(0.4,1.0)
+                )))
                 this._doubleTime=-1
             }
         }
