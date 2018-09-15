@@ -31,6 +31,7 @@ export default class RankingView extends cc.Component {
     btn_pageDown:cc.Node=null;
 
     private worldListData=[];
+    private friendListData=null;
     private tex = null;
     private isGetWorldList = false;
     private isGetFriendList = false;
@@ -40,6 +41,7 @@ export default class RankingView extends cc.Component {
     
     onLoad() {
         GameCtr.getInstance().setRanking(this);
+        this.friendListData=WXCtr.getFriendData();
     }
 
     start() {
@@ -86,14 +88,44 @@ export default class RankingView extends cc.Component {
     onBtnPageUp(){
         if(this.curPageIndex==0){return}
         this.curPageIndex--
-        this.showWorldList(this.curPageIndex);
+        if(this.ndWorldScr.active){
+            this.showRanklist(this.ndWorldScr,this.worldListData,this.curPageIndex);
+        }
+
+        if(this.sprFreindRankScroll.node.active){
+            this.showRanklist(this.sprFreindRankScroll.node,this.friendListData,this.curPageIndex);
+        }
+        
     }
 
     onBtnPageDown(){
         
         if((this.curPageIndex+1)*7>=this.worldListData.length){return;}
         this.curPageIndex++
-        this.showWorldList(this.curPageIndex);
+        if(this.ndWorldScr.active){
+            this.showRanklist(this.ndWorldScr,this.worldListData,this.curPageIndex);
+        }
+
+        if(this.sprFreindRankScroll.node.active){
+            this.showRanklist(this.sprFreindRankScroll.node,this.friendListData,this.curPageIndex);
+        }
+    }
+
+    showRanklist(parent,rankList,index=0){
+        this.curPageIndex=index;
+        parent.removeAllChildren();
+        let startIndex=index*7;
+        let endIndex=(index*7+7)>rankList.length?rankList.length:(index*7+7);
+        console.log("log--------startIndex   endIndex  rankList =:",startIndex,endIndex,rankList);
+        for(let i=startIndex;i<endIndex;i++){
+            let off_y=i%7>=3?-35:0;
+            let nd = cc.instantiate(this.pfCell);
+            parent.addChild(nd);
+            nd.x=2;
+            nd.y=530+(i%7)*(-132)+off_y;
+            let rankingCell: RankingCell = nd.getComponent(RankingCell);
+            rankingCell.setData(i+1, rankList[i]);
+        }
     }
 
     showAuthTip(isShow = false) {
@@ -130,33 +162,12 @@ export default class RankingView extends cc.Component {
             this.worldListData.push(list[i])
         }
         //this.worldListData=list;
-        this.showWorldList();
+        this.showRanklist(this.ndWorldScr,this.worldListData,0);
     }
 
-    showWorldList(index=0){
-        this.curPageIndex=index;
-        this.ndWorldContent.removeAllChildren();
-        let startIndex=index*7;
-        let endIndex=(index*7+7)>this.worldListData.length?this.worldListData.length:(index*7+7);
-        console.log("log--------startIndex   endIndex  this.worldListData =:",startIndex,endIndex,this.worldListData)
-        for(let i=startIndex;i<endIndex;i++){
-            let off_y=i%7>=3?-35:0;
-            let nd = cc.instantiate(this.pfCell);
-            this.ndWorldContent.addChild(nd);
-            nd.x=2;
-            nd.y=530+(i%7)*(-132)+off_y;
-            let rankingCell: RankingCell = nd.getComponent(RankingCell);
-            rankingCell.setData(i+1, this.worldListData[i]);
-        }
-        // for (let i in this.worldListData) {
-            
-        //     let nd = cc.instantiate(this.pfCell);
-        //     this.ndWorldContent.addChild(nd);
-        //     let rankingCell: RankingCell = nd.getComponent(RankingCell);
-        //     let data = list[i];
-        //     rankingCell.setData(i, data);
-        // }
-    }
+    
+
+
 
     //设置世界排行自己数据
     setSelfWorldData(rank, data) {
@@ -171,10 +182,7 @@ export default class RankingView extends cc.Component {
         this.sprFreindRankScroll.node.active = true;
         this.ndWorldScr.active = false;
         this.showAuthTip(false);
-        if (!this.isGetFriendList) {
-            this.isGetFriendList = true;
-            WXCtr.showFriendRanking();
-        }
+        this.showRanklist(this.sprFreindRankScroll.node,this.friendListData,0);
     }
 
      //关闭世界排行

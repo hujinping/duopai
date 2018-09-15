@@ -539,6 +539,13 @@ export default class WXCtr {
     /**
      * 子域消息相关方法
      */
+    static initSharedCanvas() {
+        if (window.wx != undefined) {
+            window.sharedCanvas.width = 880;
+            window.sharedCanvas.height = 1000;
+        }
+    }
+
     //获取自己信息
     static getSelfData() {
         if (window.wx != undefined) {
@@ -546,7 +553,6 @@ export default class WXCtr {
             window.wx.postMessage({
                 messageType: Message_Type.Get_SelfData,
             });
-        } else {
         }
     }
 
@@ -562,7 +568,8 @@ export default class WXCtr {
                     if (res.shareTickets != undefined && res.shareTickets.length > 0) {
                         window.wx.postMessage({
                             messageType: Message_Type.Get_GroupData,
-                            LIST_KEY: "Rank_Data",
+                            SCORE_KEY: "Rank_SCORE",
+                            LOCATION_KEY: "LOACTION",
                             shareTicket: res.shareTickets[0]
                         });
                     }
@@ -577,37 +584,19 @@ export default class WXCtr {
             // 发消息给子域
             window.wx.postMessage({
                 messageType: Message_Type.Get_FriendData,
-                LIST_KEY: "Rank_Data"
-            });
-        }
-    }
-
-    //显示结束界面好友排行
-    static showOverRanking() {
-        if (window.wx != undefined) {
-            console.log("主域发送消息____显示结束好友排行");
-            window.wx.postMessage({
-                messageType: Message_Type.Show_OverRanking,
-            });
-        }
-    }
-
-    //关闭End好友排行
-    static closeFriendEndRanking() {
-        if (window.wx != undefined) {
-            console.log("主域发送消息____关闭End好友排行");
-            window.wx.postMessage({
-                messageType: Message_Type.Close_OverRanking,
+                SCORE_KEY: "Rank_SCORE",
+                LOCATION_KEY: "LOACTION",
             });
         }
     }
 
     //显示完整好友排行
-    static showFriendRanking() {
+    static showFriendRanking(page = 1) {
         if (window.wx != undefined) {
             console.log("主域发送消息____显示好友排行");
             window.wx.postMessage({
                 messageType: Message_Type.Show_WholeRanking,
+                page: page
             });
         }
     }
@@ -623,36 +612,29 @@ export default class WXCtr {
     }
 
     //提交分数到微信
-    static submitScoreToWx(score) {
+    static submitScoreToWx(score, location) {
         if (window.wx != undefined) {
             console.log("主域发送消息____提交分数");
             window.wx.postMessage({
                 messageType: Message_Type.Submit_SelfScore,
-                LIST_KEY: "Rank_Data",
+                SCORE_KEY: "Rank_SCORE",
                 score: score,
+                LOCATION_KEY: "LOACTION",
+                location: location
             });
         }
     }
 
-    //保存图片到本地相册
-    static saveImge(imgUrl, callback?: Function) {
-        if (window.wx != undefined) {
-            wx.downloadFile({
-                url: imgUrl,
-                success: (resp) => {
-                    console.log("下载图片成功", resp);
-                    wx.saveImageToPhotosAlbum({
-                        filePath: resp.tempFilePath,
-                        success: (res) => {
-                            console.log("图片保存到本地相册成功", res);
-                            if (callback) {
-                                callback(true);
-                            }
-                        }
-                    });
-                },
-            });
+    static getFriendData() {
+        var openContext = wx.getOpenDataContext();
+        var friendDataList = null;
+        if (openContext["canvas"]["friendData"]) {
+            friendDataList = JSON.parse(openContext["canvas"]["friendData"]);
         }
+        return friendDataList;
     }
+
+
+
 
 }

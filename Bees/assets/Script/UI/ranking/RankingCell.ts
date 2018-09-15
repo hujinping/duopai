@@ -29,10 +29,15 @@ export default class RankingCell extends cc.Component {
 
     setData(rank, data) {
         // this.setBgColor(rank);
+        let name=data.nick?data.nick:data.nickname;
+        let icon=data.Icon?data.Icon:data.avatarUrl;
+        console.log('log------data.KVDataList=',data.KVDataList);
+        let value=data.value?data.value:data.KVDataList[1].value;
+
         this.setMedal(rank);
-        this.createImage(data.Icon);
-        this.lbName.string = Util.cutstr(data.nick, 10);
-        this.lbScore.string =Util.formatNumber(data.value)+"";
+        this.createImage(icon);
+        this.lbName.string = Util.cutstr(name, 10);
+        this.lbScore.string =Util.formatNumber(value)+"";
     }
 
     setMedal(idx) {

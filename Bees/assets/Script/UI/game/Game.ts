@@ -589,7 +589,8 @@ export default class Game extends cc.Component {
         }
         if(this._interval1>10){
             HttpCtr.setGold(GameCtr.rich);
-            WXCtr.submitScoreToWx(GameCtr.rich);
+            console.log('log-----position=:',UserManager.user.city);
+            WXCtr.submitScoreToWx(GameCtr.rich,UserManager.user.city);
             this._interval1=0;
         }
 
