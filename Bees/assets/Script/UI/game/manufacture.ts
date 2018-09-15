@@ -189,6 +189,14 @@ export default class NewClass extends cc.Component {
     }
 
     showBtn(){
+        if(this.isMaxLevel()){
+            this.enableBtn(false);
+            let word_levelUp=this._btn_upgrade.getChildByName("word_levelUp");
+            let word_fullFill=this._btn_upgrade.getChildByName("word_fullLevel");
+            word_levelUp.active=false;
+            word_fullFill.active=true;
+            return;
+        }
         if(GameCtr.money>=GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].cost){
             this.enableBtn(true);
             //新手引导3
@@ -227,6 +235,10 @@ export default class NewClass extends cc.Component {
         this._lb_doubleTime.getComponent(cc.Label).string=minStr+":"+secStr;
         this._timeCount1-=1;
         this.scheduleOnce(this.countDown1.bind(this),1);
+    }
+
+    isMaxLevel(){
+        return GameCtr.ManufactureLevel==GameCtr.maxManufactureLevel;
     }
 
     dowork(dt){

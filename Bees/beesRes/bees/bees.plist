@@ -709,7 +709,7 @@
             <key>8-1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{453,300},{73,56}}</string>
+                <string>{{453,},{73,56}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>

@@ -18,6 +18,9 @@ export default class NewClass extends cc.Component {
         this.lb_des=this.node.getChildByName("lb_des");
         this._btn_close=this.node.getChildByName("btn_close");
         this.lb_des.getComponent(cc.Label).string=GameCtr.ManufactureLevel+1;
+        if(this.isMaxLevel()){
+            this.lb_des.getComponent(cc.Label).string=GameCtr.ManufactureLevel; 
+        }
         
         this.showHoneyProfit();
         this.showSpeed();
@@ -33,6 +36,7 @@ export default class NewClass extends cc.Component {
         let honeyProfit=this.node.getChildByName("honeyProfit")
         let lb_value=honeyProfit.getChildByName("lb_value");
         let lb_add=honeyProfit.getChildByName("lb_add");
+        
 
         lb_value.getComponent(cc.Label).string="￥"+Util.formatNumber(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus);
         lb_add.getComponent(cc.Label).string="+￥"+Util.formatNumber(GameCtr.manufactureConfig[GameCtr.ManufactureLevel].perBonus-GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus);
@@ -60,7 +64,7 @@ export default class NewClass extends cc.Component {
         let upgrade=this.node.getChildByName("upgrade");
         this._btn_upgrade=upgrade.getChildByName("btn_upgrade");
         this._lb_cost=this._btn_upgrade.getChildByName("lb_cost");
-
+        if(this.isMaxLevel()){return}
         this.lb_des.getComponent(cc.Label).string=GameCtr.ManufactureLevel+1;
         this._lb_cost.getComponent(cc.Label).string="￥"+Util.formatNumber(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].cost);
        
@@ -77,13 +81,16 @@ export default class NewClass extends cc.Component {
                 if(!this._btn_upgrade.getComponent(cc.Button).interactable){return;}
 
                 GameCtr.getInstance().getManufacture().upgrade();
-                AudioManager.getInstance().playSound("audio/levelup");
+                AudioManager.getInstance().playSound("audio/levelup"); 
+                this.showBtn();
+                if(this.isMaxLevel()){return}
+                console.log("log---------------da;lgjoajgoaj---------");
                 this.lb_des.getComponent(cc.Label).string=GameCtr.ManufactureLevel+1;
                 this.showHoneyProfit();
                 this.showSpeed();
                 this.showCapacity();
                 this.showUpgrade();
-                this.showBtn();
+                
             }
         })
     }
@@ -99,10 +106,18 @@ export default class NewClass extends cc.Component {
         }else{
             this._btn_upgrade.getComponent(cc.Button).interactable=false;
         }
-        if(GameCtr.ManufactureLevel>=300){
+        if(GameCtr.ManufactureLevel>=GameCtr.maxManufactureLevel){
             this._btn_upgrade.getComponent(cc.Button).interactable=false;
+            let lb_cost=this._btn_upgrade.getChildByName("lb_cost");
+            let word_fullLevel=this._btn_upgrade.getChildByName("word_fullLevel");
+            lb_cost.active=false;
+            word_fullLevel.active=true;
         }
     }
 
 
+    isMaxLevel(){
+        console.log("log---------------GameCtr.ManufactureLevel=:",GameCtr.ManufactureLevel);
+        return GameCtr.ManufactureLevel==GameCtr.maxManufactureLevel;
+    }
 }

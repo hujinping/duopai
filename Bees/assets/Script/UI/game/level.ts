@@ -55,6 +55,7 @@ export default class NewClass extends cc.Component {
             if(e.target.getName()=="btn_upgrade"){
 
                 if(cc.find("Canvas").getChildByName("levelUpgrade")){return;}
+                if(this.isMaxLevel()){return}
                 let levelUpgrade=cc.instantiate(this.levelUpgrade);
                 levelUpgrade.parent=cc.find("Canvas");
                 levelUpgrade.y=-1218;
@@ -74,8 +75,8 @@ export default class NewClass extends cc.Component {
         GameCtr.rich+=GameCtr.levelConfig[GameCtr.level-1].award;
         GameCtr.levelMoney=0;
         this.setMoney();
-        this.showBtnUpGrade();
         GameCtr.level+=1;
+        this.showBtnUpGrade();
         this.setLevel();
         GameCtr.getInstance().setPlayerLevel();
         this.progress.getComponent(cc.ProgressBar).progress=0;
@@ -160,6 +161,15 @@ export default class NewClass extends cc.Component {
     }
 
     showBtnUpGrade(){
+        if(this.isMaxLevel()){
+            let word_levelUP=this.btn_upgrade.getChildByName("word_levelUp");
+            let word_fullLevel=this.btn_upgrade.getChildByName("word_fullLevel");
+            word_levelUP.active=false;
+            word_fullLevel.active=true;
+            this.enabledBtn(false);
+            return;
+        }
+
         if(GameCtr.levelMoney>=GameCtr.levelConfig[GameCtr.level-1].need){
             this.enabledBtn(true);
             //新手引导4
@@ -176,6 +186,10 @@ export default class NewClass extends cc.Component {
 
     enabledBtn(isEffectable){
         this.btn_upgrade.getComponent(cc.Button).interactable=isEffectable;
+    }
+
+    isMaxLevel(){
+        return GameCtr.level==GameCtr.maxPlayerLevel;
     }
 
 

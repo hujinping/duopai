@@ -19,7 +19,6 @@ export default class NewClass extends cc.Component {
     _combPosArr=[];
     _interval=0;
     _speed=1
-    _unlock=false;
     _hadRandom=false;
     _isWorking=true;
 
