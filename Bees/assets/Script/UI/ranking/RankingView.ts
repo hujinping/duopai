@@ -26,6 +26,8 @@ export default class RankingView extends cc.Component {
     @property(cc.Node)
     ndAuthTip: cc.Node = null;
 
+    private worldListData=[];
+
     private tex = null;
     private isGetWorldList = false;
     private isGetFriendList = false;
@@ -107,13 +109,28 @@ export default class RankingView extends cc.Component {
     //设置世界排行
     setWorldList(list) {
         console.log("worldRankingList == ", list);
-        for (let i in list) {
+        this.worldListData=list;
+    }
+
+    showWorldList(index){
+        this.ndWorldContent.removeAllChildren();
+        let startIndex=index*7;
+        let endIndex=(index*7+7)>this.worldListData.length?this.worldListData.length:(index*7+7)
+        for(let i=index*7;i<endIndex;i++){
             let nd = cc.instantiate(this.pfCell);
             this.ndWorldContent.addChild(nd);
             let rankingCell: RankingCell = nd.getComponent(RankingCell);
-            let data = list[i];
+            let data = this.worldListData[i];
             rankingCell.setData(i, data);
         }
+        // for (let i in this.worldListData) {
+            
+        //     let nd = cc.instantiate(this.pfCell);
+        //     this.ndWorldContent.addChild(nd);
+        //     let rankingCell: RankingCell = nd.getComponent(RankingCell);
+        //     let data = list[i];
+        //     rankingCell.setData(i, data);
+        // }
     }
 
     //设置世界排行自己数据

@@ -36,7 +36,7 @@ export default class RankingCell extends cc.Component {
     }
 
     setMedal(idx) {
-        if(idx < 3) {
+        if(idx <= 3) {
             this.sprMedal.node.active = true;
             this.sprMedal.spriteFrame = this.medalFrames[idx-1];
             this.lbRank.node.active = true;
@@ -44,7 +44,7 @@ export default class RankingCell extends cc.Component {
             
         }else{
             this.lbRank.node.active = true;
-            this.lbRank.string = idx+1;
+            this.lbRank.string = idx;
             this.sprMedal.node.active = false;
         }
     }
