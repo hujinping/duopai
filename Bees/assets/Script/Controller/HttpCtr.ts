@@ -59,14 +59,14 @@ export default class HttpCtr {
 
     //获取个人信息
     static getUserInfo(callBack = null) {
-
         Http.send({
             url: Http.UrlConfig.GET_USERINFO,
             success: (resp) => {
+                console.log("log-------getUserInfo--->resp=:",resp);
                 if (resp.success == Http.Code.OK) {
                     UserManager.user = resp.user;
                     GameCtr.realMoney=resp.user.money;
-                    
+                    console.log("log--------GameCtr.realMoney=:",GameCtr.realMoney);
                     if (callBack) {
                         callBack(resp.user);
                     }
@@ -471,12 +471,14 @@ export default class HttpCtr {
 
     
     static doExchange(phoneNumber){
-        console.log("log------doExchange phone=:",phoneNumber);
         Http.send({
             url: Http.UrlConfig.DO_EXCHANGE,
             success: (res) => {
-                console.log("log----------doExchange=:",res);
-                GameCtr.getInstance().getGame().showToast("兑换成功");
+                if(res.ret!=1){
+                    GameCtr.getInstance().getGame().showToast(res.msg);
+                }else{
+                    GameCtr.getInstance().getGame().showToast("兑换成功");
+                }
             },
             data: {
                 uid: UserManager.user_id,
