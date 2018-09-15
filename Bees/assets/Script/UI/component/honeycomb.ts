@@ -14,7 +14,7 @@ export default class NewClass extends cc.Component {
     _combsUnlock=null;
     _totalComb=null;
     _beeNode=null;
-    _canUnlock=false;
+    _unlock=false;
     _speedUpTime=-1;
     _combPosArr=[];
     _interval=0;
@@ -25,9 +25,6 @@ export default class NewClass extends cc.Component {
 
     @property(cc.Prefab)
     bee:cc.Prefab=null;
-
-    // @property(cc.Prefab)
-    // flyBee:cc.Prefab=null;
 
     @property(cc.Prefab)
     unlockcomb:cc.Prefab=null;
@@ -79,6 +76,10 @@ export default class NewClass extends cc.Component {
     }
 
     initBtnState(){
+        console.log("log-----------------initBtnState this._level=:",this._level);
+        let preComb=GameCtr.getInstance().getGame().getComb(this._level-1);
+        if( preComb && !preComb.getComponent("honeycomb").getUnlock()){return} //如果上一级蜂巢未解锁，这级蜂巢就不能解锁
+
         if(this._unlockNum==0 && !this._unlock){// 此蜂巢还未解锁
             if(GameCtr.level>=GameCtr.combConfig[this._level-1].needLevel){//此蜂巢满足解锁条件
                 this.showUnlockBtn(true);
@@ -101,10 +102,20 @@ export default class NewClass extends cc.Component {
         this.initBtnState();
         this.updateBtnState();
         this.initEvent();
+        if(unlockNum>0){
+            this.setUnlock(true);
+            
+        }
     }
 
-    setCanUnlock(canUnlock){
-        this._canUnlock=canUnlock;
+    setUnlock(unlock){
+        this._unlock=unlock;
+        console.log("log--------this._unlock this._level=:",this._unlock,this._level)
+    }
+
+    getUnlock(){
+        console.log("log-----getUnlock  this._unlock this._level=:",this._unlock,this._level);
+        return this._unlock;
     }
     
     initBtn(){
@@ -142,6 +153,8 @@ export default class NewClass extends cc.Component {
         GameCtr.combsUnlock.push({level:this._unlockNum,unlock:this._unlock});
         GameCtr.getInstance().setCombsUnlock();
     }
+
+    
 
     onUpgradeComb(){
         if(cc.find("Canvas").getChildByName("combUpgrade")){return;}

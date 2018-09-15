@@ -128,8 +128,11 @@ export default class Game extends cc.Component {
         this._btn_upSpeed.active=false;
         this._authTipNode.active=false;
 
-        this._glassPipelineNode.setLocalZOrder(0)
+        this._pipelineNode.tag=1000;
+        this._glassPipelineNode.tag=1000;
+        this._glassPipelineNode.setLocalZOrder(0);
         this._pipelineNode.setLocalZOrder(10);
+
         this.initCombContentEvent();
         this.initBtnEvent(this._btn_pfTurntable);
         this.initBtnEvent(this._btn_sevenLogin);
@@ -263,15 +266,12 @@ export default class Game extends cc.Component {
 
     unlockComb(){
         if(GameCtr.comblevel>=30){return}
-        
-        let comb=this._honeycombContent.getChildByTag(GameCtr.comblevel);
-        comb.getComponent("honeycomb").setCanUnlock(true);
-        comb.getComponent("honeycomb").showUnlockBtn(true);
-        
-        if(GameCtr.comblevel<30){
-            GameCtr.comblevel++;
+        GameCtr.comblevel++;
+        let comb=this.getComb(GameCtr.comblevel);
+        let preComb=this.getComb(GameCtr.comblevel-1);
+        if(preComb && preComb.getComponent("honeycomb").getUnlock()){
+            comb.getComponent("honeycomb").showUnlockBtn(true);
         }
-
         if(GameCtr.comblevel+4<30){
             this.initComb(GameCtr.comblevel+4);
             this._honeycombContent.setContentSize(cc.size(1080,408*(GameCtr.comblevel+5)+200))

@@ -19,7 +19,12 @@ export default class NewClass extends cc.Component {
             AudioManager.getInstance().playSound("audio/unlock_hive");
             GameCtr.getInstance().getGame().setMaskVisit(false);
             let comb=GameCtr.getInstance().getGame().getComb(this._level);
+            let neetComb=GameCtr.getInstance().getGame().getComb(this._level+1);
+            comb.getComponent("honeycomb").setUnlock(true);
             comb.getComponent("honeycomb").upgrade();
+            if(neetComb){
+                neetComb.getComponent("honeycomb").initBtnState();
+            }
             this.node.destroy();
         })
     }
