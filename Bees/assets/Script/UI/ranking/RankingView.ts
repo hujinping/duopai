@@ -25,12 +25,18 @@ export default class RankingView extends cc.Component {
     worldToggle: cc.Toggle = null;
     @property(cc.Node)
     ndAuthTip: cc.Node = null;
+    @property(cc.Node)
+    btn_pageUp :cc.Node=null;
+    @property(cc.Node)
+    btn_pageDown:cc.Node=null;
 
     private worldListData=[];
-
     private tex = null;
     private isGetWorldList = false;
     private isGetFriendList = false;
+    private curPageIndex=0;
+
+   
     
     onLoad() {
         GameCtr.getInstance().setRanking(this);
@@ -56,8 +62,6 @@ export default class RankingView extends cc.Component {
 
     //返回结束
     back() {
-
-        console.log('show-------back-----');
         this.showAuthTip(false);
         this.isGetFriendList = false;
         WXCtr.closeFriendRanking();
@@ -79,7 +83,19 @@ export default class RankingView extends cc.Component {
         }
     }
 
-    //
+    onBtnPageUp(){
+        if(this.curPageIndex==0){return}
+        this.curPageIndex--
+        this.showWorldList(this.curPageIndex);
+    }
+
+    onBtnPageDown(){
+        
+        if((this.curPageIndex+1)*7>=this.worldListData.length){return;}
+        this.curPageIndex++
+        this.showWorldList(this.curPageIndex);
+    }
+
     showAuthTip(isShow = false) {
         this.ndAuthTip.active = isShow;
         if(isShow) {
@@ -109,19 +125,28 @@ export default class RankingView extends cc.Component {
     //设置世界排行
     setWorldList(list) {
         console.log("worldRankingList == ", list);
-        this.worldListData=list;
+        for(let i in list){
+            this.worldListData.push(list[i])
+            this.worldListData.push(list[i])
+        }
+        //this.worldListData=list;
+        this.showWorldList();
     }
 
-    showWorldList(index){
+    showWorldList(index=0){
+        this.curPageIndex=index;
         this.ndWorldContent.removeAllChildren();
         let startIndex=index*7;
-        let endIndex=(index*7+7)>this.worldListData.length?this.worldListData.length:(index*7+7)
-        for(let i=index*7;i<endIndex;i++){
+        let endIndex=(index*7+7)>this.worldListData.length?this.worldListData.length:(index*7+7);
+        console.log("log--------startIndex   endIndex  this.worldListData =:",startIndex,endIndex,this.worldListData)
+        for(let i=startIndex;i<endIndex;i++){
+            let off_y=i%7>=3?-35:0;
             let nd = cc.instantiate(this.pfCell);
             this.ndWorldContent.addChild(nd);
+            nd.x=2;
+            nd.y=530+(i%7)*(-132)+off_y;
             let rankingCell: RankingCell = nd.getComponent(RankingCell);
-            let data = this.worldListData[i];
-            rankingCell.setData(i, data);
+            rankingCell.setData(i+1, this.worldListData[i]);
         }
         // for (let i in this.worldListData) {
             

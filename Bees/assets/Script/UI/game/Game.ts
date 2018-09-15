@@ -587,8 +587,9 @@ export default class Game extends cc.Component {
             //this.caculateHideHoney();
             this._interval=0
         }
-        if(this._interval1>5){
+        if(this._interval1>10){
             HttpCtr.setGold(GameCtr.rich);
+            WXCtr.submitScoreToWx(GameCtr.rich);
             this._interval1=0;
         }
 
