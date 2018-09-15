@@ -46,7 +46,7 @@ export default class NewClass extends cc.Component {
 
         let combs_speed=0;
         
-        for(let i=0;i<GameCtr.level;i++){
+        for(let i=0;i<combsUnlock.length;i++){
             combs_speed+=(GameCtr.combConfig[i].initialIncome+GameCtr.combConfig[i].incomeMatrix*(combsUnlock[i].level-1)*combsUnlock[i].level)/(GameCtr.combConfig[i].baseSpeed*2)
         }
         let finalSpeed =combs_speed>=manufactures_speed?manufactures_speed:combs_speed;

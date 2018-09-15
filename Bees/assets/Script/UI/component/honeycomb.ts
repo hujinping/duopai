@@ -47,7 +47,6 @@ export default class NewClass extends cc.Component {
     onLoad(){
         this.initData();
         this.initNode();
-        
         this._combsUnlock=JSON.parse(GameCtr.getInstance().getCombsUnlock());
     }
 
@@ -79,6 +78,16 @@ export default class NewClass extends cc.Component {
         GameCtr.getInstance().addListener("moneyUpdate"+this._level,this.onMoneyUpdate.bind(this));
     }
 
+    initBtnState(){
+        if(this._unlockNum==0 && !this._unlock){// 此蜂巢还未解锁
+            if(GameCtr.level>=GameCtr.combConfig[this._level-1].needLevel){//此蜂巢满足解锁条件
+                this.showUnlockBtn(true);
+            }else{//此蜂巢不满足解锁条件
+                this.showUnlockBtn(false);
+            }
+        }
+    }
+
     setLevel(level,unlockNum,unlock){
         this._level=level;
         this._unlock=unlock;
@@ -89,6 +98,7 @@ export default class NewClass extends cc.Component {
             this.unlockComb(i)
             this.createBee(i);
         }
+        this.initBtnState();
         this.updateBtnState();
         this.initEvent();
     }

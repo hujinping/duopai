@@ -21,13 +21,11 @@ export default class NewClass extends cc.Component {
                                 (GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].productTime+
                                     GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].transferTime);
         let combs_speed=0;
-        for(let i=0;i<GameCtr.comblevel;i++){
+        for(let i=0;i<combsUnlock.length;i++){
             combs_speed+=(GameCtr.combConfig[i].initialIncome+GameCtr.combConfig[i].incomeMatrix*(combsUnlock[i].level-1)*combsUnlock[i].level)/(GameCtr.combConfig[i].baseSpeed*2)
         }
         let finalSpeed =combs_speed>=manufactures_speed?manufactures_speed:combs_speed;
         this._offlineIncome =offlineTime*finalSpeed;
-
-        console.log("log---------GameCtr.level finalSpeed offlineTime=:",GameCtr.level,finalSpeed,offlineTime);
         this._lb_bonus.getComponent(cc.Label).string="￥"+Math.floor(this._offlineIncome);
     }
 
