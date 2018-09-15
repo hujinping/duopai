@@ -159,14 +159,7 @@ export default class Game extends cc.Component {
                 this._btn_upSpeed.stopAllActions();
                 this.showRocketAction();
             }else if(e.target.getName()=="btn_rank"){
-                // if(!WXCtr.authed){
-                //     this.showAuthTip();
-                //     WXCtr.createUserInfoBtn();
-                //     WXCtr.onUserInfoBtnTap(this.hideAuthTip.bind(this));
-                //     return;
-                // }
-                // if(cc.find("Canvas").getChildByName("rank")){return;}
-                // this.showWorldRank();
+ 
                 GameCtr.gotoScene("Ranking");
             }else if(e.target.getName()=="btn_pfTurntable"){
                 if(cc.find("Canvas").getChildByName("pfTurntable")){return}
