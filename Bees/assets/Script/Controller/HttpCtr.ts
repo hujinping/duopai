@@ -82,7 +82,7 @@ export default class HttpCtr {
 
     //保存自己的信息（头像，昵称等）到服务器
     static saveUserInfo(data) {
-        console.log("log---------------saveUserInfo-----  data=:", data);
+        console.log("log---------------saveUserInfo-----  data=:", UserManager.user_id,data);
         Http.send({
             url: Http.UrlConfig.SET_USER_DATA,
             data:
@@ -185,11 +185,10 @@ export default class HttpCtr {
 
     // 邀请好友
     static invitedByFriend(query) {
-        console.log("log------------好友邀请-------query.invite=:", query.invite);
         Http.send({
             url: Http.UrlConfig.INVITED_BY_FRIEND,
             success: (res) => {
-                console.log("log------------好友邀请-------query.invite=:", query.invite);
+                console.log("log--------------invitedByFriend=:",res);
             },
             data: {
                 uid: UserManager.user_id,
@@ -216,20 +215,7 @@ export default class HttpCtr {
         });
     }
 
-    //获取等多游戏导航信息
-    static getNevigatorData() {
-        Http.send({
-            url: Http.UrlConfig.GET_NAVIGATOR,
-            success: (res) => {
-                if (res.code == Http.Code.OK) {
-                    GameCtr.navigatorData = res.data
-                }
-            },
-            data: {
-                string: "more_games",
-            }
-        });
-    }
+
 
     //关注福利
     static channelGift(query) {
@@ -332,83 +318,11 @@ export default class HttpCtr {
         });
     }
 
-    //开始游戏时获取匹配机器人
-    static getGameStartInfo(callback) {
-        Http.send({
-            url: Http.UrlConfig.GET_GAME_START,
-            success: (res) => {
-                //console.log("log------------getGameStartInfo---res=:",res);
-                if (res.ret == 1) {
-                    callback(res.data);
-                } else {
-                    ViewManager.toast(res.msg);
-                    //callback(false);
-                }
-            },
-            data: {
-                uid: UserManager.user_id,
-                voucher: UserManager.voucher
-            }
-        });
-    }
-
-    //开始游戏时获取匹配机器人
-    static GameStart(callback) {
-        Http.send({
-            url: Http.UrlConfig.GAME_START,
-            success: (res) => {
-                console.log("log------------GAME_START---res=:", res);
-                if (res.ret == 1) {
-                    GameCtr.joinGameCount++;
-                } else {
-                    ViewManager.toast(res.msg);
-                }
-            },
-            data: {
-                uid: UserManager.user_id,
-                voucher: UserManager.voucher
-            }
-        });
-    }
-
-    static getTitle(callback) {
-        Http.send({
-            url: Http.UrlConfig.GET_TITLE,
-            success: (res) => {
-                console.log('log---------getTitle---res=:', res);
-                if (res.ret == 1) {
-                    GameCtr.questionAnswer = res.info.ok;
-                    callback(res.info.title);
-                } else {
-                    ViewManager.toast(res.msg);
-                    //callback(false);
-                }
-            },
-            data: {
-                uid: UserManager.user_id,
-                voucher: UserManager.voucher
-            }
-        });
-    }
 
 
-    static getGameWin(callback) {
-        Http.send({
-            url: Http.UrlConfig.GAME_WIN,
-            success: (res) => {
-                if (res.ret == 1) {
-                    GameCtr.chickenCount++;
-                } else {
-                    ViewManager.toast(res.msg);
-                    //callback(false);
-                }
-            },
-            data: {
-                uid: UserManager.user_id,
-                voucher: UserManager.voucher
-            }
-        });
-    }
+
+
+
 
     static setGold(_gold) {
         Http.send({

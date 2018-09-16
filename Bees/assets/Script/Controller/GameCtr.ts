@@ -298,7 +298,7 @@ export default class GameCtr {
     //游戏结束
     static gameOver() {
         if (GameCtr.ins) {
-            WXCtr.submitScoreToWx(GameCtr.score);
+            //WXCtr.submitScoreToWx(GameCtr.score);
             //HttpCtr.sendScore();
             // if(GameCtr.surplusReviveTimes > 0) {
             //     GameCtr.showRevive();

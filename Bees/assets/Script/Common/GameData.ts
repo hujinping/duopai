@@ -42,13 +42,13 @@ export default class GameData {
         //每隔1分钟提交一次个人数据
         setInterval(() => {
             GameData.submitGameData();
-            GameCtr.dianmondNotice((resp) => {
-                if (resp.moeny) {
-                    GameData.diamonds += resp.moeny;
-                    GameCtr.ins.mGame.setDiamonds();
-                }
-            });
-            //必须频繁保存lastTime，才能保证用户不是掐进程退出游戏，无法保存lastTime的情况
+            // GameCtr.dianmondNotice((resp) => {
+            //     if (resp.moeny) {
+            //         GameData.diamonds += resp.moeny;
+            //         GameCtr.ins.mGame.setDiamonds();
+            //     }
+            // });
+            // //必须频繁保存lastTime，才能保证用户不是掐进程退出游戏，无法保存lastTime的情况
             let time = new Date().getTime();
             WXCtr.setStorageData("lastTime", time);
         }, 60000);
@@ -67,39 +67,39 @@ export default class GameData {
     
     //---------------------------从网络获取数据------------------------------------
     static getNetData(){
-        GameCtr.getUserInfo((data) => {
-            if(!data){//获取网络数据失败
-                GameCtr.startGame();
-                return;
-            }
-            console.log("getUserInfoByNet 只要进到这个回调函数，则表明最终收到了正确的网络数据，则需与本地数据比对，极有可能刷新所有游戏数据",)
-            console.log("getUserInfoByNet data",data)
-            console.log("getUserInfoByNet data",data.level)
-            console.log("getUserInfoByNet data",data.money)
-            let netData = {
-                _guideStep:GameData.localData._guideStep,
-                experience:data.exp,
-                gold:data.gold,
-                level:data.level,
-                diamonds:data.money,
-                maxPlaneLevel:data.maxfeiji,
-                planeData:{},
-                storageTime:data.data_3,//上次上传的时间
-            };
+        // GameCtr.getUserInfo((data) => {
+        //     if(!data){//获取网络数据失败
+        //         GameCtr.startGame();
+        //         return;
+        //     }
+        //     console.log("getUserInfoByNet 只要进到这个回调函数，则表明最终收到了正确的网络数据，则需与本地数据比对，极有可能刷新所有游戏数据",)
+        //     console.log("getUserInfoByNet data",data)
+        //     console.log("getUserInfoByNet data",data.level)
+        //     console.log("getUserInfoByNet data",data.money)
+        //     let netData = {
+        //         _guideStep:GameData.localData._guideStep,
+        //         experience:data.exp,
+        //         gold:data.gold,
+        //         level:data.level,
+        //         diamonds:data.money,
+        //         maxPlaneLevel:data.maxfeiji,
+        //         planeData:{},
+        //         storageTime:data.data_3,//上次上传的时间
+        //     };
 
-            for (let i = 1; i <= GameData.maxPlane; i++) {
-                let key = "feiji_shop_" + i;
-                netData.planeData[key] = data[key];
-            }
-            for(let i = 1; i <= GameData.maxApron; i++) {
-                let key1 = "feiji_" + i;
-                let key2 = "feiji_switch_" + i;
-                netData.planeData[key1] = data[key1] == "NaN" ? 0 : data[key1];
-                netData.planeData[key2] = (data[key2] == "true");
-            }
+        //     for (let i = 1; i <= GameData.maxPlane; i++) {
+        //         let key = "feiji_shop_" + i;
+        //         netData.planeData[key] = data[key];
+        //     }
+        //     for(let i = 1; i <= GameData.maxApron; i++) {
+        //         let key1 = "feiji_" + i;
+        //         let key2 = "feiji_switch_" + i;
+        //         netData.planeData[key1] = data[key1] == "NaN" ? 0 : data[key1];
+        //         netData.planeData[key2] = (data[key2] == "true");
+        //     }
 
-            GameData.valueData_1(netData);
-        });
+        //     GameData.valueData_1(netData);
+        // });
     }
 
 
@@ -301,7 +301,7 @@ export default class GameData {
     static set experience(experience) {
         console.log("//设置经验值")
         GameData._experience = experience;
-        GameCtr.ins.mGame.setPgbLevel()//渲染刷新        
+        //GameCtr.ins.mGame.setPgbLevel()//渲染刷新        
         GameData.setUserData({ exp: GameData._experience });
     }
 
@@ -323,7 +323,7 @@ export default class GameData {
         console.log("//设置等级",level)
 
         GameData._level = level;
-        GameCtr.ins.mGame.setLevel()//渲染刷新        
+        //GameCtr.ins.mGame.setLevel()//渲染刷新        
         GameData.setUserData({ level: GameData._level });
     }
 
@@ -336,7 +336,7 @@ export default class GameData {
         console.log("//设置收益")
 
         GameData._profit = profit;
-        GameCtr.ins.mGame.setProfit()//渲染刷新 
+        //GameCtr.ins.mGame.setProfit()//渲染刷新 
         GameData.setUserData({ profit: GameData._profit });
     }
 
@@ -380,13 +380,13 @@ export default class GameData {
             gold = 0;
         }
         GameData._gold = gold;
-        GameCtr.ins.mGame.setGold()//渲染刷新
+        //GameCtr.ins.mGame.setGold()//渲染刷新
         GameData.setUserData({ gold: GameData._gold });
     }
     //提交分数到微信
     static submitScore(){
         let gold_ss = GameData._gold;
-        WXCtr.submitScoreToWx(gold_ss);
+        //WXCtr.submitScoreToWx(gold_ss);
     }
 
     //获取金币数量
@@ -404,16 +404,16 @@ export default class GameData {
                 exp: GameData._experience
             }
         }
-        GameCtr.submitUserData(data);
+        //GameCtr.submitUserData(data);
     }
 
     //增加金币
     static addGold(planeLevel) {
-        let addGold = Math.floor(25 * Math.pow(2, (planeLevel - 1) * 0.9));
-        if(GameCtr.ufoProfitBuff){
-            addGold *= 5;
-        }
-        GameData.gold += addGold;
+        // let addGold = Math.floor(25 * Math.pow(2, (planeLevel - 1) * 0.9));
+        // if(GameCtr.ufoProfitBuff){
+        //     addGold *= 5;
+        // }
+        // GameData.gold += addGold;
     }
     //增加金币固定值
     static addGoldChangeless(addGold) {
@@ -435,7 +435,7 @@ export default class GameData {
             diamonds = 0;
         }
         GameData._diamond = diamonds;
-        GameCtr.ins.mGame.setDiamonds()//渲染刷新 
+        //GameCtr.ins.mGame.setDiamonds()//渲染刷新 
         GameData.setUserData({ diamonds: GameData._diamond });
     }
 
@@ -447,14 +447,14 @@ export default class GameData {
     //改变钻石数量
     static changeDiamonds(num, callback = null) {
         let diamonds;
-        GameCtr.getUserInfo((data) => {
-            console.log("data.money == ", data.money);
-            diamonds = data.money;
-            GameData.diamonds = diamonds + num;
-            if (callback) {
-                callback();
-            }
-        });
+        // GameCtr.getUserInfo((data) => {
+        //     console.log("data.money == ", data.money);
+        //     diamonds = data.money;
+        //     GameData.diamonds = diamonds + num;
+        //     if (callback) {
+        //         callback();
+        //     }
+        // });
     }
 
     //设置自己拥有的最高飞机等级

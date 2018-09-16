@@ -2,6 +2,7 @@ import AudioManager from "../../Common/AudioManager";
 import HttpCtr from "../../Controller/HttpCtr";
 import GameCtr from "../../Controller/GameCtr";
 import WXCtr from "../../Controller/WXCtr";
+import Util from "../../Common/Util";
 
 const {ccclass, property} = cc._decorator;
 
@@ -54,7 +55,7 @@ export default class NewClass extends cc.Component {
     disableBtn(){
         this._btn_get.active=true;
         this._btn_get.getComponent(cc.Button).interactable=false;
-        let icon_get=this._btn_get.getChildByName("icon_get");
+        let icon_get=this.node.getChildByName("icon_get");
         icon_get.active=true;
     }
 
@@ -71,11 +72,9 @@ export default class NewClass extends cc.Component {
 
     setName(name){
         if(this._name){return}
-
         this._name=name;
         this._btn_get.active=true;
-        this._lb_name.getComponent(cc.Label).string=name;
-        this.disableBtn();
+        this._lb_name.getComponent(cc.Label).string=Util.cutstr(name,4);
     }
 
     setCount(count){

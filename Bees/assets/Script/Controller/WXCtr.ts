@@ -148,43 +148,9 @@ export default class WXCtr {
         }
     }
 
-    static onUserInfoBtnTap(callback) {
-        let call: Function = (res) => {
-            console.log("UserInfoBtn tap", res);
-            if (res.userInfo) {
-                WXCtr.wxGetUsrInfo();
-                if(callback){
-                    callback(true);
-                }
-                WXCtr.userInfoBtn.destroy();
-            } else {
-                //callback(false);
-            }
-        };
-        WXCtr.userInfoBtn.onTap(call);
-    }
 
-    static wxGetUsrInfo() {
-        if (window.wx != undefined) {
-            window.wx.getUserInfo({
-                //openIdList: ['selfOpenId'],
-                lang:"zh_CN",
-                withCredentials: true,
-                success: function (res) {
-                    let info = res.userInfo;
-                    WXCtr.authed = true;
-                    HttpCtr.saveUserInfo(res);
-                    GameCtr.getInstance().saveSelfInfoToLocal(res.userInfo);
-                    GameCtr.getInstance().emitEvent("getSelfInfoSuccess",null);
-                    GameCtr.getInstance().emitEvent("getSelfInfoSuccess1",null);
-                    //console.log("获取自己信息返回值", res);
-                },
-                fail: function (res) {
-                    console.log("获取自己信息失败", res);
-                }
-            })
-        }
-    }
+
+
 
     //登录微信
     static wxOnLogin(userInfo = null,showWorldRanking=false) {
@@ -210,7 +176,7 @@ export default class WXCtr {
         //获取用户信息
         window.wx.getUserInfo({
             openIdList: ['selfOpenId'],
-            withCredentials: false,
+            withCredentials: true,
             lang:"zh_CN",
             success: function (res) {
                 let info = res.userInfo;
