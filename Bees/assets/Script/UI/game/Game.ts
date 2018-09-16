@@ -84,6 +84,9 @@ export default class Game extends cc.Component {
     @property(cc.Prefab)
     ufo:cc.Prefab=null;
 
+    @property(cc.Prefab)
+    ranking:cc.Prefab=null;
+
     onLoad(){
         GameCtr.getInstance().setGame(this);
         GameCtr.getInstance().initEventTarget();
@@ -159,8 +162,9 @@ export default class Game extends cc.Component {
                 this._btn_upSpeed.stopAllActions();
                 this.showRocketAction();
             }else if(e.target.getName()=="btn_rank"){
- 
-                GameCtr.gotoScene("Ranking");
+                if(cc.find("Canvas").getChildByName("ranking")){return}
+                let ranking=cc.instantiate(this.ranking);
+                ranking.parent=cc.find("Canvas");
             }else if(e.target.getName()=="btn_pfTurntable"){
                 if(cc.find("Canvas").getChildByName("pfTurntable")){return}
                 let pfTurntable=cc.instantiate(this.pfTurntable);

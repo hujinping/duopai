@@ -6344,6 +6344,9 @@
     },
     "ufo": {
       "__uuid__": "0cd2b0db-8830-44aa-8e01-9de02bf6b56e"
+    },
+    "ranking": {
+      "__uuid__": "e0e795dc-2d3b-44a1-aad6-0559aa576208"
     }
   }
 ]

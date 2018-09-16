@@ -128,7 +128,7 @@ export default class WXCtr {
 
             WXCtr.userInfoBtn = wx.createUserInfoButton({
                 type: 'image',
-                image: 'res/raw-assets/resources/textures/ranking/authBtn.png',
+                image: 'res/raw-assets/resources/textures/rank/authBtn.png',
                 style: {
                     left: (screenWidth / 2-80) ,
                     top: (screenHeight / 2-40) + (50 * heightRatio),
@@ -627,6 +627,7 @@ export default class WXCtr {
 
     static getFriendData() {
         var openContext = wx.getOpenDataContext();
+        console.log("log-----------openContext=:",openContext);
         var friendDataList = null;
         if (openContext["canvas"]["friendData"]) {
             friendDataList = JSON.parse(openContext["canvas"]["friendData"]);

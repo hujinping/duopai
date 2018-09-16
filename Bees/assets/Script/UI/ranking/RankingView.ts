@@ -5,6 +5,7 @@ import GameCtr from "../../Controller/GameCtr";
 import WXCtr from "../../Controller/WXCtr";
 import Http from "../../Common/Http";
 import UserManager from "../../Common/UserManager";
+import AudioManager from "../../Common/AudioManager";
 
 const { ccclass, property } = cc._decorator;
 @ccclass
@@ -30,6 +31,12 @@ export default class RankingView extends cc.Component {
     @property(cc.Node)
     btn_pageDown:cc.Node=null;
 
+    @property(cc.Node)
+    btn_share :cc.Node=null;
+
+    @property(cc.Node)
+    btn_joinRank:cc.Node=null;
+
     private worldListData=[];
     private friendListData=null;
     private tex = null;
@@ -37,11 +44,10 @@ export default class RankingView extends cc.Component {
     private isGetFriendList = false;
     private curPageIndex=0;
 
-   
-    
     onLoad() {
         GameCtr.getInstance().setRanking(this);
         this.friendListData=WXCtr.getFriendData();
+        console.log("log-------this.friendListData=:",this.friendListData);
     }
 
     start() {
@@ -64,10 +70,10 @@ export default class RankingView extends cc.Component {
 
     //返回结束
     back() {
+        AudioManager.getInstance().playSound("audio/btnClose");
         this.showAuthTip(false);
         this.isGetFriendList = false;
-        WXCtr.closeFriendRanking();
-        GameCtr.gotoScene("Game");
+        this.node.parent.destroy();
     }
 
     //显示世界排行
@@ -77,8 +83,9 @@ export default class RankingView extends cc.Component {
         this.sprFreindRankScroll.node.active = false;
         if (!WXCtr.authed) {
             console.log("未授权，引导获取授权！！！");
-            this.showAuthTip(true);
-            return;
+            this.btn_joinRank.active=true; 
+        }else{
+            this.btn_joinRank.active=false; 
         }
         if (!this.isGetWorldList) {
             this.getWorldRankingData(1);
@@ -86,6 +93,7 @@ export default class RankingView extends cc.Component {
     }
 
     onBtnPageUp(){
+        AudioManager.getInstance().playSound("audio/open_panel");
         if(this.curPageIndex==0){return}
         this.curPageIndex--
         if(this.ndWorldScr.active){
@@ -99,8 +107,14 @@ export default class RankingView extends cc.Component {
     }
 
     onBtnPageDown(){
+        AudioManager.getInstance().playSound("audio/open_panel");
+        if(this.ndWorldScr.active){
+            if((this.curPageIndex+1)*7>=this.worldListData.length){return;}
+        }
+        if(this.sprFreindRankScroll.node.active){
+            if((this.curPageIndex+1)*7>=this.friendListData.length){return;}
+        }
         
-        if((this.curPageIndex+1)*7>=this.worldListData.length){return;}
         this.curPageIndex++
         if(this.ndWorldScr.active){
             this.showRanklist(this.ndWorldScr,this.worldListData,this.curPageIndex);
@@ -111,12 +125,21 @@ export default class RankingView extends cc.Component {
         }
     }
 
+    onBtnJoinRank(){
+        AudioManager.getInstance().playSound("audio/open_panel");
+        this.showAuthTip(true);
+    }
+
+    onBtnShare(){
+        AudioManager.getInstance().playSound("audio/open_panel");
+        WXCtr.share();
+    }
+
     showRanklist(parent,rankList,index=0){
         this.curPageIndex=index;
         parent.removeAllChildren();
         let startIndex=index*7;
         let endIndex=(index*7+7)>rankList.length?rankList.length:(index*7+7);
-        console.log("log--------startIndex   endIndex  rankList =:",startIndex,endIndex,rankList);
         for(let i=startIndex;i<endIndex;i++){
             let off_y=i%7>=3?-35:0;
             let nd = cc.instantiate(this.pfCell);
@@ -159,15 +182,9 @@ export default class RankingView extends cc.Component {
         console.log("worldRankingList == ", list);
         for(let i in list){
             this.worldListData.push(list[i])
-            this.worldListData.push(list[i])
         }
-        //this.worldListData=list;
         this.showRanklist(this.ndWorldScr,this.worldListData,0);
     }
-
-    
-
-
 
     //设置世界排行自己数据
     setSelfWorldData(rank, data) {

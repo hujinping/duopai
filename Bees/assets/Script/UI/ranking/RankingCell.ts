@@ -19,6 +19,8 @@ export default class RankingCell extends cc.Component {
     @property(cc.Label)
     lbName: cc.Label = null;
     @property(cc.Label)
+    lbCity: cc.Label = null;
+    @property(cc.Label)
     lbScore: cc.Label = null;
     @property([cc.SpriteFrame])
     medalFrames: cc.SpriteFrame[] = [];
@@ -31,13 +33,13 @@ export default class RankingCell extends cc.Component {
         // this.setBgColor(rank);
         let name=data.nick?data.nick:data.nickname;
         let icon=data.Icon?data.Icon:data.avatarUrl;
-        console.log('log------data.KVDataList=',data.KVDataList);
-        let value=data.value?data.value:data.KVDataList[1].value;
-
-        this.setMedal(rank);
-        this.createImage(icon);
+        let city=data.City?data.City:data.KVDataList[0].value;
+        let value=data.value?data.value:data.KVDataList[1].value
+        this.lbCity.string = city;
         this.lbName.string = Util.cutstr(name, 10);
         this.lbScore.string =Util.formatNumber(value)+"";
+        this.setMedal(rank);
+        this.createImage(icon);
     }
 
     setMedal(idx) {
