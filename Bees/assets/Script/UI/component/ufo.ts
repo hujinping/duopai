@@ -8,7 +8,8 @@ export default class NewClass extends cc.Component {
     ufoAward:cc.Prefab=null;
     onLoad(){
         this.node.on(cc.Node.EventType.TOUCH_END,(e)=>{
-            AudioManager.getInstance().playSound("audio/open_panel")
+            AudioManager.getInstance().playSound("audio/open_panel");
+            this.node.destroy();
             if(cc.find("Canvas").getChildByName("ufoAward")){return}
             let ufoAward=cc.instantiate(this.ufoAward);
             ufoAward.parent=cc.find("Canvas");

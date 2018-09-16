@@ -36,6 +36,7 @@ export default class Game extends cc.Component {
     _interval1=0;
     _interval2=0;
     _interval3=0;
+    _pfTurnableTime=0;
     _manufactureUpgrade=null;
     _speedTime=0;
     _ufoTime=0;
@@ -165,7 +166,12 @@ export default class Game extends cc.Component {
                 if(cc.find("Canvas").getChildByName("ranking")){return}
                 let ranking=cc.instantiate(this.ranking);
                 ranking.parent=cc.find("Canvas");
+                ranking.setLocalZOrder(10);
             }else if(e.target.getName()=="btn_pfTurntable"){
+                if(!this._btn_pfTurntable.getComponent(cc.Button).interactable){
+                    this.showToast("转盘冷却中...");
+                    return;
+                }
                 if(cc.find("Canvas").getChildByName("pfTurntable")){return}
                 let pfTurntable=cc.instantiate(this.pfTurntable);
                 pfTurntable.parent=cc.find("Canvas");
@@ -495,6 +501,25 @@ export default class Game extends cc.Component {
 
     /**********************guide end*********************/
 
+    startPfTurntableTime(){
+        this._pfTurnableTime=0;
+        this.countPfTurnableTime();
+    }
+
+    countPfTurnableTime(){
+        this._pfTurnableTime++;
+        if(this._pfTurnableTime>=GameCtr.otherConfig.pfTurntableInterval){
+            this._btn_pfTurntable.getComponent(cc.Button).interactable=true;
+            return;
+        }
+        this.unschedule(this.countPfTurnableTime.bind(this));
+        this.scheduleOnce(this.countPfTurnableTime.bind(this),1);
+    }
+
+    disableBtnPfturnable(){
+        this._btn_pfTurntable.getComponent(cc.Button).interactable=false;
+    }
+
     updateSpeedUpState(dt){
         if(this._speedTime>=0){
             this._speedTime+=dt;
@@ -517,11 +542,9 @@ export default class Game extends cc.Component {
                 ufo.parent=this.node;
                 ufo.scale=2.0;
                 ufo.x=-600;
-                ufo.y=-300;
-                let bezier = [cc.v2(-600, -300), cc.v2(0, -200), cc.v2(900, 600)];
-                let bezierTo = cc.bezierTo(GameCtr.otherConfig.ufoPersist, bezier);  
+                ufo.y=600;
                 ufo.runAction(cc.sequence(
-                    bezierTo,
+                    cc.moveTo(6,cc.p(600,600)),
                     cc.callFunc((e)=>{
                         ufo.destroy();
                     })
@@ -545,21 +568,15 @@ export default class Game extends cc.Component {
 
     refreshMoreNewGame(){
         if(!GameCtr.setting){return;}
-        console.log("log------------nav=:",GameCtr.setting.nav)
-        console.log("log------------nav=:",GameCtr.setting.nav.banner);
         if(!GameCtr.setting.nav.banner||GameCtr.setting.nav.banner<=0){return;}
         this._adNode.active=true;
         let children = this._adNode.getChildByName("adFrame").children;
-        //let nameChildren= this.moreNewGame.getChildByName("names").children;
-        //console.log("",nav)
+
         for(let i=0;i<GameCtr.setting.nav.banner.length;i++){
-            if(i>=4)return;//排除数据异常
-            //根据远程图片更换精灵帧
+            if(i>=4)return;
             let node = children[i];
             let sp = node.getComponent(cc.Sprite);
             GameCtr.loadImg(sp,GameCtr.setting.nav.banner[i].img)
-            //nameChildren[i].getComponent(cc.Label).string=nav[i].title;
-            //注册事件
             let obj = {appid:GameCtr.setting.nav.banner[i].appid,path:GameCtr.setting.nav.banner[i].path}
             console.log("%%%",obj)
             node.on(cc.Node.EventType.TOUCH_START, ()=>{
@@ -588,12 +605,11 @@ export default class Game extends cc.Component {
             GameCtr.getInstance().setLevelMoney();
             this.updateSpeedUpState(this._interval);
             this.updateUfoTime(this._interval);
-            //this.caculateHideHoney();
+            this.caculateHideHoney();
             this._interval=0
         }
         if(this._interval1>10){
             HttpCtr.setGold(GameCtr.rich);
-            console.log('log-----position=:',UserManager.user.city);
             WXCtr.submitScoreToWx(GameCtr.rich,UserManager.user.city);
             this._interval1=0;
         }
@@ -603,7 +619,6 @@ export default class Game extends cc.Component {
             this._interval3=0;
         }
         if(this._interval2>=0.2){
-            
             if(this._combUpgrade){
                 this._combUpgrade.getComponent("combUpgrade").doUpdate(dt)
             }
@@ -612,6 +627,8 @@ export default class Game extends cc.Component {
             }
             this._interval2=0;
         }
+
+        
     }
 
 }
