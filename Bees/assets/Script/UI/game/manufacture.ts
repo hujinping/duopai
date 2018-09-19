@@ -298,19 +298,19 @@ export default class NewClass extends cc.Component {
             this._isWorking=true;
         }
 
-        for(let i =0;i<this._jarNode.children.length;i++){
-            if(this._jarNode.children[i].x>=570){
-                this._jarNode.children[i].destroy();
-                GameCtr.money+=this._jarNode.children[i].getComponent("jar").honey*GameCtr.incomeRate;
-                GameCtr.rich+=this._jarNode.children[i].getComponent("jar").honey*GameCtr.incomeRate;
-                GameCtr.levelMoney+=this._jarNode.children[i].getComponent("jar").honey*GameCtr.incomeRate;
-                GameCtr.getInstance().getLevel().setMoney();
-                GameCtr.getInstance().getLevel().updateLevelProgress();
-                GameCtr.getInstance().getLevel().showBtnUpGrade();
-                this.showBtn()
-                this.showBubbleMoney(this._jarNode.children[i].getComponent("jar").honey*GameCtr.incomeRate);
-            }
-        }
+        // for(let i =0;i<this._jarNode.children.length;i++){
+        //     if(this._jarNode.children[i].x>=570){
+        //         this._jarNode.children[i].destroy();
+        //         GameCtr.money+=this._jarNode.children[i].getComponent("jar").honey*GameCtr.incomeRate;
+        //         GameCtr.rich+=this._jarNode.children[i].getComponent("jar").honey*GameCtr.incomeRate;
+        //         GameCtr.levelMoney+=this._jarNode.children[i].getComponent("jar").honey*GameCtr.incomeRate;
+        //         GameCtr.getInstance().getLevel().setMoney();
+        //         GameCtr.getInstance().getLevel().updateLevelProgress();
+        //         GameCtr.getInstance().getLevel().showBtnUpGrade();
+        //         this.showBtn()
+        //         this.showBubbleMoney(this._jarNode.children[i].getComponent("jar").honey*GameCtr.incomeRate);
+        //     }
+        // }
 
     
         if(this._upLine.x>=1080)this._upLine.x=0;
