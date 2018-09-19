@@ -6,13 +6,7 @@ import Util from "../../Common/Util";
 export default class NewClass extends cc.Component {
 
     @property(cc.Prefab)
-    jar_full:cc.Prefab=null;
-
-    @property(cc.Prefab)
-    jar_noFull:cc.Prefab=null;
-
-    @property(cc.Prefab)
-    jar_yellow:cc.Prefab=null;
+    jar:cc.Prefab=null;
 
     @property(cc.Prefab)
     manufactureUpgrade:cc.Prefab=null;
@@ -45,7 +39,6 @@ export default class NewClass extends cc.Component {
         if(GameCtr.honeyValue>0){
             this.doWork()
         }
-
     }
 
     initNode(){
@@ -76,6 +69,13 @@ export default class NewClass extends cc.Component {
         this.initBtnEvent(this._mask); 
         this.initBtnEvent(this._btn_doubleIncome);
         this.showBtn();
+        this.initJars();
+    }
+
+    initJars(){
+        for(let i=0;i<8;i++){
+            GameCtr.jarPool.put(cc.instantiate(this.jar));
+        }
     }
 
     
@@ -125,17 +125,26 @@ export default class NewClass extends cc.Component {
             return;
         }
         this._isWorking=true;
+
         let jar=null;
+        if(GameCtr.jarPool.size()>0){
+            jar=GameCtr.jarPool.get();
+        }else{
+            jar=cc.instantiate(this.jar);
+            GameCtr.jarPool.put(jar);
+        }
+        
+
         if(GameCtr.honeyValue>GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus){
-            jar=cc.instantiate(this.jar_full);
+            jar.getComponent("jar").setFull();
             GameCtr.honeyValue-=GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus;
             jar.getComponent("jar").honey=GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus;
         }else{
-            jar=cc.instantiate(this.jar_noFull);
+            jar.getComponent("jar").setNotFull();
             jar.getComponent("jar").honey=GameCtr.honeyValue
             GameCtr.honeyValue-=GameCtr.honeyValue;
         }
-        
+        jar.getComponent("jar").isTransfering=false;
         this.setHoneyValue();
 
         this._speed=this._speedUpTime>0?GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].speed:1;
@@ -297,20 +306,23 @@ export default class NewClass extends cc.Component {
             this.scheduleOnce(this.doWork.bind(this),1);
             this._isWorking=true;
         }
-
-        // for(let i =0;i<this._jarNode.children.length;i++){
-        //     if(this._jarNode.children[i].x>=570){
-        //         this._jarNode.children[i].destroy();
-        //         GameCtr.money+=this._jarNode.children[i].getComponent("jar").honey*GameCtr.incomeRate;
-        //         GameCtr.rich+=this._jarNode.children[i].getComponent("jar").honey*GameCtr.incomeRate;
-        //         GameCtr.levelMoney+=this._jarNode.children[i].getComponent("jar").honey*GameCtr.incomeRate;
-        //         GameCtr.getInstance().getLevel().setMoney();
-        //         GameCtr.getInstance().getLevel().updateLevelProgress();
-        //         GameCtr.getInstance().getLevel().showBtnUpGrade();
-        //         this.showBtn()
-        //         this.showBubbleMoney(this._jarNode.children[i].getComponent("jar").honey*GameCtr.incomeRate);
-        //     }
-        // }
+    
+        console.log("log----------this._jarNode.children.length=:",this._jarNode.children.length);
+        for(let i =0;i<this._jarNode.children.length;i++){
+            if(this._jarNode.children[i].x>=570){
+                GameCtr.money+=this._jarNode.children[i].getComponent("jar").honey*GameCtr.incomeRate;
+                GameCtr.rich+=this._jarNode.children[i].getComponent("jar").honey*GameCtr.incomeRate;
+                GameCtr.levelMoney+=this._jarNode.children[i].getComponent("jar").honey*GameCtr.incomeRate;
+                GameCtr.getInstance().getLevel().setMoney();
+                GameCtr.getInstance().getLevel().updateLevelProgress();
+                GameCtr.getInstance().getLevel().showBtnUpGrade();
+                this.showBtn()
+                this.showBubbleMoney(this._jarNode.children[i].getComponent("jar").honey*GameCtr.incomeRate);
+                this._jarNode.children[i].isTransfering=false;
+                this._jarNode.children[i].stopAllActions();
+                GameCtr.jarPool.put(this._jarNode.children[i]);
+            }
+        }
 
     
         if(this._upLine.x>=1080)this._upLine.x=0;

@@ -88,6 +88,7 @@ export default class Game extends cc.Component {
     onLoad(){
         GameCtr.getInstance().setGame(this);
         GameCtr.getInstance().initEventTarget();
+        //GameCtr.honeyPool
         this.initEvent();
         this.initNode();
         this.setRealMoney();

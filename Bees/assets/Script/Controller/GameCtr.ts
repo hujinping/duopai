@@ -58,6 +58,10 @@ export default class GameCtr {
     public static tipHandTag=1500;
     public static realMoney=null;
 
+    public static honeyPool=null;
+    public static jarPool=null;
+    public static bubbleMoneyPool=null;
+
 
     constructor() {
         GameCtr.ins = this;
@@ -66,6 +70,10 @@ export default class GameCtr {
         WXCtr.getAuthSetting();
         WXCtr.showShareMenu();
         WXCtr.wxOnLogin();
+
+        GameCtr.honeyPool=new cc.NodePool();
+        GameCtr.jarPool=new cc.NodePool();
+        GameCtr.bubbleMoneyPool=new cc.NodePool();
         //WXCtr.getSelfData();
     }
 

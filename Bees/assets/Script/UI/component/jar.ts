@@ -17,4 +17,22 @@ export default class NewClass extends cc.Component {
 
     @property(Boolean)
     isTransfering:Boolean=false;
+    @property(cc.Node)
+    jar_full:cc.Node=null;
+
+    @property(cc.Node)
+    jar_notFull:cc.Node=null;
+
+
+
+
+    setFull(){
+        this.jar_full.active=true;
+        this.jar_notFull.active=false;
+    }
+
+    setNotFull(){
+        this.jar_full.active=false;
+        this.jar_notFull.active=true;
+    }
 }

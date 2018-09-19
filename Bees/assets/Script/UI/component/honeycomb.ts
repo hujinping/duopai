@@ -223,14 +223,20 @@ export default class NewClass extends cc.Component {
     }
 
     doBubbleHoney(){
-        let bubbleHoney=cc.instantiate(this.bubbleHoney);
+        let bubbleHoney=null;
+        if(GameCtr.honeyPool.size() > 0){
+            bubbleHoney=GameCtr.honeyPool.get();
+        }else{
+            bubbleHoney=cc.instantiate(this.bubbleHoney);
+            GameCtr.honeyPool.put(bubbleHoney);
+        }
         bubbleHoney.parent=this.node.parent;
         bubbleHoney.x=-500+(Math.random()-0.5)*60;
         bubbleHoney.y=this.node.y-50;
         bubbleHoney.runAction(cc.sequence(
             cc.moveTo(0.4*this._level,cc.p(bubbleHoney.x,0)),
             cc.callFunc(()=>{
-                bubbleHoney.destroy();
+                GameCtr.honeyPool.put(bubbleHoney);
                 this.updateHoneyValue();
             })
         ))
@@ -243,7 +249,7 @@ export default class NewClass extends cc.Component {
     updateHoneyValue(){
         GameCtr.honeyValue+=GameCtr.combConfig[this._level-1].initialIncome+
                              this._combsUnlock[this._level-1].level*GameCtr.combConfig[this._level-1].incomeMatrix;
-        GameCtr.getInstance().getManufacture().setHoneyValue();
+        //GameCtr.getInstance().getManufacture().setHoneyValue();
         GameCtr.getInstance().setHoneyValue();
     }
 
