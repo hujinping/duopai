@@ -1,5 +1,5 @@
 [
-    { "id": 1.0, "gold": 0.0, "realMoney": 0.0, "speedup": 5.0, "doubleIncome": 0.0, "des": "5分钟加速buff" },
+    { "id": 1.0, "gold": 0.0, "realMoney": 0.0, "speedup": 0.5, "doubleIncome": 0.0, "des": "5分钟加速buff" },
     { "id": 2.0, "gold": 1.0, "realMoney": 0.0, "speedup": 0.0, "doubleIncome": 0.0, "des": "当前1分钟的收入" },
     { "id": 3.0, "gold": 0.0, "realMoney": 0.0, "speedup": 2.0, "doubleIncome": 2.0, "des": "2分钟加速buff+2min双倍收益" },
     { "id": 4.0, "gold": 0.0, "realMoney": 0.0, "speedup": 2.0, "doubleIncome": 0.0, "des": "2分钟加速buff" },

@@ -77,7 +77,9 @@ export default class NewClass extends cc.Component {
         if(speedup){
             GameCtr.globalSpeedRate=2;
             GameCtr.getInstance().getManufacture().resetLineAction();
-            GameCtr.getInstance().getGame().startSpeedUpTimer(speedup*60);
+            let curSpeedUpTime=GameCtr.getInstance().getGame().getCurSpeedUpTime();
+            let speedUpTime=curSpeedUpTime>0?speedup*60+curSpeedUpTime:speedup*60;
+            GameCtr.getInstance().getGame().startSpeedUpTimer(speedUpTime);
         }
 
         if(doubleIncome){

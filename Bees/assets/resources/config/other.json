@@ -1,9 +1,9 @@
 {
-    "speedUpInterval": 60,
+    "speedUpInterval": 120,
     "speedUpPersist": 30,
-    "doubleInterval": 120,
+    "doubleInterval": 180,
     "doublePersist": 60,
-    "pfTurntableInterval": 60,
+    "pfTurntableInterval": 120,
     "ufoInterval": 20,
     "ufoPersist": 7
 }

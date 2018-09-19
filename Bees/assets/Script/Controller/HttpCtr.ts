@@ -148,7 +148,8 @@ export default class HttpCtr {
         Http.send({
             url: Http.UrlConfig.SHARE_GROUP,
             data: {
-                user_id: UserManager.user_id,
+                uid: UserManager.user_id,
+                voucher: UserManager.voucher,
                 encrypted_data: encryptedData,
                 iv: iv
             },
@@ -157,8 +158,8 @@ export default class HttpCtr {
                     if (callback) {
                         callback();
                     }
-                } else if (resp.ret == 0) {
-                    ViewManager.toast(resp.msg);
+                }else if (resp.ret == 0) {
+                    GameCtr.getInstance().getGame().showToast(resp.msg);
                 }
             }
         });

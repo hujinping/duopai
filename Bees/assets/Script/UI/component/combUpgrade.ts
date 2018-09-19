@@ -94,7 +94,11 @@ export default class NewClass extends cc.Component {
                 this._lb_des.getComponent(cc.Label).string=this._unlockNum+1;
                 if(this._unlockNum==GameCtr.maxPerCombLevel){
                     this._btn_upgrade.getComponent(cc.Button).interactable=false;
-                    this._lb_cost.getComponent(cc.Label).string="已满级"
+                    let lb_cost=this._btn_upgrade.getChildByName("lb_cost");
+                    let word_fullLevel=this._btn_upgrade.getChildByName("word_levelFull");
+                    lb_cost.active=false;
+                    word_fullLevel.active=true;
+
                     return;
                 }
                 this.showCells();
@@ -115,6 +119,11 @@ export default class NewClass extends cc.Component {
         }
         if(this._unlockNum>=GameCtr.maxPerCombLevel){
             this._btn_upgrade.getComponent(cc.Button).interactable=false;
+
+            let lb_cost=this._btn_upgrade.getChildByName("lb_cost");
+            let word_fullLevel=this._btn_upgrade.getChildByName("word_levelFull");
+            lb_cost.active=false;
+            word_fullLevel.active=true;
         }
     }
 

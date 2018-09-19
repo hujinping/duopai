@@ -152,17 +152,22 @@ export default class Game extends cc.Component {
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
             AudioManager.getInstance().playSound("audio/open_panel");
             if(e.target.getName()=="btn_speedUp"){
-                if(GameCtr.globalSpeedRate>1){
-                    this.showToast("正在加速中...");
-                    return;
+                
+                let callFunc=()=>{
+                    if(GameCtr.globalSpeedRate>1){
+                        this.showToast("正在加速中...");
+                        return;
+                    }
+                    GameCtr.globalSpeedRate=2;
+                    GameCtr.getInstance().getManufacture().resetLineAction();
+                    this._speedTime=0;
+                    this.startSpeedUpTimer(GameCtr.otherConfig.speedUpPersist);
+                    this._btn_upSpeed.active=false;
+                    this._btn_upSpeed.stopAllActions();
+                    this.showRocketAction();
                 }
-                GameCtr.globalSpeedRate=2;
-                GameCtr.getInstance().getManufacture().resetLineAction();
-                this._speedTime=0;
-                this.startSpeedUpTimer(GameCtr.otherConfig.speedUpPersist);
-                this._btn_upSpeed.active=false;
-                this._btn_upSpeed.stopAllActions();
-                this.showRocketAction();
+                WXCtr.share({callback:callFunc});
+
             }else if(e.target.getName()=="btn_rank"){
                 if(cc.find("Canvas").getChildByName("ranking")){return}
                 let ranking=cc.instantiate(this.ranking);
@@ -286,6 +291,7 @@ export default class Game extends cc.Component {
     startSpeedUpTimer(_timeCount){
         this._timeCount=_timeCount;
         this._lb_upSpeedTime.active=true;
+        this._btn_upSpeed.opacity=0;
         AudioManager.getInstance().playMusic("audio/speeUp");
         GameCtr.getInstance().emitEvent("startSpeedUp",null);
         this.setCombsSpeed(2);
@@ -297,6 +303,7 @@ export default class Game extends cc.Component {
         if(this._timeCount<0){
             this.setCombsSpeed(1);
             GameCtr.globalSpeedRate=1;
+            this._btn_upSpeed.opacity=255;
             this._lb_upSpeedTime.active=false;
             GameCtr.getInstance().getManufacture().resetLineAction();
             AudioManager.getInstance().playMusic("audio/bgMusic");
@@ -309,6 +316,11 @@ export default class Game extends cc.Component {
         this._lb_upSpeedTime.getComponent(cc.Label).string=minStr+":"+secStr;
         this._timeCount-=1;
         this.scheduleOnce(this.countDown.bind(this),1);
+    }
+
+
+    getCurSpeedUpTime(){
+        return this._timeCount;
     }
 
     showRocketAction(){
@@ -624,7 +636,7 @@ export default class Game extends cc.Component {
         //GameCtr.getInstance().getManufacture().dowork(dt);
         for(let i=0;i<GameCtr.comblevel;i++){
             if(this._honeycombContent.y>=(i+1)*408){ this._combList[i].getComponent("honeycomb").stopWork(); continue;}
-            if(i-Math.floor(this._honeycombContent.y/408)>2){this._combList[i].getComponent("honeycomb").stopWork();continue;}
+            if(i-Math.floor(this._honeycombContent.y/408)>1){this._combList[i].getComponent("honeycomb").stopWork();continue;}
             this._combList[i].getComponent("honeycomb").startWork();
         }
         

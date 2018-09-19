@@ -47,7 +47,17 @@ export default class RankingView extends cc.Component {
     onLoad() {
         GameCtr.getInstance().setRanking(this);
         this.friendListData=WXCtr.getFriendData();
-        console.log("log-------this.friendListData=:",this.friendListData);
+        if(this.friendListData.length>=2){
+            for(let i =0;i<this.friendListData.length;i++){
+                for(let j=i+1;j<this.friendListData.length;j++){
+                    if(Number(this.friendListData[i].KVDataList[1].value)<Number(this.friendListData[j].KVDataList[1].value)){
+                        let temp=this.friendListData[i];
+                        this.friendListData[i]=this.friendListData[j];
+                        this.friendListData[j]=temp;
+                    }
+                }
+            }
+        }
     }
 
     start() {
