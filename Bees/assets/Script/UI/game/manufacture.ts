@@ -170,12 +170,29 @@ export default class NewClass extends cc.Component {
 
 
     showBubbleMoney(money){
-        let bubbleMoney=cc.instantiate(this.bubbleMoney);
+        let bubbleMoney=null;
+        if(GameCtr.bubbleMoneyPool.size()>0){
+            bubbleMoney=GameCtr.bubbleMoneyPool.get();
+        }else{
+            bubbleMoney=cc.instantiate(this.bubbleMoney);
+            GameCtr.bubbleMoneyPool.put(bubbleMoney);
+        }
+        
         bubbleMoney.parent=this.node;
+        bubbleMoney.active=true;
         bubbleMoney.x=450;
         bubbleMoney.y=400;
         bubbleMoney.getComponent("bubbleMoney").setMoney(money);
         AudioManager.getInstance().playSound("audio/gold");
+
+        bubbleMoney.runAction(cc.sequence(
+            cc.moveBy(0.3,cc.p(0,80)),
+            cc.delayTime(0.2),
+            cc.callFunc(()=>{
+                bubbleMoney.active=false;
+                GameCtr.bubbleMoneyPool.put(bubbleMoney);
+            })
+        ))   
     }
 
 
@@ -307,7 +324,6 @@ export default class NewClass extends cc.Component {
             this._isWorking=true;
         }
     
-        console.log("log----------this._jarNode.children.length=:",this._jarNode.children.length);
         for(let i =0;i<this._jarNode.children.length;i++){
             if(this._jarNode.children[i].x>=570){
                 GameCtr.money+=this._jarNode.children[i].getComponent("jar").honey*GameCtr.incomeRate;
