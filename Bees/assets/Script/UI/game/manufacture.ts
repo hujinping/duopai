@@ -137,12 +137,12 @@ export default class NewClass extends cc.Component {
 
         if(GameCtr.honeyValue>GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus){
             jar.getComponent("jar").setFull();
-            GameCtr.honeyValue-=GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus;
-            jar.getComponent("jar").honey=GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus;
+            GameCtr.honeyValue-=Math.ceil(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus);
+            jar.getComponent("jar").honey=Math.ceil(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus);
         }else{
             jar.getComponent("jar").setNotFull();
-            jar.getComponent("jar").honey=GameCtr.honeyValue
-            GameCtr.honeyValue-=GameCtr.honeyValue;
+            jar.getComponent("jar").honey=Math.ceil(GameCtr.honeyValue);
+            GameCtr.honeyValue-=Math.ceil(GameCtr.honeyValue);
         }
         jar.getComponent("jar").isTransfering=false;
         this.setHoneyValue();

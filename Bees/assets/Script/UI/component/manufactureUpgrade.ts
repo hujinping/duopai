@@ -38,8 +38,8 @@ export default class NewClass extends cc.Component {
         let lb_add=honeyProfit.getChildByName("lb_add");
         
 
-        lb_value.getComponent(cc.Label).string="￥"+Util.formatNumber(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus);
-        lb_add.getComponent(cc.Label).string="+￥"+Number(Util.formatNumber(GameCtr.manufactureConfig[GameCtr.ManufactureLevel].perBonus-GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus)).toFixed(1);
+        lb_value.getComponent(cc.Label).string="￥"+Math.ceil(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus-0);
+        lb_add.getComponent(cc.Label).string="+￥"+Math.ceil(GameCtr.manufactureConfig[GameCtr.ManufactureLevel].perBonus-GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus);
     }
 
     showSpeed(){
@@ -56,8 +56,8 @@ export default class NewClass extends cc.Component {
         let lb_value=capacity.getChildByName("lb_value");
         let lb_add=capacity.getChildByName("lb_add");
 
-        lb_value.getComponent(cc.Label).string=""+Util.formatNumber(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus);
-        lb_add.getComponent(cc.Label).string="+"+Number(Util.formatNumber(GameCtr.manufactureConfig[GameCtr.ManufactureLevel].perBonus-GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus)).toFixed(1);
+        lb_value.getComponent(cc.Label).string=Math.ceil(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus)+""
+        lb_add.getComponent(cc.Label).string="+"+Math.ceil(GameCtr.manufactureConfig[GameCtr.ManufactureLevel].perBonus-GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus);
     }
 
     showUpgrade(){
