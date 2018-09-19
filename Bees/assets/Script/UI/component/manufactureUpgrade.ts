@@ -39,7 +39,7 @@ export default class NewClass extends cc.Component {
         
 
         lb_value.getComponent(cc.Label).string="￥"+Util.formatNumber(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus);
-        lb_add.getComponent(cc.Label).string="+￥"+Util.formatNumber(GameCtr.manufactureConfig[GameCtr.ManufactureLevel].perBonus-GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus);
+        lb_add.getComponent(cc.Label).string="+￥"+Number(Util.formatNumber(GameCtr.manufactureConfig[GameCtr.ManufactureLevel].perBonus-GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus)).toFixed(1);
     }
 
     showSpeed(){
@@ -57,7 +57,7 @@ export default class NewClass extends cc.Component {
         let lb_add=capacity.getChildByName("lb_add");
 
         lb_value.getComponent(cc.Label).string=""+Util.formatNumber(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus);
-        lb_add.getComponent(cc.Label).string="+"+Util.formatNumber(GameCtr.manufactureConfig[GameCtr.ManufactureLevel].perBonus-GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus);
+        lb_add.getComponent(cc.Label).string="+"+Number(Util.formatNumber(GameCtr.manufactureConfig[GameCtr.ManufactureLevel].perBonus-GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus)).toFixed(1);
     }
 
     showUpgrade(){
@@ -84,7 +84,7 @@ export default class NewClass extends cc.Component {
                 AudioManager.getInstance().playSound("audio/levelup"); 
                 this.showBtn();
                 if(this.isMaxLevel()){return}
-                console.log("log---------------da;lgjoajgoaj---------");
+
                 this.lb_des.getComponent(cc.Label).string=GameCtr.ManufactureLevel+1;
                 this.showHoneyProfit();
                 this.showSpeed();

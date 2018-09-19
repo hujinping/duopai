@@ -95,7 +95,7 @@ export default class NewClass extends cc.Component {
     }
 
     setMoney(){
-        this.lb_money.target=GameCtr.money;
+        this.lb_money.target=Math.floor(GameCtr.money);
         if(this.lb_money.value>this.lb_money.target){
             this.lb_money.getComponent(cc.Label).string=Util.formatNumber(this.lb_money.target);
             this.lb_money.value=this.lb_money.target;

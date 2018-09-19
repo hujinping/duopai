@@ -112,7 +112,7 @@ export default class NewClass extends cc.Component {
     }
 
     setHoneyValue(){
-        this._lb_honey.getComponent(cc.Label).string=Util.formatNumber(GameCtr.honeyValue);
+        this._lb_honey.getComponent(cc.Label).string=Util.formatNumber(Math.floor(GameCtr.honeyValue));
         //新手引导1
         if(!cc.find("Canvas").getChildByTag(GameCtr.tipHandTag+1) &&! GameCtr.getInstance().getGame().isGuideStepOver(1)){
             GameCtr.getInstance().getGame().showGuideStep1();
