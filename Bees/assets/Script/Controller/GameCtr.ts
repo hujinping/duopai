@@ -180,12 +180,10 @@ export default class GameCtr {
 
 
     setMoney(){
-        console.log("seyMoney---:",GameCtr.money);
         window.localStorage.setItem("money",GameCtr.money+"");
     }
 
     getMoney(){
-        console.log("getMoney---:",Number(window.localStorage.getItem("money")));
         return Number(window.localStorage.getItem("money"))
     }
 
@@ -203,6 +201,14 @@ export default class GameCtr {
 
     getLevelMoney(){
         return Number(window.localStorage.getItem("levelMoney"));
+    }
+
+    setHoneyValue(){
+        window.localStorage.setItem("honeyValue",GameCtr.honeyValue+"");
+    }
+
+    getHoneyValue(){
+        return Number(window.localStorage.getItem("honeyValue"));
     }
 
     setGuide(){

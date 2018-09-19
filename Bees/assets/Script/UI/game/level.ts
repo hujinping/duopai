@@ -53,7 +53,7 @@ export default class NewClass extends cc.Component {
     initBtnEvent(btn){
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
             if(e.target.getName()=="btn_upgrade"){
-
+                if(!this.btn_upgrade.getComponent(cc.Button).interactable){return}
                 if(cc.find("Canvas").getChildByName("levelUpgrade")){return;}
                 if(this.isMaxLevel()){return}
                 let levelUpgrade=cc.instantiate(this.levelUpgrade);

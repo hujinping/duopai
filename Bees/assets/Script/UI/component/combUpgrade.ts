@@ -103,7 +103,6 @@ export default class NewClass extends cc.Component {
                 this.showUpgrade();
                 this.updateBtnState();
 
-                //console.log("log33333333333333333解锁蜂巢-------");
             }
         })
     }
@@ -119,7 +118,7 @@ export default class NewClass extends cc.Component {
         }
     }
 
-    doUpdate(dt){
+    doUpdate(){
         if(this._btn_upgrade.getComponent(cc.Button).interactable || this._unlockNum>=GameCtr.maxPerCombLevel){return}
         this.updateBtnState();
     }

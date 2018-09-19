@@ -95,11 +95,6 @@ export default class NewClass extends cc.Component {
         })
     }
 
-    doUpdate(dt){
-        if(this._btn_upgrade.getComponent(cc.Button).interactable){return}
-        this.showBtn();
-    }
-
     showBtn(){
         if(GameCtr.money>=GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].cost){
             this._btn_upgrade.getComponent(cc.Button).interactable=true;
@@ -117,7 +112,11 @@ export default class NewClass extends cc.Component {
 
 
     isMaxLevel(){
-        console.log("log---------------GameCtr.ManufactureLevel=:",GameCtr.ManufactureLevel);
         return GameCtr.ManufactureLevel==GameCtr.maxManufactureLevel;
+    }
+
+    doUpdate(){
+        if(this._btn_upgrade.getComponent(cc.Button).interactable){return}
+        this.showBtn();
     }
 }

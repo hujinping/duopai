@@ -303,7 +303,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 22,
+      "width": 0,
       "height": 40
     },
     "_rotationX": 0,
@@ -334,11 +334,11 @@
     "_actualFontSize": 40,
     "_fontSize": 40,
     "_lineHeight": 40,
-    "_enableWrapText": false,
+    "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
     "_spacingX": 0,
-    "_N$string": "a",
+    "_N$string": "",
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
@@ -481,8 +481,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 42,
-      "height": 40
+      "width": 14.4,
+      "height": 64
     },
     "_rotationX": 0,
     "_rotationY": 0,
@@ -491,7 +491,7 @@
     "_position": {
       "__type__": "cc.Vec2",
       "x": 27,
-      "y": -100
+      "y": -116
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -513,8 +513,10 @@
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "e806463a-1632-4fec-b0e7-348883c1f0d4"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_N$string": "x1",
     "_N$horizontalAlign": 1,

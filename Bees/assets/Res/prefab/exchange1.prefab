@@ -1634,8 +1634,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 210,
-      "height": 51
+      "width": 59.16,
+      "height": 104.04
     },
     "_rotationX": 0,
     "_rotationY": 0,
@@ -1644,7 +1644,7 @@
     "_position": {
       "__type__": "cc.Vec2",
       "x": 0,
-      "y": 175
+      "y": 157
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -1666,8 +1666,10 @@
     "_fontSize": 51,
     "_lineHeight": 51,
     "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "e806463a-1632-4fec-b0e7-348883c1f0d4"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_N$string": "余额：68",
     "_N$horizontalAlign": 1,

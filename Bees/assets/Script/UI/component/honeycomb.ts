@@ -244,6 +244,7 @@ export default class NewClass extends cc.Component {
         GameCtr.honeyValue+=GameCtr.combConfig[this._level-1].initialIncome+
                              this._combsUnlock[this._level-1].level*GameCtr.combConfig[this._level-1].incomeMatrix;
         GameCtr.getInstance().getManufacture().setHoneyValue();
+        GameCtr.getInstance().setHoneyValue();
     }
 
     updateBtnState(){

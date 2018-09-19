@@ -134,6 +134,13 @@ export default class NewClass extends cc.Component {
             GameCtr.getInstance().setGuide();
         }
 
+        if(window.localStorage.getItem("honeyValue")){
+            GameCtr.honeyValue=GameCtr.getInstance().getHoneyValue();
+        }else{
+            GameCtr.honeyValue=0;
+            GameCtr.getInstance().setHoneyValue();
+        }
+
 
         GameCtr.rich=GameCtr.getInstance().getRich();
         GameCtr.money=GameCtr.getInstance().getMoney();

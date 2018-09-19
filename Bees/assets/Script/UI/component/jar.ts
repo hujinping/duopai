@@ -14,4 +14,7 @@ const {ccclass, property} = cc._decorator;
 export default class NewClass extends cc.Component {
     @property(Number)
     honey:Number=0;
+
+    @property(Boolean)
+    isTransfering:Boolean=false;
 }

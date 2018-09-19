@@ -32,9 +32,6 @@ export default class Game extends cc.Component {
     _adNode=null;
     _mask=null;
     _combUpgrade=null;
-    _interval=0;
-    _interval1=0;
-    _interval2=0;
     _interval3=0;
     _pfTurnableTime=0;
     _manufactureUpgrade=null;
@@ -99,6 +96,8 @@ export default class Game extends cc.Component {
         GameCtr.getInstance().setPlayTimes();
         this.refreshMoreNewGame();
         WXCtr.getFriendRankingData();                   //获取好友排行榜数据
+        this.commitDataToServer();
+        this.scheduleOnce(this.updateGameData.bind(this),1);
     }
 
     initEvent(){
@@ -157,6 +156,7 @@ export default class Game extends cc.Component {
                     return;
                 }
                 GameCtr.globalSpeedRate=2;
+                GameCtr.getInstance().getManufacture().resetLineAction();
                 this._speedTime=0;
                 this.startSpeedUpTimer(GameCtr.otherConfig.speedUpPersist);
                 this._btn_upSpeed.active=false;
@@ -297,6 +297,7 @@ export default class Game extends cc.Component {
             this.setCombsSpeed(1);
             GameCtr.globalSpeedRate=1;
             this._lb_upSpeedTime.active=false;
+            GameCtr.getInstance().getManufacture().resetLineAction();
             AudioManager.getInstance().playMusic("audio/bgMusic");
             GameCtr.getInstance().emitEvent("stopSpeedUp",null);
             return;
@@ -327,11 +328,12 @@ export default class Game extends cc.Component {
         if(cc.find("Canvas").getChildByName("offlineIncome")){return;}
 
         let offlineTime=(Date.now()-GameCtr.getInstance().getTimestamp())/1000;
-        if(offlineTime>10){
-            let offlineIncome=cc.instantiate(this.offlineIncome);
-            offlineIncome.parent=cc.find("Canvas");
-            offlineIncome.getComponent("offlineIncome").init(offlineTime);
-        }
+        if(offlineTime<120){return;}
+        offlineTime=offlineTime>(8*60*60)?8*60*60:offlineTime;
+
+        let offlineIncome=cc.instantiate(this.offlineIncome);
+        offlineIncome.parent=cc.find("Canvas");
+        offlineIncome.getComponent("offlineIncome").init(offlineTime);
     }
 
     getComb(combLevel){
@@ -585,50 +587,50 @@ export default class Game extends cc.Component {
         }
     }
 
+    upgradeNodeUpdate(){
+        if(this._combUpgrade){
+            this._combUpgrade.getComponent("combUpgrade").doUpdate()
+        }
+        if(this._manufactureUpgrade){
+            this._manufactureUpgrade.getComponent("manufactureUpgrade").doUpdate();
+        }
+    }
+
+    updateGameData(){
+        GameCtr.getInstance().setRich();
+        GameCtr.getInstance().setMoney();
+        GameCtr.getInstance().setTimestamp();
+        GameCtr.getInstance().setLevelMoney();
+        this.updateSpeedUpState(1);
+        this.updateUfoTime(1);
+        this.caculateHideHoney();
+        this.upgradeNodeUpdate()
+
+        this.unschedule(this.updateGameData.bind(this));
+        this.scheduleOnce(this.updateGameData.bind(this),1);
+    }
+
+    commitDataToServer(){
+        HttpCtr.setGold(GameCtr.rich);
+        //WXCtr.submitScoreToWx(GameCtr.rich,UserManager.user.city);
+        this.unschedule(this.commitDataToServer.bind(this));
+        this.scheduleOnce(this.commitDataToServer.bind(this),10);
+    }
+
+
     update(dt){
-        this._interval+=dt;
-        this._interval1+=dt;
-        this._interval2+=dt;
         this._interval3+=dt;
-        GameCtr.getInstance().getManufacture().dowork(dt);
-        
+        //GameCtr.getInstance().getManufacture().dowork(dt);
         for(let i=0;i<GameCtr.comblevel;i++){
             if(this._honeycombContent.y>=(i+1)*408){ this._combList[i].getComponent("honeycomb").stopWork(); continue;}
             if(i-Math.floor(this._honeycombContent.y/408)>2){this._combList[i].getComponent("honeycomb").stopWork();continue;}
             this._combList[i].getComponent("honeycomb").startWork();
         }
         
-        if(this._interval>=1){
-            GameCtr.getInstance().setRich();
-            GameCtr.getInstance().setMoney();
-            GameCtr.getInstance().setTimestamp();
-            GameCtr.getInstance().setLevelMoney();
-            this.updateSpeedUpState(this._interval);
-            this.updateUfoTime(this._interval);
-            this.caculateHideHoney();
-            this._interval=0
-        }
-        if(this._interval1>10){
-            HttpCtr.setGold(GameCtr.rich);
-            WXCtr.submitScoreToWx(GameCtr.rich,UserManager.user.city);
-            this._interval1=0;
-        }
-
         if(this._interval3>=0.1){
             GameCtr.getInstance().getLevel().updateMoney();
             this._interval3=0;
         }
-        if(this._interval2>=0.2){
-            if(this._combUpgrade){
-                this._combUpgrade.getComponent("combUpgrade").doUpdate(dt)
-            }
-            if(this._manufactureUpgrade){
-                this._manufactureUpgrade.getComponent("manufactureUpgrade").doUpdate(dt);
-            }
-            this._interval2=0;
-        }
-
-        
     }
 
 }
