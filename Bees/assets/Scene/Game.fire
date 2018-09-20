@@ -3835,7 +3835,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "New Sprite",
+    "_name": "ad0",
     "_objFlags": 0,
     "_parent": {
       "__id__": 92
@@ -3875,7 +3875,7 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": -341,
+      "x": -339,
       "y": 131
     },
     "_skewX": 0,
@@ -3913,7 +3913,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "New Sprite",
+    "_name": "ad1",
     "_objFlags": 0,
     "_parent": {
       "__id__": 92
@@ -3953,7 +3953,7 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": -112,
+      "x": -113,
       "y": 131
     },
     "_skewX": 0,
@@ -3991,7 +3991,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "New Sprite",
+    "_name": "ad2",
     "_objFlags": 0,
     "_parent": {
       "__id__": 92
@@ -4069,7 +4069,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "New Sprite",
+    "_name": "ad3",
     "_objFlags": 0,
     "_parent": {
       "__id__": 92
@@ -4109,7 +4109,7 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 342,
+      "x": 339,
       "y": 131.1
     },
     "_skewX": 0,
@@ -4157,7 +4157,7 @@
       "__uuid__": "d9262c1c-5084-46eb-b6ea-bfefbf84c824"
     },
     "_type": 0,
-    "_sizeMode": 1,
+    "_sizeMode": 0,
     "_fillType": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
@@ -5861,6 +5861,9 @@
     },
     "ranking": {
       "__uuid__": "e0e795dc-2d3b-44a1-aad6-0559aa576208"
+    },
+    "bubbleHoney": {
+      "__uuid__": "92d2f94f-8492-494b-a494-5178f9a65619"
     }
   }
 ]

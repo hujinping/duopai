@@ -22,6 +22,7 @@ export default class NewClass extends cc.Component {
     _hadRandom=false;
     _isWorking=true;
 
+
     @property(cc.Prefab)
     bee:cc.Prefab=null;
 
@@ -69,6 +70,8 @@ export default class NewClass extends cc.Component {
         this.showUnlockBtn(false);
         this._beeNode.setLocalZOrder(2);
     }
+
+
 
     initEvent(){
         GameCtr.getInstance().addListener("moneyUpdate"+this._level,this.onMoneyUpdate.bind(this));
@@ -199,7 +202,6 @@ export default class NewClass extends cc.Component {
                 flyBee.x= this._combPosArr[index].x+292;
                 flyBee.y= this._combPosArr[index].y+39;
                 let sp_skeleton=flyBee.getComponent(sp.Skeleton);
-                //sp_skeleton.timeScale=3;
                 sp_skeleton.setEventListener((e)=>{
                     this.doBubbleHoney();
                 })
@@ -208,6 +210,7 @@ export default class NewClass extends cc.Component {
     }
 
     showFullFillBtn(){
+        this._btn_upgrade.active=true;
         this._word_unlock.active=false;
         this._word_levelUp.active=false;
         this._word_levelFull.active=true;
@@ -226,20 +229,17 @@ export default class NewClass extends cc.Component {
         let bubbleHoney=null;
         if(GameCtr.honeyPool.size() > 0){
             bubbleHoney=GameCtr.honeyPool.get();
-        }else{
-            bubbleHoney=cc.instantiate(this.bubbleHoney);
-            GameCtr.honeyPool.put(bubbleHoney);
+            bubbleHoney.parent=this.node.parent;
+            bubbleHoney.x=-500+(Math.random()-0.5)*60;
+            bubbleHoney.y=this.node.y-50;
+            bubbleHoney.runAction(cc.sequence(
+                cc.moveTo(0.4*this._level,cc.p(bubbleHoney.x,0)),
+                cc.callFunc(()=>{
+                    GameCtr.honeyPool.put(bubbleHoney);
+                    this.updateHoneyValue();
+                })
+            ))
         }
-        bubbleHoney.parent=this.node.parent;
-        bubbleHoney.x=-500+(Math.random()-0.5)*60;
-        bubbleHoney.y=this.node.y-50;
-        bubbleHoney.runAction(cc.sequence(
-            cc.moveTo(0.4*this._level,cc.p(bubbleHoney.x,0)),
-            cc.callFunc(()=>{
-                GameCtr.honeyPool.put(bubbleHoney);
-                this.updateHoneyValue();
-            })
-        ))
     }
 
     isSpeedUp(){
@@ -289,7 +289,7 @@ export default class NewClass extends cc.Component {
         this._isWorking=false;
     }
 
-    startWork(){
+    startWork(dt){
         if(!this._isWorking){
             for (let i=0;i<this._unlockNum;i++){
                 if(this._beeNode.getChildByTag(i)){return}

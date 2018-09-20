@@ -85,12 +85,16 @@ export default class Game extends cc.Component {
     @property(cc.Prefab)
     ranking:cc.Prefab=null;
 
+    @property(cc.Prefab)
+    bubbleHoney:cc.Prefab=null;
+
     onLoad(){
         GameCtr.getInstance().setGame(this);
         GameCtr.getInstance().initEventTarget();
         //GameCtr.honeyPool
         this.initEvent();
         this.initNode();
+        this.initBubbleHoneys();
         this.setRealMoney();
         AudioManager.getInstance().playMusic("audio/bgMusic");
         this.checkOffline();
@@ -152,7 +156,6 @@ export default class Game extends cc.Component {
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
             AudioManager.getInstance().playSound("audio/open_panel");
             if(e.target.getName()=="btn_speedUp"){
-                
                 let callFunc=()=>{
                     if(GameCtr.globalSpeedRate>1){
                         this.showToast("正在加速中...");
@@ -204,6 +207,13 @@ export default class Game extends cc.Component {
 
         })
     }
+    initBubbleHoneys(){
+        for(let i =0;i<5;i++){
+            let bubbleHoney=cc.instantiate(this.bubbleHoney);
+            GameCtr.honeyPool.put(bubbleHoney);
+        }
+    }
+    
 
     initCombContentEvent(){
         this._honeycombContent.on(cc.Node.EventType.TOUCH_START,(e)=>{
@@ -273,6 +283,7 @@ export default class Game extends cc.Component {
         this._combList.push(honeyComb);
     }
 
+
     unlockComb(){
         if(GameCtr.comblevel>=30){return}
         GameCtr.comblevel++;
@@ -296,26 +307,32 @@ export default class Game extends cc.Component {
         GameCtr.getInstance().emitEvent("startSpeedUp",null);
         this.setCombsSpeed(2);
         this.countDown();
-        
     }
 
     countDown(){
-        if(this._timeCount<0){
-            this.setCombsSpeed(1);
-            GameCtr.globalSpeedRate=1;
-            this._btn_upSpeed.opacity=255;
-            this._lb_upSpeedTime.active=false;
-            GameCtr.getInstance().getManufacture().resetLineAction();
-            AudioManager.getInstance().playMusic("audio/bgMusic");
-            GameCtr.getInstance().emitEvent("stopSpeedUp",null);
-            return;
-        }
+        this._lb_upSpeedTime.stopAllActions();
         let minStr=Math.floor(this._timeCount/60)<10?"0"+Math.floor(this._timeCount/60):""+Math.floor(this._timeCount/60);
         let secStr=this._timeCount%60<10?"0"+this._timeCount%60:""+this._timeCount%60;
-
         this._lb_upSpeedTime.getComponent(cc.Label).string=minStr+":"+secStr;
-        this._timeCount-=1;
-        this.scheduleOnce(this.countDown.bind(this),1);
+        this._lb_upSpeedTime.runAction(cc.repeat(cc.sequence(
+            cc.delayTime(1),
+            cc.callFunc(()=>{
+                this._timeCount-=1;
+                let minStr=Math.floor(this._timeCount/60)<10?"0"+Math.floor(this._timeCount/60):""+Math.floor(this._timeCount/60);
+                let secStr=this._timeCount%60<10?"0"+this._timeCount%60:""+this._timeCount%60;
+                this._lb_upSpeedTime.getComponent(cc.Label).string=minStr+":"+secStr;
+                if(this._timeCount<0){
+                    this.setCombsSpeed(1);
+                    GameCtr.globalSpeedRate=1;
+                    this._btn_upSpeed.opacity=255;
+                    this._lb_upSpeedTime.active=false;
+                    GameCtr.getInstance().getManufacture().resetLineAction();
+                    AudioManager.getInstance().playMusic("audio/bgMusic");
+                    GameCtr.getInstance().emitEvent("stopSpeedUp",null);
+                    this._lb_upSpeedTime.stopAllActions();
+                }
+            })
+        ),this._timeCount+2))
     }
 
 
@@ -571,7 +588,7 @@ export default class Game extends cc.Component {
 
     caculateHideHoney(){
         let combsUnlock=JSON.parse(GameCtr.getInstance().getCombsUnlock());
-        for(let i=0;i<GameCtr.comblevel;i++){//
+        for(let i=0;i<combsUnlock.length;i++){//
             if(this._honeycombContent.y>=(i+1)*408){  
                 GameCtr.honeyValue+=(GameCtr.combConfig[i].initialIncome+GameCtr.combConfig[i].incomeMatrix*(combsUnlock[i].level-1)*combsUnlock[i].level)/(GameCtr.combConfig[i].baseSpeed*2)
             }
@@ -589,7 +606,7 @@ export default class Game extends cc.Component {
 
         for(let i=0;i<GameCtr.setting.nav.banner.length;i++){
             if(i>=4)return;
-            let node = children[i];
+            let node = this._adNode.getChildByName("adFrame").getChildByName("ad"+i);
             let sp = node.getComponent(cc.Sprite);
             GameCtr.loadImg(sp,GameCtr.setting.nav.banner[i].img)
             let obj = {appid:GameCtr.setting.nav.banner[i].appid,path:GameCtr.setting.nav.banner[i].path}
@@ -636,8 +653,8 @@ export default class Game extends cc.Component {
         //GameCtr.getInstance().getManufacture().dowork(dt);
         for(let i=0;i<GameCtr.comblevel;i++){
             if(this._honeycombContent.y>=(i+1)*408){ this._combList[i].getComponent("honeycomb").stopWork(); continue;}
-            if(i-Math.floor(this._honeycombContent.y/408)>1){this._combList[i].getComponent("honeycomb").stopWork();continue;}
-            this._combList[i].getComponent("honeycomb").startWork();
+            if(i-Math.floor(this._honeycombContent.y/408)>2){this._combList[i].getComponent("honeycomb").stopWork();continue;}
+            this._combList[i].getComponent("honeycomb").startWork(dt);
         }
         
         if(this._interval3>=0.1){
