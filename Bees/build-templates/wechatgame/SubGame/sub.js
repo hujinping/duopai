@@ -162,20 +162,3 @@ class SubRanking {
 
 const rankList = new SubRanking();
 rankList.listen();
-
-// 将数据托管到微信后台后，文档里说只能在子域里操作托管的数据，今天群里有同学说子域数据可以传给主域，就试验了下，的确可以，首先，在子域里获取到托管的排行榜数据后，用变量保存数据，然后如下写法：
-
-// `      let openContext = wx.getSharedCanvas().getContext("2d");
-//       openContext["canvas"]["userDataList"] = JSON.stringify(userDataList);`
-
-// 在主域里通过如下写法可以拿到子域保存的排行榜数据，这些就可以在主域直接用ScrollView了，哎，发现的有点晚了啊。
-
-// `      var openContext = wx.getOpenDataContext();
-//         var friendDataList;
-//         if(openContext["canvas"]["userDataList"]){
-//                friendDataList = JSON.parse(openContext["canvas"]["userDataList"]);
-//         }
-//         console.log("openContext");
-//         console.log(openContext);
-//         console.log("friendDataList");
-//         console.log(friendDataList);`

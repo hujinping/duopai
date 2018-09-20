@@ -505,6 +505,10 @@ export default class WXCtr {
     /**
      * 子域消息相关方法
      */
+    /**
+     * 子域消息相关方法
+     */
+
     static initSharedCanvas() {
         if (window.wx != undefined) {
             window.sharedCanvas.width = 880;
@@ -592,16 +596,14 @@ export default class WXCtr {
     }
 
     static getFriendData() {
-        var openContext = wx.getOpenDataContext();
-        console.log("log-----------openContext=:",openContext);
         var friendDataList = null;
-        if (openContext["canvas"]["friendData"]) {
-            friendDataList = JSON.parse(openContext["canvas"]["friendData"]);
+        if (window.wx != undefined) {
+            var openContext = wx.getOpenDataContext();
+            if (openContext["canvas"]["friendData"]) {
+                friendDataList = JSON.parse(openContext["canvas"]["friendData"]);
+            }
         }
         return friendDataList;
     }
-
-
-
 
 }

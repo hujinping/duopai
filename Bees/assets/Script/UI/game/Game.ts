@@ -642,7 +642,7 @@ export default class Game extends cc.Component {
 
     commitDataToServer(){
         HttpCtr.setGold(GameCtr.rich);
-        //WXCtr.submitScoreToWx(GameCtr.rich,UserManager.user.city);
+        WXCtr.submitScoreToWx(GameCtr.rich,UserManager.user.city);
         this.unschedule(this.commitDataToServer.bind(this));
         this.scheduleOnce(this.commitDataToServer.bind(this),10);
     }
@@ -650,7 +650,6 @@ export default class Game extends cc.Component {
 
     update(dt){
         this._interval3+=dt;
-        //GameCtr.getInstance().getManufacture().dowork(dt);
         for(let i=0;i<GameCtr.comblevel;i++){
             if(this._honeycombContent.y>=(i+1)*408){ this._combList[i].getComponent("honeycomb").stopWork(); continue;}
             if(i-Math.floor(this._honeycombContent.y/408)>2){this._combList[i].getComponent("honeycomb").stopWork();continue;}

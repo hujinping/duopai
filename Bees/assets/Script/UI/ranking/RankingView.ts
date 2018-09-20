@@ -30,12 +30,18 @@ export default class RankingView extends cc.Component {
     btn_pageUp :cc.Node=null;
     @property(cc.Node)
     btn_pageDown:cc.Node=null;
-
     @property(cc.Node)
     btn_share :cc.Node=null;
-
     @property(cc.Node)
     btn_joinRank:cc.Node=null;
+
+
+    @property(cc.Sprite)
+    headImg :cc.Sprite=null;
+    @property(cc.Label)
+    lb_name:cc.Label=null;
+    @property(cc.Label)
+    lb_location:cc.Label=null;
 
     private worldListData=[];
     private friendListData=null;
@@ -47,7 +53,9 @@ export default class RankingView extends cc.Component {
     onLoad() {
         GameCtr.getInstance().setRanking(this);
         this.friendListData=WXCtr.getFriendData();
-        if(this.friendListData.length>=2){
+        console.log("log---------------this.friendListData=:",this.friendListData);
+
+        if(this.friendListData && this.friendListData.length>=2){
             for(let i =0;i<this.friendListData.length;i++){
                 for(let j=i+1;j<this.friendListData.length;j++){
                     if(Number(this.friendListData[i].KVDataList[1].value)<Number(this.friendListData[j].KVDataList[1].value)){
@@ -61,12 +69,8 @@ export default class RankingView extends cc.Component {
     }
 
     start() {
-        if(window.wx != undefined){
-            this.tex = new cc.Texture2D();
-            window.sharedCanvas.width = 900;
-            window.sharedCanvas.height = 1200;
-        }
         this.initRank();
+        this.initSelfInfo();
     }
 
     //初始化界面
@@ -75,6 +79,14 @@ export default class RankingView extends cc.Component {
             this.showFreindRanking();
         } else if (this.worldToggle.isChecked) {
             this.showWorldRanking();
+        }
+    }
+
+    initSelfInfo(){
+        if(UserManager.user){
+            this.loadImg(this.headImg,UserManager.user.icon);
+            this.lb_name.string=UserManager.user.nick;
+            this.lb_location.string=UserManager.user.city;
         }
     }
 
@@ -98,7 +110,7 @@ export default class RankingView extends cc.Component {
             this.btn_joinRank.active=false; 
         }
         if (!this.isGetWorldList) {
-            this.getWorldRankingData(1);
+            this.getWorldRankingData();
         }
     }
 
@@ -171,14 +183,13 @@ export default class RankingView extends cc.Component {
     }
 
     //获取世界排行数据
-    getWorldRankingData(page) {
+    getWorldRankingData() {
         Http.send({
             url: Http.UrlConfig.GET_RANK_LIST,
             success: (resp) => {
                 console.log("getWorldList response == ", resp);
                 this.isGetWorldList = true;
                 this.setWorldList(resp.data);
-                //this.setSelfWorldData(resp.data.user_record.sort - 1, resp.data.user_record);
             },
             data: {
                 uid: UserManager.user_id,
@@ -189,7 +200,6 @@ export default class RankingView extends cc.Component {
 
     //设置世界排行
     setWorldList(list) {
-        console.log("worldRankingList == ", list);
         for(let i in list){
             this.worldListData.push(list[i])
         }
@@ -212,22 +222,20 @@ export default class RankingView extends cc.Component {
         this.showRanklist(this.sprFreindRankScroll.node,this.friendListData,0);
     }
 
-     //关闭世界排行
-     onCloseRank() {
+    loadImg(spr, imgUrl) {
+        console.log("log--------imgUrl=:",imgUrl);
+        if(!imgUrl||imgUrl==""){return;}
+        cc.loader.load({
+            url: imgUrl,
+            type: 'jpg'
+        }, (err, texture) => {
+            spr.spriteFrame = new cc.SpriteFrame(texture);
+        });
+    }
+
+    //关闭世界排行
+    onCloseRank() {
         this.ndRanking.active = false;
     }
 
-
-
-    // 刷新子域的纹理
-    _updateSubDomainCanvas() {
-        if (window.sharedCanvas != undefined && this.tex != null && this.ndRanking.active && this.sprFreindRankScroll.node.active) {
-            this.tex.initWithElement(window.sharedCanvas);
-            this.tex.handleLoadedTexture();
-            this.sprFreindRankScroll.spriteFrame = new cc.SpriteFrame(this.tex);
-        }
-    }
-    update() {
-        this._updateSubDomainCanvas();
-    }
 };

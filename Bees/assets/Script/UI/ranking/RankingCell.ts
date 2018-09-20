@@ -39,7 +39,8 @@ export default class RankingCell extends cc.Component {
         this.lbName.string = Util.cutstr(name, 10);
         this.lbScore.string =Util.formatNumber(value)+"";
         this.setMedal(rank);
-        this.createImage(icon);
+        this.loadImg(this.sprHead,icon)
+        // this.createImage(icon);
     }
 
     setMedal(idx) {
@@ -62,35 +63,45 @@ export default class RankingCell extends cc.Component {
         this.sprBg.node.color = (idx == 0) ? cc.hexToColor("#1966EE") : cc.hexToColor("#5990F1");
     }
 
-    createImage(avatarUrl) {
-        if (window.wx != undefined) {
-            try {
-                let image = wx.createImage();
-                image.onload = () => {
-                    try {
-                        let texture = new cc.Texture2D();
-                        texture.initWithElement(image);
-                        texture.handleLoadedTexture();
-                        this.sprHead.spriteFrame = new cc.SpriteFrame(texture);
-                    } catch (e) {
-                        cc.log(e);
-                        this.sprHead.node.active = false;
-                    }
-                };
-                image.src = avatarUrl;
-            } catch (e) {
-                cc.log(e);
-                this.sprHead.node.active = false;
-            }
-        } else {
-            cc.loader.load({
-                url: avatarUrl,
-                type: 'jpg'
-            }, (err, texture) => {
-                this.sprHead.spriteFrame = new cc.SpriteFrame(texture);
-            });
-        }
+    loadImg(spr, imgUrl) {
+        if(!imgUrl||imgUrl==""){return;}
+        cc.loader.load({
+            url: imgUrl,
+            type: 'jpg'
+        }, (err, texture) => {
+            spr.spriteFrame = new cc.SpriteFrame(texture);
+        });
     }
+
+    // createImage(avatarUrl) {
+    //     if (window.wx != undefined) {
+    //         try {
+    //             let image = wx.createImage();
+    //             image.onload = () => {
+    //                 try {
+    //                     let texture = new cc.Texture2D();
+    //                     texture.initWithElement(image);
+    //                     texture.handleLoadedTexture();
+    //                     this.sprHead.spriteFrame = new cc.SpriteFrame(texture);
+    //                 } catch (e) {
+    //                     cc.log(e);
+    //                     this.sprHead.node.active = false;
+    //                 }
+    //             };
+    //             image.src = avatarUrl;
+    //         } catch (e) {
+    //             cc.log(e);
+    //             this.sprHead.node.active = false;
+    //         }
+    //     } else {
+    //         cc.loader.load({
+    //             url: avatarUrl,
+    //             type: 'jpg'
+    //         }, (err, texture) => {
+    //             this.sprHead.spriteFrame = new cc.SpriteFrame(texture);
+    //         });
+    //     }
+    // }
 
 
 
