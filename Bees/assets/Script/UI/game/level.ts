@@ -111,20 +111,12 @@ export default class NewClass extends cc.Component {
     updateMoney(){
         if(this.lb_money.target && this.lb_money.target!=this.lb_money.value){
             this.money_up=null;
-            if(Math.abs(this.lb_money.target-this.lb_money.value)<10){
-                this.money_up=1;
-            }else if(Math.abs(this.lb_money.target-this.lb_money.value)<100){ 
-                this.money_up=10;
-            }else if(Math.abs(this.lb_money.target-this.lb_money.value)<1000){ 
-                this.money_up=100;
-            }else if(Math.abs(this.lb_money.target-this.lb_money.value)<10000){ 
-                this.money_up=1000;
-            }else if(Math.abs(this.lb_money.target-this.lb_money.value)<100000){ 
-                this.money_up=10000;
-            }else if(Math.abs(this.lb_money.target-this.lb_money.value)<1000000){ 
-                this.money_up=100000;
-            }else if(Math.abs(this.lb_money.target-this.lb_money.value)<10000000){ 
-                this.money_up=1000000;
+
+            for(let i =1;i<50;i++){
+                if(this.lb_money.target-this.lb_money.value<Math.pow(10,i)){
+                    this.money_up=i==1?1:Math.pow(10,i-1)
+                    break;
+                }
             }
             this.lb_money.getComponent(cc.Label).string=Util.formatNumber(this.lb_money.value+this.money_up);
             this.lb_money.value+=this.money_up;
@@ -132,6 +124,7 @@ export default class NewClass extends cc.Component {
     }
 
     updateLevelProgress(){
+        if(GameCtr.level>=GameCtr.maxPlayerLevel){return}
         this.progress.getComponent(cc.ProgressBar).progress=GameCtr.levelMoney/GameCtr.levelConfig[GameCtr.level-1].need;
     }
 

@@ -52,7 +52,7 @@ export default class NewClass extends cc.Component {
         let lb_value=speed.getChildByName("lb_value");
         let lb_add=speed.getChildByName("lb_add");
 
-        lb_value.getComponent(cc.Label).string="100%";
+        lb_value.getComponent(cc.Label).string=100+this._unlockNum+"%";
         lb_add.getComponent(cc.Label).string="+"+GameCtr.combConfig[this._level-1].speedMatrix*100+"%";
     }
 
