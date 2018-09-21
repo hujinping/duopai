@@ -1,6 +1,7 @@
 import AudioManager from "../../Common/AudioManager";
 import GameCtr from "../../Controller/GameCtr";
 import Util from "../../Common/Util";
+import WXCtr from "../../Controller/WXCtr";
 
 const {ccclass, property} = cc._decorator;
 @ccclass
@@ -29,13 +30,17 @@ export default class NewClass extends cc.Component {
                 GameCtr.rich+=this._bonusValue;
                 AudioManager.getInstance().playSound("audio/btnClose");
             }else if(e.target.getName()=="btn_get"){
-
+                let callFunc=()=>{
+                    GameCtr.money+=2*this._bonusValue;
+                    GameCtr.rich+=2*this._bonusValue;
+                }
+                if(GameCtr.vedioTimes<=0){
+                    WXCtr.share({callback:callFunc});
+                }else{
+                    WXCtr.showVideoAd(callFunc.bind(this));
+                }
                 AudioManager.getInstance().playSound("audio/open_panel");
-                GameCtr.money+=this._bonusValue;
-                GameCtr.rich+=this._bonusValue;
-                this.node.destroy();
             }
-
         })
     }
 

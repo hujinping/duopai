@@ -57,7 +57,7 @@ export default class GameCtr {
     public static guide=null;
     public static tipHandTag=1500;
     public static realMoney=null;
-
+    public static vedioTimes=0;
     public static honeyPool=null;
     public static jarPool=null;
     public static bubbleMoneyPool=null;
@@ -74,7 +74,6 @@ export default class GameCtr {
         GameCtr.honeyPool=new cc.NodePool();
         GameCtr.jarPool=new cc.NodePool();
         GameCtr.bubbleMoneyPool=new cc.NodePool();
-        //WXCtr.getSelfData();
     }
 
 

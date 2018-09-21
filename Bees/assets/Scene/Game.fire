@@ -5864,6 +5864,9 @@
     },
     "bubbleHoney": {
       "__uuid__": "92d2f94f-8492-494b-a494-5178f9a65619"
+    },
+    "goldNotEnough": {
+      "__uuid__": "6a6ed8a6-51c1-4f60-b404-85698db56099"
     }
   }
 ]

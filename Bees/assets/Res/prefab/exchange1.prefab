@@ -731,7 +731,7 @@
       }
     ],
     "_tag": -1,
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 25
@@ -903,7 +903,7 @@
     "node": {
       "__id__": 21
     },
-    "_enabled": true,
+    "_enabled": false,
     "transition": 3,
     "pressedColor": {
       "__type__": "cc.Color",
@@ -1634,7 +1634,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 59.16,
+      "width": 212.16,
       "height": 104.04
     },
     "_rotationX": 0,

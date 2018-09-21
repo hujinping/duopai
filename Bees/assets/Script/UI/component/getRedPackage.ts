@@ -41,8 +41,8 @@ export default class NewClass extends cc.Component {
         this._lb_value.getComponent(cc.Label).string="￥"+value/100;
     }
 
-    setSurplusMoney(surplusMoney){
-        this._lb_surplusMoney.getComponent(cc.Label).string=surplusMoney;
+    setSurplusMoney(){
+        this._lb_surplusMoney.getComponent(cc.Label).string=GameCtr.realMoney;
     }
 
 }

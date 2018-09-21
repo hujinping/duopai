@@ -16,10 +16,11 @@ export default class NewClass extends cc.Component {
         this._lb_bonus.getComponent(cc.Label).string=""
         this.initBtn(this._btn_get);
         this.initBtn(this._btn_close);
+        this.init();
     }
 
 
-    init(offlineTime){
+    init(){
         let combsUnlock=JSON.parse(GameCtr.getInstance().getCombsUnlock());
         let manufactures_speed=GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus/
                                 (GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].productTime+
@@ -29,7 +30,7 @@ export default class NewClass extends cc.Component {
             combs_speed+=(GameCtr.combConfig[i].initialIncome+GameCtr.combConfig[i].incomeMatrix*(combsUnlock[i].level-1)*combsUnlock[i].level)/(GameCtr.combConfig[i].baseSpeed*2)
         }
         let finalSpeed =combs_speed>=manufactures_speed?manufactures_speed:combs_speed;
-        this._offlineIncome =offlineTime*finalSpeed;
+        this._offlineIncome =5*60*finalSpeed;
         this._lb_bonus.getComponent(cc.Label).string="￥"+Util.formatNumber(Math.floor(this._offlineIncome));
     }
 
@@ -37,25 +38,19 @@ export default class NewClass extends cc.Component {
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
             if(e.target.getName()=="btn_get"){
                 let callFunc=()=>{
-                    GameCtr.money+=Math.floor(2*this._offlineIncome);
-                    GameCtr.rich+=Math.floor(2*this._offlineIncome);
+                    GameCtr.money+=Math.floor(this._offlineIncome);
+                    GameCtr.rich+=Math.floor(this._offlineIncome);
                     GameCtr.getInstance().getGame().setMaskVisit(false);
                     GameCtr.getInstance().getLevel().setMoney();
                     this.node.destroy();
                 }
-                if(GameCtr.vedioTimes<=0){
-                    WXCtr.share({callback:callFunc});
-                }else{
-                    WXCtr.showVideoAd(callFunc.bind(this));
-                }
+                WXCtr.share({callback:callFunc});
             }else if(e.target.getName()=="btn_close"){
-                GameCtr.money+=Math.floor(this._offlineIncome);
-                GameCtr.rich+=Math.floor(this._offlineIncome);
                 GameCtr.getInstance().getGame().setMaskVisit(false);
-                GameCtr.getInstance().getLevel().setMoney();
                 this.node.destroy();
             }
             AudioManager.getInstance().playSound("audio/btnClose");
         })
     }
 }
+

@@ -88,10 +88,12 @@ export default class Game extends cc.Component {
     @property(cc.Prefab)
     bubbleHoney:cc.Prefab=null;
 
+    @property(cc.Prefab)
+    goldNotEnough:cc.Prefab=null;
+
     onLoad(){
         GameCtr.getInstance().setGame(this);
         GameCtr.getInstance().initEventTarget();
-        //GameCtr.honeyPool
         this.initEvent();
         this.initNode();
         this.initBubbleHoneys();
@@ -169,7 +171,12 @@ export default class Game extends cc.Component {
                     this._btn_upSpeed.stopAllActions();
                     this.showRocketAction();
                 }
-                WXCtr.share({callback:callFunc});
+
+                if(GameCtr.vedioTimes<=0){
+                    WXCtr.share({callback:callFunc});
+                }else{
+                    WXCtr.showVideoAd(callFunc.bind(this));
+                }
 
             }else if(e.target.getName()=="btn_rank"){
                 if(cc.find("Canvas").getChildByName("ranking")){return}
@@ -333,6 +340,13 @@ export default class Game extends cc.Component {
                 }
             })
         ),this._timeCount+2))
+    }
+
+    showGoldNotEnough(){
+        if(cc.find("Canvas").getChildByName("goldNotEnough")){return};
+        let goldNotEnough=cc.instantiate(this.goldNotEnough);
+        
+        goldNotEnough.parent=cc.find("Canvas");
     }
 
 

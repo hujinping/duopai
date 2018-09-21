@@ -2,6 +2,7 @@ const {ccclass, property} = cc._decorator;
 import AudioManager from "../../Common/AudioManager";
 import GameCtr from "../../Controller/GameCtr";
 import Util from "../../Common/Util";
+import WXCtr from "../../Controller/WXCtr";
 @ccclass
 export default class NewClass extends cc.Component {
 
@@ -214,16 +215,26 @@ export default class NewClass extends cc.Component {
                 GameCtr.getInstance().getGame().setManufactureUpgrade(manufactureUpgrade);
                 AudioManager.getInstance().playSound("audio/open_panel");
             }else if(e.target.getName()=="btn_boubleIncome"){
-                if(GameCtr.incomeRate>1){
-                    GameCtr.getInstance().getGame().showToast("双倍收益中...");
-                    return;
+                
+                let callFunc=()=>{
+                    if(GameCtr.incomeRate>1){
+                        GameCtr.getInstance().getGame().showToast("双倍收益中...");
+                        return;
+                    }
+                    if(!this._btn_doubleIncome.getComponent(cc.Button).interactable){return;}
+                    this._doubleTime=0;
+                    this._btn_doubleIncome.getComponent(cc.Button).interactable=false;
+                    this._btn_doubleIncome.stopAllActions();
+                    GameCtr.incomeRate=2;
+                    this.startDoubleTimer(GameCtr.otherConfig.doublePersist);
                 }
-                if(!this._btn_doubleIncome.getComponent(cc.Button).interactable){return;}
-                this._doubleTime=0;
-                this._btn_doubleIncome.getComponent(cc.Button).interactable=false;
-                this._btn_doubleIncome.stopAllActions();
-                GameCtr.incomeRate=2;
-                this.startDoubleTimer(GameCtr.otherConfig.doublePersist);
+                
+                if(GameCtr.vedioTimes<=0){
+                    WXCtr.share({callback:callFunc});
+                }else{
+                    WXCtr.showVideoAd(callFunc.bind(this));
+                }
+
             }else if(e.target.getName()=="mask"){
                 this._speedUpTime=Date.now();
                 this._speed=this._speedUpTime>0?GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].speed:1;

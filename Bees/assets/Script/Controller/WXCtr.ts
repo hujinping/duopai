@@ -45,9 +45,14 @@ export default class WXCtr {
     static heightRatio;
 
     static authed = false;
+    static outvideoAdCallback = null;
 
     constructor() {
-
+        if (WXCtr.videoAdCallback == null) {
+            WXCtr.videoAdCallback = (res) => {
+                WXCtr.onCloseVideo(res);
+            }
+        }
     }
 
     //获取启动参数
@@ -313,12 +318,44 @@ export default class WXCtr {
             WXCtr.videoAd.onError(err => {
                 console.log(err)
             });
+            WXCtr.videoAd.onClose(WXCtr.videoAdCallback);
         }
     }
 
-    static showVideoAd() {
+    static restoreVideoAdOnClose(callback: Function = null) {
+        WXCtr.videoAd.onClose(() => {
+            if (callback != null) {
+                WXCtr.videoAd.offClose(callback);
+            }
+            WXCtr.videoAd.onClose(WXCtr.videoAdCallback);
+        });
+        WXCtr.setBannerAd(100,300);
+    }
+
+    static showVideoAd(callback: Function = null) {
         if (WXCtr.videoAd) {
+            WXCtr.hideBannerAd();
+            if (callback != null) {
+                WXCtr.videoAd.offClose(WXCtr.videoAdCallback);
+                WXCtr.outvideoAdCallback = callback;
+                GameCtr.vedioTimes--;
+                WXCtr.videoAd.onClose(callback);
+            }
             WXCtr.videoAd.show();
+        }else{
+            //GameCtr.ins.getGame().showToast("")
+        }
+    }
+
+    static showBannerAd() {
+        if (cc.isValid(WXCtr.bannerAd) && WXCtr.bannerAd) {
+            WXCtr.bannerAd.show();
+        }
+    }
+
+    static hideBannerAd() {
+        if (cc.isValid(WXCtr.bannerAd) && WXCtr.bannerAd) {
+            WXCtr.bannerAd.hide();
         }
     }
 
@@ -335,6 +372,7 @@ export default class WXCtr {
                 callback(false);
             }
         };
+        
         WXCtr.videoAd.onClose(call);
         WXCtr.videoAdCallback = call;
     }
@@ -346,28 +384,32 @@ export default class WXCtr {
     }
 
     //banner广告
-    static createBannerAd(height = null) {
-        if (window.wx != undefined) {
-            if (WXCtr.bannerAd) {
+    static setBannerAd(height = null, width = null) {
+        if (window.wx != undefined && wx.createBannerAd) {
+            if (WXCtr.bannerAd && WXCtr.bannerAd.destroy) {
                 WXCtr.bannerAd.destroy();
             }
-            let top = 100;
+            let top = 140;
             if (height) top = height;
+            let widthNum = 375;
+            let left = 0;
+            if (width) {
+                widthNum = width;
+                let realWidth = width * WXCtr.widthRatio;
+                realWidth = realWidth < 300 ? 300 : realWidth;
+                left = (WXCtr.screenWidth - realWidth) / 2;
+            }
             WXCtr.bannerAd = wx.createBannerAd({
-                adUnitId: WXCtr.bannerId,
+                adUnitId: WXCtr.advid,
                 style: {
-                    left: 0,
+                    left: left,
                     top: WXCtr.screenHeight - top * WXCtr.heightRatio,
-                    width: 375 * WXCtr.widthRatio,
+                    width: widthNum * WXCtr.widthRatio,
                 }
             });
             WXCtr.bannerAd.show();
-        }
-    }
-
-    static hideBannerAd() {
-        if (WXCtr.bannerAd) {
-            WXCtr.bannerAd.destroy();
+            WXCtr.bannerAd.onError(() => {
+            })
         }
     }
 

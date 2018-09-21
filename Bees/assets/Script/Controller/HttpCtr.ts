@@ -121,7 +121,7 @@ export default class HttpCtr {
         Http.send({
             url: Http.UrlConfig.GET_SETTING,
             success: (resp) => {
-                //console.log("获取游戏配置=：", resp);
+                console.log("获取游戏配置=：", resp);
                 GameCtr.isAudited = resp.ok;
                 GameCtr.setting = resp;
             }
