@@ -391,7 +391,7 @@ export default class Game extends cc.Component {
 
     setRealMoney(){
         if(GameCtr.realMoney){
-            this._lb_money.getComponent(cc.Label).string="￥"+(GameCtr.realMoney/100).toFixed(2);
+            this._lb_money.getComponent(cc.Label).string="¥"+(GameCtr.realMoney/100).toFixed(2);
         }
     }
 

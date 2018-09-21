@@ -7,10 +7,12 @@ export default class NewClass extends cc.Component {
     _level=null;
     _unlockNum=null;
     _lb_level=null;
+    _lb_unlockTip=null;
     _btn_upgrade=null;
     _word_unlock=null;
     _word_levelUp=null;
     _word_levelFull=null;
+    _icon_Arrow=null;
     _combsUnlock=null;
     _totalComb=null;
     _beeNode=null;
@@ -21,6 +23,7 @@ export default class NewClass extends cc.Component {
     _speed=1
     _hadRandom=false;
     _isWorking=true;
+    _isActioning=false;
 
 
     @property(cc.Prefab)
@@ -62,11 +65,15 @@ export default class NewClass extends cc.Component {
     initNode(){
         this._beeNode=this.node.getChildByName("beeNode");
         this._lb_level=this.node.getChildByName("lb_level");
+        this._lb_unlockTip=this.node.getChildByName("lb_unlockTip");
         this._totalComb=this.node.getChildByName("totalComb");
         this._btn_upgrade=this.node.getChildByName("btn_upgrade");
+        this._icon_Arrow=this._btn_upgrade.getChildByName("arrow");
         this._word_unlock=this._btn_upgrade.getChildByName("word_unlock");
         this._word_levelUp=this._btn_upgrade.getChildByName("word_LeveUP");
         this._word_levelFull=this._btn_upgrade.getChildByName("word_levelFull");
+
+        this._lb_unlockTip.active=false;
         this.showUnlockBtn(false);
         this._beeNode.setLocalZOrder(2);
     }
@@ -96,7 +103,7 @@ export default class NewClass extends cc.Component {
         this._unlock=unlock;
         this._unlockNum=unlockNum;
         this._lb_level.getComponent(cc.Label).string=level+'';
-
+        this._lb_unlockTip.getComponent(cc.Label).string="玩家等级"+GameCtr.combConfig[this._level-1].needLevel+"级解锁";
         for(let i=0;i<unlockNum;i++){
             this.unlockComb(i)
             this.createBee(i);
@@ -211,18 +218,21 @@ export default class NewClass extends cc.Component {
 
     showFullFillBtn(){
         this._btn_upgrade.active=true;
+        this._lb_unlockTip.active=false;
         this._word_unlock.active=false;
         this._word_levelUp.active=false;
         this._word_levelFull.active=true;
-        this._btn_upgrade.getComponent(cc.Button).interactable=false;
+        this.enabledBtn(false);
     }
 
     showUnlockBtn(isEffectable){
         this._btn_upgrade.active=isEffectable;
+        this._lb_unlockTip.active=!isEffectable;
         this._word_unlock.active=true;
         this._word_levelUp.active=false;
         this._word_levelFull.active=false;
-        this._btn_upgrade.getComponent(cc.Button).interactable=isEffectable;
+        this.enabledBtn(isEffectable);
+        //this._btn_upgrade.getComponent(cc.Button).interactable=isEffectable;
     }
 
     doBubbleHoney(){
@@ -256,24 +266,20 @@ export default class NewClass extends cc.Component {
     updateBtnState(){
         console.log("log-----updateBtnState   this._level=:",this._level);
         if(this._unlockNum==0 && !this._unlock){// 此蜂巢还未解锁
-            // if(GameCtr.level>=GameCtr.combConfig[this._level-1].needLevel){//此蜂巢满足解锁条件
-            //     this.showUnlockBtn(true);
-            // }else{//此蜂巢不满足解锁条件
-            //     this.showUnlockBtn(false);
-            // }
+
         }else if(this._unlockNum<GameCtr.maxPerCombLevel){ //此蜂巢已经解锁,但未满级
             this._btn_upgrade.active=true;
             this._word_unlock.active=false;
+            this._lb_unlockTip.active=false;
             this._word_levelUp.active=true;
             if(GameCtr.money>=GameCtr.combConfig[this._level-1].levelUpCost+GameCtr.combConfig[this._level-1].upMatrix*(this._unlockNum-1)){
-                this._btn_upgrade.getComponent(cc.Button).interactable=true;
+                this.enabledBtn(true);
                 //新手引导2
                 if(!this.node.getChildByTag(GameCtr.tipHandTag+2) &&! GameCtr.getInstance().getGame().isGuideStepOver(2)){
                     GameCtr.getInstance().getGame().showGuideStep2();
                 }
             }else{
-                this._btn_upgrade.getComponent(cc.Button).interactable=false;
-
+                this.enabledBtn(false);
                 if(!GameCtr.getInstance().getGame().isGuideStepOver(2)){
                     GameCtr.getInstance().getGame().closeGuideStep(this.node,2);
                 }
@@ -282,6 +288,22 @@ export default class NewClass extends cc.Component {
             this.showFullFillBtn();
         }
         
+    }
+
+    enabledBtn(isEffectable){
+        this._btn_upgrade.getComponent(cc.Button).interactable=isEffectable;
+        this._icon_Arrow.active=isEffectable;
+
+        if(this._icon_Arrow.active&&!this._isActioning){
+            this._isActioning=true;
+            this._btn_upgrade.runAction(cc.repeatForever(cc.sequence(
+                cc.scaleTo(0.3,1.1),
+                cc.scaleTo(0.3,1.0)
+            )))
+        }else{
+            this._btn_upgrade.stopAllActions();
+            this._isActioning=false;
+        }
     }
 
     stopWork(){

@@ -30,7 +30,7 @@ export default class NewClass extends cc.Component {
         this.lb_money=this.node.getChildByName("lb_money");
         this.lb_time=this.node.getChildByName("lb_time");
         this.btn_upgrade=this.node.getChildByName("btn_upgrade");
-        this.icon_Arrow=this.node.getChildByName("icon_arrow");
+        this.icon_Arrow=this.btn_upgrade.getChildByName("arrow");
         this.progress=this.node.getChildByName("progress");
 
         this.icon_Arrow.active=false;
@@ -88,7 +88,6 @@ export default class NewClass extends cc.Component {
 
     setLevel(){
         this.lb_level.getComponent(cc.Label).string="Lv"+GameCtr.level;
-        this.hideArrow();
         if(GameCtr.combConfig[GameCtr.comblevel].needLevel==GameCtr.level){
             GameCtr.getInstance().getGame().unlockComb();
         }
@@ -128,21 +127,6 @@ export default class NewClass extends cc.Component {
         this.progress.getComponent(cc.ProgressBar).progress=GameCtr.levelMoney/GameCtr.levelConfig[GameCtr.level-1].need;
     }
 
-    showArrowAction(){
-        this.icon_Arrow.active=true;
-        this.icon_Arrow.runAction(cc.repeatForever(cc.sequence(
-            cc.scaleTo(0.15,1.1),
-            cc.callFunc(function(){
-                this.icon_Arrow.scale=1.0;
-            }.bind(this))
-        )))
-    }
-
-    hideArrow(){
-        this.icon_Arrow.active=false;
-        this.icon_Arrow.stopAllActions();
-    }
-
     updateTime(){
         this.currentTime = new Date(Date.now());
         if(this.currentTime.getMinutes()<10){
@@ -179,6 +163,16 @@ export default class NewClass extends cc.Component {
 
     enabledBtn(isEffectable){
         this.btn_upgrade.getComponent(cc.Button).interactable=isEffectable;
+        this.icon_Arrow.active=isEffectable;
+
+        if(this.icon_Arrow.active){
+            this.btn_upgrade.runAction(cc.repeatForever(cc.sequence(
+                cc.scaleTo(0.3,1.1),
+                cc.scaleTo(0.3,1.0)
+            )))
+        }else{
+            this.btn_upgrade.stopAllActions();
+        }
     }
 
     isMaxLevel(){

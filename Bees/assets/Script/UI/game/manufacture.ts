@@ -20,6 +20,7 @@ export default class NewClass extends cc.Component {
     _btn_upgrade=null;
     _btn_doubleIncome=null;
     _icon_arrow=null;
+
     _timeCount1=-1;
     _speed=1;
     _isWorking=false;
@@ -31,6 +32,7 @@ export default class NewClass extends cc.Component {
     _pulleyList=[];
     _jarNode=null;
     _doubleTime=0;
+    _isActioning=false;
     
     
     onLoad(){
@@ -47,10 +49,11 @@ export default class NewClass extends cc.Component {
        
         this._lb_doubleTime=this.node.getChildByName("lb_doubleTime");
         this._btn_upgrade=this.node.getChildByName("btn_upgrade");
+        this._icon_arrow=this._btn_upgrade.getChildByName("arrow");
        
         this._btn_doubleIncome=this.node.getChildByName("btn_boubleIncome");
         this._mask=this.node.getChildByName("mask");
-        this._icon_arrow=this.node.getChildByName("icon_arrow");
+        
         this._upLine=this.node.getChildByName("upline");
         this._downLine=this.node.getChildByName("downline");
         this._plug=this.node.getChildByName("plug");
@@ -116,7 +119,9 @@ export default class NewClass extends cc.Component {
         this._lb_honey.getComponent(cc.Label).string=Util.formatNumber(Math.floor(GameCtr.honeyValue));
         //新手引导1
         if(!cc.find("Canvas").getChildByTag(GameCtr.tipHandTag+1) &&! GameCtr.getInstance().getGame().isGuideStepOver(1)){
-            GameCtr.getInstance().getGame().showGuideStep1();
+            this.scheduleOnce(()=>{
+                GameCtr.getInstance().getGame().showGuideStep1();
+            },3)
         }
     }
 
@@ -279,9 +284,19 @@ export default class NewClass extends cc.Component {
 
     enableBtn(isEffectable){
         this._btn_upgrade.getComponent(cc.Button).interactable=isEffectable;
-    }
+        this._icon_arrow.active=isEffectable;
 
-    
+        if(this._icon_arrow.active && !this._isActioning){
+            this._isActioning=true;
+            this._btn_upgrade.runAction(cc.repeatForever(cc.sequence(
+                cc.scaleTo(0.3,1.1),
+                cc.scaleTo(0.3,1.0)
+            )))
+        }else{
+            this._btn_upgrade.stopAllActions();
+            this._isActioning=false;
+        }
+    }
 
     startDoubleTimer(_timeCount){
         this._timeCount1=_timeCount;

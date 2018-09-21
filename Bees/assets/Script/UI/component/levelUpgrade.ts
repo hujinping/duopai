@@ -16,7 +16,7 @@ export default class NewClass extends cc.Component {
         this._btn_upgrade=this.node.getChildByName("btn_upgrade");
         this._lb_bonus=this._btn_upgrade.getChildByName("lb_bonus");
         this._word_levelFull=this._btn_upgrade.getChildByName("word_levelFull");
-        this._lb_bonus.getComponent(cc.Label).string="￥"+Util.formatNumber(GameCtr.levelConfig[GameCtr.level-1].award);
+        this._lb_bonus.getComponent(cc.Label).string="Э"+Util.formatNumber(GameCtr.levelConfig[GameCtr.level-1].award);
 
         this.initBtn(this._btn_close);
         this.initBtn(this._btn_upgrade);

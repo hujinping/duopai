@@ -57,6 +57,6 @@ export default class NewClass extends cc.Component {
         }
         let finalSpeed =combs_speed>=manufactures_speed?manufactures_speed:combs_speed;
         this._bonusValue=Math.floor(finalSpeed*300);
-        this._lb_bonus.getComponent(cc.Label).string="￥"+Util.formatNumber(Math.floor(finalSpeed*300));
+        this._lb_bonus.getComponent(cc.Label).string="Э"+Util.formatNumber(Math.floor(finalSpeed*300));
     }
 }

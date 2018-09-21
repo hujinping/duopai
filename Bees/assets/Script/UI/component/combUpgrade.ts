@@ -69,7 +69,7 @@ export default class NewClass extends cc.Component {
         let upgrade=this.node.getChildByName("upgrade");
         this._btn_upgrade=upgrade.getChildByName("btn_upgrade");
         this._lb_cost=this._btn_upgrade.getChildByName("lb_cost");
-        this._lb_cost.getComponent(cc.Label).string="￥"+Util.formatNumber(GameCtr.combConfig[this._level-1].levelUpCost+
+        this._lb_cost.getComponent(cc.Label).string="Э"+Util.formatNumber(GameCtr.combConfig[this._level-1].levelUpCost+
             GameCtr.combConfig[this._level-1].upMatrix*(this._unlockNum-1));
         
     }
@@ -84,13 +84,17 @@ export default class NewClass extends cc.Component {
                 AudioManager.getInstance().playSound("audio/btnClose");
             }else if(e.target.getName()=="btn_upgrade"){
                 //console.log("log00000000000解锁蜂巢-------");
-                if(!this._btn_upgrade.getComponent(cc.Button).interactable){return}
+                if(this._unlockNum<GameCtr.maxPerCombLevel&&GameCtr.money<GameCtr.combConfig[this._level-1].levelUpCost+GameCtr.combConfig[this._level-1].upMatrix*(this._unlockNum-1)){
+                    GameCtr.getInstance().getGame().showGoldNotEnough();
+                    return;
+                }
+
+                if(!this._btn_upgrade.getComponent(cc.Button).interactable){return;}
                 AudioManager.getInstance().playSound("audio/levelup");
                 let comb=GameCtr.getInstance().getGame().getComb(this._level);
-                //console.log('log------------log00000000000解锁蜂巢-------combLevel=:',this._level);
+                
                 comb.getComponent("honeycomb").upgrade();
                 this._unlockNum++;
-                //console.log("log111111111111解锁蜂巢-------");
                 this._lb_des.getComponent(cc.Label).string=this._unlockNum+1;
                 if(this._unlockNum==GameCtr.maxPerCombLevel){
                     this._btn_upgrade.getComponent(cc.Button).interactable=false;

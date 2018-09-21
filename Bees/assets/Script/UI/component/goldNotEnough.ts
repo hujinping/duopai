@@ -31,7 +31,7 @@ export default class NewClass extends cc.Component {
         }
         let finalSpeed =combs_speed>=manufactures_speed?manufactures_speed:combs_speed;
         this._offlineIncome =5*60*finalSpeed;
-        this._lb_bonus.getComponent(cc.Label).string="￥"+Util.formatNumber(Math.floor(this._offlineIncome));
+        this._lb_bonus.getComponent(cc.Label).string="Э"+Util.formatNumber(Math.floor(this._offlineIncome));
     }
 
     initBtn(btn){
@@ -40,13 +40,11 @@ export default class NewClass extends cc.Component {
                 let callFunc=()=>{
                     GameCtr.money+=Math.floor(this._offlineIncome);
                     GameCtr.rich+=Math.floor(this._offlineIncome);
-                    GameCtr.getInstance().getGame().setMaskVisit(false);
                     GameCtr.getInstance().getLevel().setMoney();
                     this.node.destroy();
                 }
                 WXCtr.share({callback:callFunc});
             }else if(e.target.getName()=="btn_close"){
-                GameCtr.getInstance().getGame().setMaskVisit(false);
                 this.node.destroy();
             }
             AudioManager.getInstance().playSound("audio/btnClose");
