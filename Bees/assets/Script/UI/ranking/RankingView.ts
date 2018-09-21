@@ -52,23 +52,15 @@ export default class RankingView extends cc.Component {
 
     onLoad() {
         GameCtr.getInstance().setRanking(this);
-        this.friendListData=WXCtr.getFriendData();
-        console.log("log---------------this.friendListData=:",this.friendListData);
-
-        if(this.friendListData && this.friendListData.length>=2){
-            for(let i =0;i<this.friendListData.length;i++){
-                for(let j=i+1;j<this.friendListData.length;j++){
-                    if(Number(this.friendListData[i].KVDataList[1].value)<Number(this.friendListData[j].KVDataList[1].value)){
-                        let temp=this.friendListData[i];
-                        this.friendListData[i]=this.friendListData[j];
-                        this.friendListData[j]=temp;
-                    }
-                }
-            }
-        }
     }
 
     start() {
+        if(window.wx != undefined){
+            this.tex = new cc.Texture2D();
+            window.sharedCanvas.width = 900;
+            window.sharedCanvas.height = 1200;
+        }
+
         this.initRank();
         this.initSelfInfo();
     }
@@ -76,8 +68,10 @@ export default class RankingView extends cc.Component {
     //初始化界面
     initRank() {
         if (this.friendToggle.isChecked) {
+            this.curPageIndex=0;
             this.showFreindRanking();
         } else if (this.worldToggle.isChecked) {
+            this.curPageIndex=0;
             this.showWorldRanking();
         }
     }
@@ -123,9 +117,8 @@ export default class RankingView extends cc.Component {
         }
 
         if(this.sprFreindRankScroll.node.active){
-            this.showRanklist(this.sprFreindRankScroll.node,this.friendListData,this.curPageIndex);
-        }
-        
+            WXCtr.showFriendRanking(this.curPageIndex);
+        } 
     }
 
     onBtnPageDown(){
@@ -133,9 +126,7 @@ export default class RankingView extends cc.Component {
         if(this.ndWorldScr.active){
             if((this.curPageIndex+1)*7>=this.worldListData.length){return;}
         }
-        if(this.sprFreindRankScroll.node.active){
-            if((this.curPageIndex+1)*7>=this.friendListData.length){return;}
-        }
+
         
         this.curPageIndex++
         if(this.ndWorldScr.active){
@@ -143,7 +134,7 @@ export default class RankingView extends cc.Component {
         }
 
         if(this.sprFreindRankScroll.node.active){
-            this.showRanklist(this.sprFreindRankScroll.node,this.friendListData,this.curPageIndex);
+            WXCtr.showFriendRanking(this.curPageIndex);
         }
     }
 
@@ -219,11 +210,15 @@ export default class RankingView extends cc.Component {
         this.sprFreindRankScroll.node.active = true;
         this.ndWorldScr.active = false;
         this.showAuthTip(false);
-        this.showRanklist(this.sprFreindRankScroll.node,this.friendListData,0);
+        if (!this.isGetFriendList) {
+            this.isGetFriendList = true;
+            WXCtr.showFriendRanking(this.curPageIndex);
+        }
+
+        //this.showRanklist(this.sprFreindRankScroll.node,this.friendListData,0);
     }
 
     loadImg(spr, imgUrl) {
-        console.log("log--------imgUrl=:",imgUrl);
         if(!imgUrl||imgUrl==""){return;}
         cc.loader.load({
             url: imgUrl,
@@ -236,6 +231,18 @@ export default class RankingView extends cc.Component {
     //关闭世界排行
     onCloseRank() {
         this.ndRanking.active = false;
+    }
+
+     // 刷新子域的纹理
+     _updateSubDomainCanvas() {
+        if (window.sharedCanvas != undefined && this.tex != null && this.ndRanking.active && this.sprFreindRankScroll.node.active) {
+            this.tex.initWithElement(window.sharedCanvas);
+            this.tex.handleLoadedTexture();
+            this.sprFreindRankScroll.spriteFrame = new cc.SpriteFrame(this.tex);
+        }
+    }
+    update() {
+        this._updateSubDomainCanvas();
     }
 
 };
