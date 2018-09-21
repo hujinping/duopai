@@ -23,8 +23,8 @@ export default class CanvasCtr extends cc.Component {
     ndFriend: cc.Node = null;
     @property(Ranking)
     scrRanking: Ranking = null;
-    @property(cc.Node)
-    ndSelf: cc.Node = null;
+    // @property(cc.Node)
+    // ndSelf: cc.Node = null;
     @property(cc.Node)
     ndOverRanking: cc.Node = null;
     @property([RankingCell])
@@ -54,7 +54,7 @@ export default class CanvasCtr extends cc.Component {
                 } else if (data.messageType == Message_Type.Compare_Score) {        //比较自己与好友得分
                     this.compareWithScore(data.score);
                 } else if (data.messageType == Message_Type.Show_WholeRanking) {     //显示完整排行榜
-                    this.showFriendRanking();
+                    this.showFriendRanking(data.pageIndex);
                 } else if (data.messageType == Message_Type.Show_OverRanking) {      //显示结束排行榜
                     this.showOverRanking();
                 } else if (data.messageType == Message_Type.Get_SelfData) {          //获取自己信息
@@ -281,7 +281,7 @@ export default class CanvasCtr extends cc.Component {
     }
 
 
-    showFriendRanking() {
+    showFriendRanking(pageIndex) {
         this.CloseCompareWithScore();
         this.ndFriend.active = true;
         this.ndOverRanking.active = false;
@@ -291,14 +291,7 @@ export default class CanvasCtr extends cc.Component {
             console.log("没有好友排行榜信息，请先获取好友排行榜信息");
             return;
         }
-        this.scrRanking.loadRanking(this.mFriendRankData);
-
-        console.log("显示自己信息：", this.mSelfData);
-        if (!this.mSelfRank) {
-            this.mSelfRank = this.getSelfRank();
-        }
-        let selfRanking = this.ndSelf.getComponent(RankingCell);
-        selfRanking.setData(this.mSelfRank, this.mSelfData);
+        this.scrRanking.loadRanking(this.mFriendRankData,pageIndex);
     }
 
     closeFriendRanking() {
