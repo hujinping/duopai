@@ -69,7 +69,7 @@ export default class NewClass extends cc.Component {
         let upgrade=this.node.getChildByName("upgrade");
         this._btn_upgrade=upgrade.getChildByName("btn_upgrade");
         this._lb_cost=this._btn_upgrade.getChildByName("lb_cost");
-        this._lb_cost.getComponent(cc.Label).string="Э"+Util.formatNumber(GameCtr.combConfig[this._level-1].levelUpCost+
+        this._lb_cost.getComponent(cc.Label).string="$"+Util.formatNumber(GameCtr.combConfig[this._level-1].levelUpCost+
             GameCtr.combConfig[this._level-1].upMatrix*(this._unlockNum-1));
         
     }

@@ -57,9 +57,6 @@ export default class Game extends cc.Component {
     offlineIncome:cc.Prefab=null;
 
     @property(cc.Prefab)
-    rank:cc.Prefab=null;
-
-    @property(cc.Prefab)
     pfTurntable:cc.Prefab=null;
 
     @property(cc.Prefab)
@@ -325,11 +322,12 @@ export default class Game extends cc.Component {
         this._timeCount=_timeCount;
         this._lb_upSpeedTime.active=true;
         this._btn_upSpeed.opacity=0;
-        AudioManager.getInstance().playMusic("audio/speeUp");
+        //AudioManager.getInstance().playMusic("audio/speeUp");
         GameCtr.getInstance().emitEvent("startSpeedUp",null);
         this.setCombsSpeed(2);
         this.countDown();
     }
+
 
     countDown(){
         this._lb_upSpeedTime.stopAllActions();
@@ -349,7 +347,7 @@ export default class Game extends cc.Component {
                     this._btn_upSpeed.opacity=255;
                     this._lb_upSpeedTime.active=false;
                     GameCtr.getInstance().getManufacture().resetLineAction();
-                    AudioManager.getInstance().playMusic("audio/bgMusic");
+                    //AudioManager.getInstance().playMusic("audio/bgMusic");
                     GameCtr.getInstance().emitEvent("stopSpeedUp",null);
                     this._lb_upSpeedTime.stopAllActions();
                 }
@@ -411,29 +409,6 @@ export default class Game extends cc.Component {
         }
     }
 
-    showWorldRank() {
-        console.log('获取世界排行数据???');
-        Http.send({
-            url: Http.UrlConfig.GET_RANK_LIST,
-            success: (resp) => {
-                console.log("getWorldList response == ", resp);
-                this.creatRankNode(resp.data);
-            },
-            data: {
-                uid: UserManager.user_id,
-                voucher:UserManager.voucher,
-            }
-        });
-    }
-
-    creatRankNode(rankList){
-        let rank=cc.instantiate(this.rank);
-        rank.parent=cc.find("Canvas");
-        rank.y=-1218;
-        rank.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0))); 
-        rank.getComponent("rank").initRank(rankList);
-        GameCtr.getInstance().getGame().setMaskVisit(true);
-    }
 
     showAuthTip(){
         this._authTipNode.active=true;
@@ -678,10 +653,10 @@ export default class Game extends cc.Component {
     }
 
     commitDataToServer(){
-        HttpCtr.setGold(GameCtr.rich);
-        WXCtr.submitScoreToWx(GameCtr.rich);
-        this.unschedule(this.commitDataToServer.bind(this));
-        this.scheduleOnce(this.commitDataToServer.bind(this),10);
+        // HttpCtr.setGold(GameCtr.rich);
+        // //WXCtr.submitScoreToWx(GameCtr.rich);
+        // this.unschedule(this.commitDataToServer.bind(this));
+        // this.scheduleOnce(this.commitDataToServer.bind(this),10);
     }
 
 

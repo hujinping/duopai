@@ -351,10 +351,4 @@ export default class CanvasCtr extends cc.Component {
         }
         return rank;
     }
-
-    // start () {
-
-    // }
-
-    // update (dt) {}
 }

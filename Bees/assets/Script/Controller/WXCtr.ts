@@ -598,14 +598,13 @@ export default class WXCtr {
         }
     }
 
-    //获取好友排行榜数据
-    static getFriendRankingData() {
+     //获取好友排行榜数据
+     static getFriendRankingData() {
         if (window.wx != undefined) {
             // 发消息给子域
             window.wx.postMessage({
                 messageType: Message_Type.Get_FriendData,
-                SCORE_KEY: "Rank_SCORE",
-                LOCATION_KEY: "LOACTION",
+                LIST_KEY: "Rank_Data"
             });
         }
     }

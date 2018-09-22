@@ -32,7 +32,7 @@ export default class NewClass extends cc.Component {
         }
         let finalSpeed =combs_speed>=manufactures_speed?manufactures_speed:combs_speed;
         this._offlineIncome =5*60*finalSpeed;
-        this._lb_bonus.getComponent(cc.Label).string="Э"+Util.formatNumber(Math.floor(this._offlineIncome));
+        this._lb_bonus.getComponent(cc.Label).string="$"+Util.formatNumber(Math.floor(this._offlineIncome));
     }
 
     initBtn(btn){

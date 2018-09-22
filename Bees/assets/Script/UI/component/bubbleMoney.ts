@@ -11,7 +11,7 @@ export default class NewClass extends cc.Component {
     }
 
     setMoney(money){
-        this.node.getComponent(cc.Label).string="+Э"+Util.formatNumber(money);
+        this.node.getComponent(cc.Label).string="+$"+Util.formatNumber(money);
     }
 
   

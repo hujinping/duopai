@@ -49,6 +49,7 @@ export default class RankingView extends cc.Component {
     private isGetWorldList = false;
     private isGetFriendList = false;
     private curPageIndex=0;
+    private interval=0;
 
     onLoad() {
         GameCtr.getInstance().setRanking(this);
@@ -215,8 +216,6 @@ export default class RankingView extends cc.Component {
             this.isGetFriendList = true;
             WXCtr.showFriendRanking(this.curPageIndex);
         }
-
-        //this.showRanklist(this.sprFreindRankScroll.node,this.friendListData,0);
     }
 
     loadImg(spr, imgUrl) {
@@ -242,6 +241,7 @@ export default class RankingView extends cc.Component {
             this.sprFreindRankScroll.spriteFrame = new cc.SpriteFrame(this.tex);
         }
     }
+    
     update() {
         this._updateSubDomainCanvas();
     }

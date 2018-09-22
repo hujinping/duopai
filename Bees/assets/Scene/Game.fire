@@ -473,7 +473,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 51.2,
+      "width": 44.8,
       "height": 64
     },
     "_rotationX": 0,
@@ -549,7 +549,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 54,
+      "width": 48,
       "height": 225
     },
     "_rotationX": 0,
@@ -5969,7 +5969,7 @@
       "height": 1920
     },
     "_fitWidth": true,
-    "_fitHeight": false
+    "_fitHeight": true
   },
   {
     "__type__": "f1f06VxNc1Fi7PAUDkZyb/2",
@@ -5994,7 +5994,6 @@
     "offlineIncome": {
       "__uuid__": "59cda4c6-ff90-489e-85b8-4f2c2f650702"
     },
-    "rank": null,
     "pfTurntable": {
       "__uuid__": "5786e514-98af-4c4e-843c-a25fcba0fb7d"
     },

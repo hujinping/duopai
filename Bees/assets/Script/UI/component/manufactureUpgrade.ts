@@ -38,8 +38,8 @@ export default class NewClass extends cc.Component {
         let lb_add=honeyProfit.getChildByName("lb_add");
         
 
-        lb_value.getComponent(cc.Label).string="Э"+Util.formatNumber(Math.ceil(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus-0));
-        lb_add.getComponent(cc.Label).string="+Э"+Util.formatNumber(Math.ceil(GameCtr.manufactureConfig[GameCtr.ManufactureLevel].perBonus-GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus));
+        lb_value.getComponent(cc.Label).string="$"+Util.formatNumber(Math.ceil(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus-0));
+        lb_add.getComponent(cc.Label).string="+$"+Util.formatNumber(Math.ceil(GameCtr.manufactureConfig[GameCtr.ManufactureLevel].perBonus-GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus));
     }
 
     showSpeed(){
@@ -66,7 +66,7 @@ export default class NewClass extends cc.Component {
         this._lb_cost=this._btn_upgrade.getChildByName("lb_cost");
         if(this.isMaxLevel()){return}
         this.lb_des.getComponent(cc.Label).string=GameCtr.ManufactureLevel+1;
-        this._lb_cost.getComponent(cc.Label).string="Э"+Util.formatNumber(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].cost);
+        this._lb_cost.getComponent(cc.Label).string="$"+Util.formatNumber(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].cost);
     }
 
     initBtnEvent(btn){

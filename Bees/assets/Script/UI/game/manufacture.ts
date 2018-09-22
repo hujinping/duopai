@@ -366,7 +366,6 @@ export default class NewClass extends cc.Component {
             }
         }
 
-    
         if(this._upLine.x>=1080)this._upLine.x=0;
         if(this._downLine.x<=-1080)this._downLine.x=0;
     }
