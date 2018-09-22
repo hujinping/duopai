@@ -1,4 +1,6 @@
 import AudioManager from "../../Common/AudioManager";
+import HttpCtr from "../../Controller/HttpCtr";
+import GameCtr from "../../Controller/GameCtr";
 
 const {ccclass, property} = cc._decorator;
 @ccclass
@@ -13,6 +15,7 @@ export default class NewClass extends cc.Component {
             if(cc.find("Canvas").getChildByName("ufoAward")){return}
             let ufoAward=cc.instantiate(this.ufoAward);
             ufoAward.parent=cc.find("Canvas");
+            HttpCtr.openClick(GameCtr.clickType.ufo);
         })
     }
 

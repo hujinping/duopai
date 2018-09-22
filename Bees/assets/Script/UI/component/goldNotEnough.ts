@@ -2,6 +2,7 @@ import Util from "../../Common/Util";
 import GameCtr from "../../Controller/GameCtr";
 import AudioManager from "../../Common/AudioManager";
 import WXCtr from "../../Controller/WXCtr";
+import HttpCtr from "../../Controller/HttpCtr";
 const {ccclass, property} = cc._decorator;
 @ccclass
 export default class NewClass extends cc.Component {
@@ -44,6 +45,7 @@ export default class NewClass extends cc.Component {
                     this.node.destroy();
                 }
                 WXCtr.share({callback:callFunc});
+                HttpCtr.openClick(GameCtr.clickType.goldNotEnoughShare);
             }else if(e.target.getName()=="btn_close"){
                 this.node.destroy();
             }

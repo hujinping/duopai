@@ -61,7 +61,7 @@ export default class pfTurntable extends cc.Component {
             // }
             //GameCtr.turntableInfo(func);
 
-            this.data = {type:0};//Math.floor(Math.random()*7)
+            this.data = {type:Math.floor(Math.random()*7)};
             this.requestResults();
             GameCtr.getInstance().getGame().disableBtnPfturnable();
             GameCtr.getInstance().getGame().startPfTurntableTime();

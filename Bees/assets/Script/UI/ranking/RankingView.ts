@@ -52,6 +52,7 @@ export default class RankingView extends cc.Component {
 
     onLoad() {
         GameCtr.getInstance().setRanking(this);
+        this.btn_share.active=GameCtr.isAudited;
     }
 
     start() {

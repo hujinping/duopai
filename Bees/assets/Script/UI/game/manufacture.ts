@@ -74,6 +74,8 @@ export default class NewClass extends cc.Component {
         this.initBtnEvent(this._btn_doubleIncome);
         this.showBtn();
         this.initJars();
+
+        this._btn_doubleIncome.active=GameCtr.isAudited;
     }
 
     initJars(){
@@ -119,9 +121,7 @@ export default class NewClass extends cc.Component {
         this._lb_honey.getComponent(cc.Label).string=Util.formatNumber(Math.floor(GameCtr.honeyValue));
         //新手引导1
         if(!cc.find("Canvas").getChildByTag(GameCtr.tipHandTag+1) &&! GameCtr.getInstance().getGame().isGuideStepOver(1)){
-            this.scheduleOnce(()=>{
-                GameCtr.getInstance().getGame().showGuideStep1();
-            },3)
+            GameCtr.getInstance().getGame().showGuideStep1();
         }
     }
 

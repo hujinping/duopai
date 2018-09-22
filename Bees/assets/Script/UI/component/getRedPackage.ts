@@ -38,7 +38,7 @@ export default class NewClass extends cc.Component {
     }
 
     setValue(value){
-        this._lb_value.getComponent(cc.Label).string="Э"+value/100;
+        this._lb_value.getComponent(cc.Label).string="￥"+value/100;
     }
 
     setSurplusMoney(){

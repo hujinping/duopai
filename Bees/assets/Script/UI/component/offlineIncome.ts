@@ -2,6 +2,7 @@ import Util from "../../Common/Util";
 import GameCtr from "../../Controller/GameCtr";
 import AudioManager from "../../Common/AudioManager";
 import WXCtr from "../../Controller/WXCtr";
+import HttpCtr from "../../Controller/HttpCtr";
 const {ccclass, property} = cc._decorator;
 @ccclass
 export default class NewClass extends cc.Component {
@@ -16,6 +17,7 @@ export default class NewClass extends cc.Component {
         this._lb_bonus.getComponent(cc.Label).string=""
         this.initBtn(this._btn_get);
         this.initBtn(this._btn_close);
+        this._btn_get.active=GameCtr.isAudited;
     }
 
 
@@ -45,9 +47,12 @@ export default class NewClass extends cc.Component {
                 }
                 if(GameCtr.vedioTimes<=0){
                     WXCtr.share({callback:callFunc});
+                    HttpCtr.openClick(GameCtr.clickType.offLineShare);
                 }else{
                     WXCtr.showVideoAd(callFunc.bind(this));
+                    HttpCtr.openClick(GameCtr.clickType.offLineVedio);
                 }
+                
             }else if(e.target.getName()=="btn_close"){
                 GameCtr.money+=Math.floor(this._offlineIncome);
                 GameCtr.rich+=Math.floor(this._offlineIncome);

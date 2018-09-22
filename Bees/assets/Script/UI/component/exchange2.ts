@@ -20,7 +20,7 @@ export default class NewClass extends cc.Component {
         this._lb_money=this.node.getChildByName("lb_surplusMoney");
         this._editeBox_phoneNum=this.node.getChildByName("phoneNumber");
 
-        this._lb_money.getComponent(cc.Label).string="Э"+(GameCtr.realMoney/100).toFixed(2);
+        this._lb_money.getComponent(cc.Label).string="￥"+(GameCtr.realMoney/100).toFixed(2);
         this.initBtnEvent(this._btn_close);
         this.initBtnEvent(this._btn_exchange);
     }

@@ -30,6 +30,7 @@ export default class Game extends cc.Component {
     _lb_upSpeedTime=null;
     _lb_money=null;
     _adNode=null;
+    _exchange=null;
     _mask=null;
     _combUpgrade=null;
     _interval3=0;
@@ -126,7 +127,8 @@ export default class Game extends cc.Component {
         this._btn_upSpeed=this.node.getChildByName("otherNode").getChildByName("btn_speedUp");
         this._btn_rank=this.node.getChildByName("otherNode").getChildByName("btn_rank");
         this._btn_more=this.node.getChildByName("otherNode").getChildByName("btn_more");
-        this._btn_exchange=this.node.getChildByName("otherNode").getChildByName("exchange").getChildByName("btn_exchange");
+        this._exchange=this.node.getChildByName("otherNode").getChildByName("exchange");
+        this._btn_exchange=this._exchange.getChildByName("btn_exchange");
         this._lb_money=this.node.getChildByName("otherNode").getChildByName("exchange").getChildByName("lb_money");
         this._lb_upSpeedTime=this.node.getChildByName("otherNode").getChildByName("lb_upSpeedTime");
         this._authTipNode=this.node.getChildByName("authTipNode");
@@ -151,6 +153,15 @@ export default class Game extends cc.Component {
         this.initBtnEvent(this._btn_rank);
         this.initBtnEvent(this._btn_exchange);
         this.initBtnEvent(this._btn_more);
+
+        this._btn_sevenLogin.active=GameCtr.isAudited;
+        this._btn_pfTurntable.active=GameCtr.isAudited;
+        this._btn_invite.active=GameCtr.isAudited;
+        this._exchange.active=GameCtr.isAudited;
+        this._btn_more.active=GameCtr.isAudited;
+        this._adNode.active=GameCtr.isAudited;
+
+
         this.initCombs();
     }
 
@@ -177,12 +188,14 @@ export default class Game extends cc.Component {
                 }else{
                     WXCtr.showVideoAd(callFunc.bind(this));
                 }
+                HttpCtr.openClick(GameCtr.clickType.speedUp);
 
             }else if(e.target.getName()=="btn_rank"){
                 if(cc.find("Canvas").getChildByName("ranking")){return}
                 let ranking=cc.instantiate(this.ranking);
                 ranking.parent=cc.find("Canvas");
                 ranking.setLocalZOrder(10);
+                HttpCtr.openClick(GameCtr.clickType.rank);
             }else if(e.target.getName()=="btn_pfTurntable"){
                 if(!this._btn_pfTurntable.getComponent(cc.Button).interactable){
                     this.showToast("转盘冷却中...");
@@ -202,6 +215,7 @@ export default class Game extends cc.Component {
                 this.setMaskVisit(true);
                 let invite=cc.instantiate(this.invite);
                 invite.parent=cc.find("Canvas");
+                HttpCtr.openClick(GameCtr.clickType.invite);
             }else if(e.target.getName()=="btn_exchange"){
                 if(cc.find("Canvas").getChildByName("exchange1")){return}
                 let exchange=cc.instantiate(this.exchange);
@@ -210,6 +224,7 @@ export default class Game extends cc.Component {
                 if(cc.find("Canvas").getChildByName("moreNode")){return}
                 let moreNode=cc.instantiate(this.moreNode);
                 moreNode.parent=cc.find("Canvas");
+                HttpCtr.openClick(GameCtr.clickType.more);
             }
 
         })
@@ -343,6 +358,7 @@ export default class Game extends cc.Component {
     }
 
     showGoldNotEnough(){
+        if(!GameCtr.isAudited){return};
         if(cc.find("Canvas").getChildByName("goldNotEnough")){return};
         let goldNotEnough=cc.instantiate(this.goldNotEnough);
         
@@ -391,7 +407,7 @@ export default class Game extends cc.Component {
 
     setRealMoney(){
         if(GameCtr.realMoney){
-            this._lb_money.getComponent(cc.Label).string="¥"+(GameCtr.realMoney/100).toFixed(2);
+            this._lb_money.getComponent(cc.Label).string="￥"+(GameCtr.realMoney/100).toFixed(2);
         }
     }
 
@@ -491,9 +507,14 @@ export default class Game extends cc.Component {
     showGuideStep1(){
         let hand=this.createTipHand(cc.find("Canvas"));
         hand.tag=GameCtr.tipHandTag+1;
+        hand.active=false;
         hand.scale=0.6;
         hand.x=400;
         hand.y=300;
+
+        this.scheduleOnce(()=>{
+            hand.active=true;
+        },3)
     }
 
     showGuideStep2(){
@@ -567,6 +588,8 @@ export default class Game extends cc.Component {
     }
 
     updateSpeedUpState(dt){
+        if(!GameCtr.isAudited){return}
+
         if(this._speedTime>=0){
             this._speedTime+=dt;
             if(this._speedTime>=GameCtr.otherConfig.speedUpInterval){
@@ -613,7 +636,7 @@ export default class Game extends cc.Component {
     }
 
     refreshMoreNewGame(){
-        if(!GameCtr.setting){return;}
+        if(!GameCtr.isAudited){return;}
         if(!GameCtr.setting.nav.banner||GameCtr.setting.nav.banner<=0){return;}
         this._adNode.active=true;
         let children = this._adNode.getChildByName("adFrame").children;
@@ -656,7 +679,7 @@ export default class Game extends cc.Component {
 
     commitDataToServer(){
         HttpCtr.setGold(GameCtr.rich);
-        WXCtr.submitScoreToWx(GameCtr.rich,UserManager.user.city);
+        WXCtr.submitScoreToWx(GameCtr.rich);
         this.unschedule(this.commitDataToServer.bind(this));
         this.scheduleOnce(this.commitDataToServer.bind(this),10);
     }

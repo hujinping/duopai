@@ -16,6 +16,7 @@ export default class NewClass extends cc.Component {
         this._btn_close=this.node.getChildByName("btn_close");
         this._btn_get=this.node.getChildByName("btn_get");
         this._lb_bonus=this.node.getChildByName("lb_bonus");
+        this._btn_get.active=GameCtr.isAudited;
 
         this.initEvent(this._btn_close);
         this.initEvent(this._btn_get);
@@ -33,6 +34,7 @@ export default class NewClass extends cc.Component {
                 let callFunc=()=>{
                     GameCtr.money+=2*this._bonusValue;
                     GameCtr.rich+=2*this._bonusValue;
+                    this.node.destroy();
                 }
                 if(GameCtr.vedioTimes<=0){
                     WXCtr.share({callback:callFunc});

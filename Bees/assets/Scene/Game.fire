@@ -5425,7 +5425,7 @@
     },
     "_children": [],
     "_tag": -1,
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 130
@@ -5994,9 +5994,7 @@
     "offlineIncome": {
       "__uuid__": "59cda4c6-ff90-489e-85b8-4f2c2f650702"
     },
-    "rank": {
-      "__uuid__": "1bd2c913-d0c5-415f-bd3f-b1dbf3f09edd"
-    },
+    "rank": null,
     "pfTurntable": {
       "__uuid__": "5786e514-98af-4c4e-843c-a25fcba0fb7d"
     },

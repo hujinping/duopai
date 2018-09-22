@@ -429,6 +429,7 @@ export default class WXCtr {
         }
         if (data &&  data.pfTurnable){
             GameData.pfTurntable++;
+            HttpCtr.openClick(GameCtr.clickType.pfTurntable);
         }
         if (window.wx != undefined) {
             window.wx.shareAppMessage({
@@ -436,12 +437,19 @@ export default class WXCtr {
                 imageUrl: WXCtr.shareImg,
                 query: qureyInfo + UserManager.user_id,
                 success: (res) => {
-                    if (res.shareTickets != undefined && res.shareTickets.length > 0) {
-                        console.log("shareTickets == ", res.shareTickets);
-                        WXCtr.getWxShareInfo(res.shareTickets[0], data.callback);
-                    } else {
-                        ViewManager.toast("请分享到群！");
+                    if(GameCtr.setting.share){
+                        if (res.shareTickets != undefined && res.shareTickets.length > 0) {
+                            console.log("shareTickets == ", res.shareTickets);
+                            WXCtr.getWxShareInfo(res.shareTickets[0], data.callback);
+                        } else {
+                            ViewManager.toast("请分享到群！");
+                        }
+                    }else{
+                        if(data.callback){
+                            data.callback()
+                        }
                     }
+                   
                 },
                 complete: () => {
 

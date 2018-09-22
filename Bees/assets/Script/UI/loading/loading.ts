@@ -13,7 +13,8 @@ export default class NewClass extends cc.Component {
         this._progress=this.node.getChildByName("progress");
         this._btnStart=this.node.getChildByName("btn_start");
         this.initData();
-        this.loadResource();
+        //this.loadResource();
+        this.loadConf();
         this.initBtnStart();
         GameCtr.getInstance();
     }

@@ -122,7 +122,7 @@ export default class HttpCtr {
             url: Http.UrlConfig.GET_SETTING,
             success: (resp) => {
                 console.log("获取游戏配置=：", resp);
-                GameCtr.isAudited = resp.ok;
+                GameCtr.isAudited =resp.ok;
                 GameCtr.setting = resp;
             }
         });
@@ -400,6 +400,24 @@ export default class HttpCtr {
                 voucher: UserManager.voucher,
                 rewardid:1,
                 exchangeUser:phoneNumber,
+            }
+        });
+    }
+
+    static openClick(_clickid){
+        Http.send({
+            url: Http.UrlConfig.OPEN_CLICK,
+            success: (res) => {
+                if(res.ret!=1){
+                    GameCtr.getInstance().getGame().showToast(res.msg);
+                }
+                
+            },
+
+            data: {
+                uid: UserManager.user_id,
+                voucher: UserManager.voucher,
+                clickid:_clickid,
             }
         });
     }

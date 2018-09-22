@@ -83,7 +83,6 @@ export default class NewClass extends cc.Component {
                 GameCtr.getInstance().getGame().clearCombUpGrade();
                 AudioManager.getInstance().playSound("audio/btnClose");
             }else if(e.target.getName()=="btn_upgrade"){
-                //console.log("log00000000000解锁蜂巢-------");
                 if(this._unlockNum<GameCtr.maxPerCombLevel&&GameCtr.money<GameCtr.combConfig[this._level-1].levelUpCost+GameCtr.combConfig[this._level-1].upMatrix*(this._unlockNum-1)){
                     GameCtr.getInstance().getGame().showGoldNotEnough();
                     return;

@@ -40,5 +40,6 @@ export default class UrlConfig {
     static DO_TODAY="/weixinapi.php?method=doToday";                          //签到奖励领取
     static OPEN_RED="/weixinapi.php?method=openRed";                          //红包获得 
     static DO_EXCHANGE="/weixinapi.php?method=doexchange";                    //红包兑换 
+    static OPEN_CLICK="/weixinapi.php?method=openClick";                      //点击统计
     
 }
