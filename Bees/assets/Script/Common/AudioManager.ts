@@ -46,11 +46,15 @@ export default class AudioManager {
         }
     }
 
-    private pauseMusic() {
+    getMusicId(){
+        return this.musicId;
+    }
+
+    pauseMusic() {
         cc.audioEngine.pause(this.musicId);
     }
 
-    private resumeMusic() {
+    resumeMusic() {
         cc.audioEngine.resume(this.musicId);
     }
 

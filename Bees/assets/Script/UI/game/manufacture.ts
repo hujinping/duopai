@@ -187,7 +187,7 @@ export default class NewClass extends cc.Component {
         bubbleMoney.parent=this.node;
         bubbleMoney.active=true;
         bubbleMoney.x=450;
-        bubbleMoney.y=400;
+        bubbleMoney.y=300;
         bubbleMoney.getComponent("bubbleMoney").setMoney(money);
         AudioManager.getInstance().playSound("audio/gold");
 
@@ -336,8 +336,8 @@ export default class NewClass extends cc.Component {
             if(this._doubleTime>=GameCtr.otherConfig.doubleInterval){
                 this._btn_doubleIncome.getComponent(cc.Button).interactable=true;
                 this._btn_doubleIncome.runAction(cc.repeatForever(cc.sequence(
-                    cc.scaleTo(0.4,1.1),
-                    cc.scaleTo(0.4,1.0)
+                    cc.scaleTo(0.4,1.6),
+                    cc.scaleTo(0.4,1.5)
                 )))
                 this._doubleTime=-1
             }

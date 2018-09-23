@@ -20,6 +20,8 @@ export default class Game extends cc.Component {
     _pipelineNode=null;
     _glassPipelineNode=null;
     _authTipNode=null;
+    _bonusFrame=null;
+    _btn_bonus=null;
     _btn_pfTurntable=null;
     _btn_upSpeed=null;
     _btn_rank=null;
@@ -108,21 +110,27 @@ export default class Game extends cc.Component {
     initEvent(){
         cc.game.on(cc.game.EVENT_SHOW,()=>{
             this.checkOffline();
+            AudioManager.getInstance().pauseMusic();
         });
 
         cc.game.on(cc.game.EVENT_HIDE,()=>{
             GameCtr.getInstance().setTimestamp();
+            AudioManager.getInstance().resumeMusic();
+            //cc.audioEngine.setVolume(AudioManager.getInstance().getMusicId(),0);
         });
     }
 
     initNode(){
         this._adNode=this.node.getChildByName("adNode");
         this._mask=this.node.getChildByName("otherNode").getChildByName("mask");
-        this._btn_pfTurntable=this.node.getChildByName("otherNode").getChildByName("btn_pfTurntable");
-        this._btn_sevenLogin=this.node.getChildByName("otherNode").getChildByName("btn_sevenLogin");
-        this._btn_invite=this.node.getChildByName("otherNode").getChildByName("btn_invite");
+        this._bonusFrame=this.node.getChildByName("otherNode").getChildByName("bonusFrame");
+
+        this._btn_pfTurntable=this._bonusFrame.getChildByName("btn_pfTurntable");
+        this._btn_sevenLogin=this._bonusFrame.getChildByName("btn_sevenLogin");
+        this._btn_invite=this._bonusFrame.getChildByName("btn_invite");
+        this._btn_rank=this._bonusFrame.getChildByName("btn_rank");
+        this._btn_bonus=this.node.getChildByName("otherNode").getChildByName("btn_bonus");
         this._btn_upSpeed=this.node.getChildByName("otherNode").getChildByName("btn_speedUp");
-        this._btn_rank=this.node.getChildByName("otherNode").getChildByName("btn_rank");
         this._btn_more=this.node.getChildByName("otherNode").getChildByName("btn_more");
         this._exchange=this.node.getChildByName("otherNode").getChildByName("exchange");
         this._btn_exchange=this._exchange.getChildByName("btn_exchange");
@@ -131,7 +139,20 @@ export default class Game extends cc.Component {
         this._authTipNode=this.node.getChildByName("authTipNode");
         this._honeycombContent=this.node.getChildByName("honeycombNode").getChildByName("content");
         this._pipelineNode=this._honeycombContent.getChildByName("pipelineNode");
-        this._glassPipelineNode=this._honeycombContent.getChildByName("glassPipelineNode")
+        this._glassPipelineNode=this._honeycombContent.getChildByName("glassPipelineNode");
+        this._btn_bonus.runAction(cc.repeatForever(cc.sequence(
+            cc.moveBy(0.5,cc.p(20,0)),
+            cc.moveBy(0.5,cc.p(-20,0)),
+        )))
+        this._btn_more.runAction(cc.repeatForever(cc.sequence(
+            cc.rotateBy(0.1,-10),
+            cc.rotateBy(0.2,20),
+            cc.rotateBy(0.1,-10),
+            cc.rotateBy(0.05,-10),
+            cc.rotateBy(0.1,20),
+            cc.rotateBy(0.05,-10),
+            cc.delayTime(4),
+        )))
 
         this._lb_upSpeedTime.active=false;
         this._btn_upSpeed.active=false;
@@ -143,6 +164,9 @@ export default class Game extends cc.Component {
         this._pipelineNode.setLocalZOrder(10);
 
         this.initCombContentEvent();
+
+        
+        this.initBtnEvent(this._btn_bonus);
         this.initBtnEvent(this._btn_pfTurntable);
         this.initBtnEvent(this._btn_sevenLogin);
         this.initBtnEvent(this._btn_invite);
@@ -177,9 +201,9 @@ export default class Game extends cc.Component {
                     this.startSpeedUpTimer(GameCtr.otherConfig.speedUpPersist);
                     this._btn_upSpeed.active=false;
                     this._btn_upSpeed.stopAllActions();
-                    this.showRocketAction();
+                    //this.showRocketAction();
                 }
-
+                this._bonusFrame.active=false;
                 if(GameCtr.vedioTimes<=0){
                     WXCtr.share({callback:callFunc});
                 }else{
@@ -188,12 +212,14 @@ export default class Game extends cc.Component {
                 HttpCtr.openClick(GameCtr.clickType.speedUp);
 
             }else if(e.target.getName()=="btn_rank"){
+                this._bonusFrame.active=false;
                 if(cc.find("Canvas").getChildByName("ranking")){return}
                 let ranking=cc.instantiate(this.ranking);
                 ranking.parent=cc.find("Canvas");
                 ranking.setLocalZOrder(10);
                 HttpCtr.openClick(GameCtr.clickType.rank);
             }else if(e.target.getName()=="btn_pfTurntable"){
+                this._bonusFrame.active=false;
                 if(!this._btn_pfTurntable.getComponent(cc.Button).interactable){
                     this.showToast("转盘冷却中...");
                     return;
@@ -202,28 +228,38 @@ export default class Game extends cc.Component {
                 let pfTurntable=cc.instantiate(this.pfTurntable);
                 pfTurntable.parent=cc.find("Canvas");
             }else if(e.target.getName()=="btn_sevenLogin"){
+                this._bonusFrame.active=false;
                 if(cc.find("Canvas").getChildByName("signIn")){return}
                 this.setMaskVisit(true);
                 let signin=cc.instantiate(this.signIn);
                 signin.parent=cc.find("Canvas");
                 signin.setLocalZOrder(50);
             }else if(e.target.getName()=="btn_invite"){
+                this._bonusFrame.active=false;
                 if(cc.find("Canvas").getChildByName("invite")){return}
                 this.setMaskVisit(true);
                 let invite=cc.instantiate(this.invite);
                 invite.parent=cc.find("Canvas");
                 HttpCtr.openClick(GameCtr.clickType.invite);
             }else if(e.target.getName()=="btn_exchange"){
+                this._bonusFrame.active=false;
                 if(cc.find("Canvas").getChildByName("exchange1")){return}
                 let exchange=cc.instantiate(this.exchange);
                 exchange.parent=cc.find("Canvas");
             }else if(e.target.getName()=="btn_more"){
+                this._bonusFrame.active=false;
                 if(cc.find("Canvas").getChildByName("moreNode")){return}
                 let moreNode=cc.instantiate(this.moreNode);
                 moreNode.parent=cc.find("Canvas");
                 HttpCtr.openClick(GameCtr.clickType.more);
+            }else if(e.target.getName()=="btn_bonus"){
+                this._bonusFrame.active=!this._bonusFrame.active;
             }
 
+        })
+
+        this.node.on(cc.Node.EventType.TOUCH_END,(e)=>{
+            this._bonusFrame.active=false;
         })
     }
     initBubbleHoneys(){
@@ -405,7 +441,7 @@ export default class Game extends cc.Component {
 
     setRealMoney(){
         if(GameCtr.realMoney){
-            this._lb_money.getComponent(cc.Label).string="￥"+(GameCtr.realMoney/100).toFixed(2);
+            this._lb_money.getComponent(cc.Label).string=(GameCtr.realMoney/100).toFixed(2);
         }
     }
 
@@ -484,7 +520,7 @@ export default class Game extends cc.Component {
         hand.tag=GameCtr.tipHandTag+1;
         hand.active=false;
         hand.scale=0.6;
-        hand.x=400;
+        hand.x=200;
         hand.y=300;
 
         this.scheduleOnce(()=>{
@@ -585,10 +621,11 @@ export default class Game extends cc.Component {
                 let ufo =cc.instantiate(this.ufo);
                 ufo.parent=this.node;
                 ufo.scale=2.0;
+                ufo.rotation=90;
                 ufo.x=-600;
-                ufo.y=600;
+                ufo.y=100;
                 ufo.runAction(cc.sequence(
-                    cc.moveTo(6,cc.p(600,600)),
+                    cc.moveTo(6,cc.p(600,100)),
                     cc.callFunc((e)=>{
                         ufo.destroy();
                     })

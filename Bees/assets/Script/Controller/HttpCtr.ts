@@ -24,6 +24,7 @@ export default class HttpCtr {
                     UserManager.voucher = resp.data.voucher
                     HttpCtr.getUserInfo();
                     HttpCtr.getSettingConfig();
+                    HttpCtr.chanelCheck(WXCtr.launchOption.query);
                     if(showWorldRanking){
                         GameCtr.getInstance().getRanking().showWorldRanking();
                     }
@@ -99,11 +100,11 @@ export default class HttpCtr {
     }
 
     //渠道验证
-    static chanelCheck(query, userId) {
+    static chanelCheck(query) {
         Http.send({
             url: Http.UrlConfig.CHANEL_RECORD,
             data: {
-                user_id: userId,
+                //uid: ,
                 channel_id: query.channel_id,
                 cuid: query.cuid,
                 cvoucher: query.cvoucher,
@@ -212,6 +213,23 @@ export default class HttpCtr {
             data: {
                 uid: UserManager.user_id,
                 voucher: UserManager.voucher,
+            }
+        });
+    }
+
+
+    //渠道验证
+    static chanelCheck1(query) {
+        console.log("log----------渠道验证--------query=",query);
+        Http.send({
+            url: Http.UrlConfig.CHANEL_RECORD,
+            data: {
+                uid:UserManager.user_id,
+                voucher: UserManager.voucher,
+                channel_id: query.channel_id,
+            },
+            success: (resp) => {
+                console.log("渠道验证成功", resp);
             }
         });
     }

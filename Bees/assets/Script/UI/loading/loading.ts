@@ -147,7 +147,6 @@ export default class NewClass extends cc.Component {
         GameCtr.money=GameCtr.getInstance().getMoney();
         GameCtr.levelMoney=GameCtr.getInstance().getLevelMoney();
         GameCtr.guide=GameCtr.getInstance().getGuide();
-
         if(!GameCtr.rich) GameCtr.rich=0;
         if(!GameCtr.money) GameCtr.money=0;
         if(!GameCtr.levelMoney) GameCtr.levelMoney=0;

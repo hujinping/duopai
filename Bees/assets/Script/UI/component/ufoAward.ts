@@ -27,8 +27,10 @@ export default class NewClass extends cc.Component {
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
             if(e.target.getName()=="btn_close"){
                 this.node.destroy();
-                // GameCtr.money+=this._bonusValue;
-                // GameCtr.rich+=this._bonusValue;
+                if(!GameCtr.isAudited){
+                    GameCtr.money+=this._bonusValue;
+                    GameCtr.rich+=this._bonusValue;
+                }
                 AudioManager.getInstance().playSound("audio/btnClose");
             }else if(e.target.getName()=="btn_get"){
                 let callFunc=()=>{

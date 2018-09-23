@@ -264,7 +264,6 @@ export default class NewClass extends cc.Component {
     }
 
     updateBtnState(){
-        console.log("log-----updateBtnState   this._level=:",this._level);
         if(this._unlockNum==0 && !this._unlock){// 此蜂巢还未解锁
 
         }else if(this._unlockNum<GameCtr.maxPerCombLevel){ //此蜂巢已经解锁,但未满级

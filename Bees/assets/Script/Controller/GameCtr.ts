@@ -36,7 +36,7 @@ export default class GameCtr {
     public static reviveData=null;      
     public static maxPerCombLevel=30;                   //最大蜂巢等级
     public static maxCombsCount=30;                     //蜂巢最大数量
-    public static maxPlayerLevel=144;                    //人物最大等级
+    public static maxPlayerLevel=145;                   //人物最大等级
     public static maxManufactureLevel=300;              //生产线等级
 
     public static money=0;                              //玩家已经挣到的钱(只是还剩的钱，不包括生产线等级 和蜂巢 )
