@@ -151,7 +151,7 @@ export default class Game extends cc.Component {
             cc.rotateBy(0.05,-10),
             cc.rotateBy(0.1,20),
             cc.rotateBy(0.05,-10),
-            cc.delayTime(4),
+            cc.delayTime(2),
         )))
 
         this._lb_upSpeedTime.active=false;
@@ -618,19 +618,12 @@ export default class Game extends cc.Component {
         if(this._ufoTime>=0){
             this._ufoTime+=dt;
             if(this._ufoTime>=GameCtr.otherConfig.ufoInterval){
-                let ufo =cc.instantiate(this.ufo);
-                ufo.parent=this.node;
-                ufo.scale=2.0;
-                ufo.rotation=90;
-                ufo.x=-600;
-                ufo.y=100;
-                ufo.runAction(cc.sequence(
-                    cc.moveTo(6,cc.p(600,100)),
-                    cc.callFunc((e)=>{
-                        ufo.destroy();
-                    })
-                ));
-                this._ufoTime=-1;
+                if(GameCtr.ufoTimes>=0){
+                    let ufo =cc.instantiate(this.ufo);
+                    ufo.parent=this.node;
+                    GameCtr.ufoTimes--
+                    this._ufoTime=0;
+                } 
             }
         }
     }

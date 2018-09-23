@@ -64,6 +64,8 @@ export default class GameCtr {
     public static jarPool=null;
     public static bubbleMoneyPool=null;
 
+    public static ufoTimes=6;
+
 
     public static clickType={
         speedUp:1,                   //加速分享
