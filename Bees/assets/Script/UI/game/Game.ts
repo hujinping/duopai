@@ -91,6 +91,9 @@ export default class Game extends cc.Component {
     @property(cc.Prefab)
     goldNotEnough:cc.Prefab=null;
 
+    @property(cc.Prefab)
+    bgMusic:cc.Prefab=null;
+
     onLoad(){
         GameCtr.getInstance().setGame(this);
         GameCtr.getInstance().initEventTarget();
@@ -98,25 +101,44 @@ export default class Game extends cc.Component {
         this.initNode();
         this.initBubbleHoneys();
         this.setRealMoney();
-        AudioManager.getInstance().playMusic("audio/bgMusic");
+        // AudioManager.getInstance().playMusic("audio/bgMusic");
+        // cc.audioEngine.setVolume(AudioManager.getInstance().getMusicId(),0);
         this.checkOffline();
         GameCtr.getInstance().setPlayTimes();
         this.refreshMoreNewGame();
         WXCtr.getFriendRankingData();                   //获取好友排行榜数据
         this.commitDataToServer();
         this.scheduleOnce(this.updateGameData.bind(this),1);
+
+        let bgMusic=cc.instantiate(this.bgMusic);
+        bgMusic.parent=this.node;
+        bgMusic.tag=999999;
+
     }
 
     initEvent(){
         cc.game.on(cc.game.EVENT_SHOW,()=>{
             this.checkOffline();
-            AudioManager.getInstance().pauseMusic();
+            // let bgMusic=this.node.getChildByName('bgMusic');
+            // let bgMusicCom=bgMusic.getComponent(cc.AudioSource);
+            // bgMusicCom.volume=1;
+
+            while(this.node.getChildByTag(999999)){
+                this.node.removeChildByTag(999999);
+
+            }
+
+            let bgMusic=cc.instantiate(this.bgMusic);
+            bgMusic.parent=this.node;
+            bgMusic.tag=999999;
+            console.log("log-----------重启背景音乐-------------");
         });
 
         cc.game.on(cc.game.EVENT_HIDE,()=>{
             GameCtr.getInstance().setTimestamp();
-            AudioManager.getInstance().resumeMusic();
-            //cc.audioEngine.setVolume(AudioManager.getInstance().getMusicId(),0);
+            // let bgMusic=this.node.getChildByName('bgMusic');
+            // let bgMusicCom=bgMusic.getComponent(cc.AudioSource);
+            // bgMusicCom.volume=0;
         });
     }
 
