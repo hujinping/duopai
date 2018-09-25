@@ -66,7 +66,7 @@ export default class HttpCtr {
                 console.log("log-------getUserInfo--->resp=:",resp);
                 if (resp.success == Http.Code.OK) {
                     UserManager.user = resp.user;
-                    GameCtr.realMoney=resp.user.money;
+                    GameCtr.realMoney=resp.user.cash;
                     console.log("log--------GameCtr.realMoney=:",GameCtr.realMoney);
                     if (callBack) {
                         callBack(resp.user);
@@ -436,6 +436,25 @@ export default class HttpCtr {
                 uid: UserManager.user_id,
                 voucher: UserManager.voucher,
                 clickid:_clickid,
+            }
+        });
+    }
+
+
+    static getCash(callback){
+        Http.send({
+            url: Http.UrlConfig.GET_CASH,
+            success: (res) => {
+                if (res.m) {
+                    callback(res);
+                } else {
+                    GameCtr.getInstance().getGame().showToast(res.msg);
+                }
+            },
+
+            data: {
+                uid: UserManager.user_id,
+                voucher: UserManager.voucher,
             }
         });
     }

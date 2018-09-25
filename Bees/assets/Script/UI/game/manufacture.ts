@@ -3,6 +3,7 @@ import AudioManager from "../../Common/AudioManager";
 import GameCtr from "../../Controller/GameCtr";
 import Util from "../../Common/Util";
 import WXCtr from "../../Controller/WXCtr";
+import HttpCtr from "../../Controller/HttpCtr";
 @ccclass
 export default class NewClass extends cc.Component {
 
@@ -14,6 +15,10 @@ export default class NewClass extends cc.Component {
 
     @property(cc.Prefab)
     bubbleMoney:cc.Prefab=null;
+
+    
+    @property(cc.Prefab)
+    getRedPackage:cc.Prefab=null;
 
     _lb_honey=null;
     _lb_doubleTime=null;
@@ -33,15 +38,17 @@ export default class NewClass extends cc.Component {
     _jarNode=null;
     _doubleTime=0;
     _isActioning=false;
+    _initialRedJarTime=null;
+    _workTimes=0;
     
     
     onLoad(){
+        this.doCaculateHoneyJar();
         GameCtr.getInstance().setManufacture(this);
         this.initNode();
-        console.log("log-----------GameCtr.honeyValue=:",GameCtr.honeyValue);
         if(GameCtr.honeyValue>0){
             this.doWork()
-        }
+        } 
     }
 
     initNode(){
@@ -74,7 +81,6 @@ export default class NewClass extends cc.Component {
         this.initBtnEvent(this._btn_doubleIncome);
         this.showBtn();
         this.initJars();
-
         this._btn_doubleIncome.active=GameCtr.isAudited;
     }
 
@@ -84,7 +90,17 @@ export default class NewClass extends cc.Component {
         }
     }
 
-    
+    doCaculateHoneyJar(){
+        if(!GameCtr.isAudited) {return}
+
+        if(window.localStorage.getItem("initialRedJar")){
+            this._initialRedJarTime=null;
+        }else{
+            this._initialRedJarTime=6+Math.floor(Math.random()*6);
+            window.localStorage.setItem("initialRedJar","true");
+        }
+    }
+
     resetLineAction(){
         this._upLine.stopAllActions();
         this._downLine.stopAllActions();
@@ -131,7 +147,7 @@ export default class NewClass extends cc.Component {
             return;
         }
         this._isWorking=true;
-
+        this._workTimes++;
         let jar=null;
         if(GameCtr.jarPool.size()>0){
             jar=GameCtr.jarPool.get();
@@ -140,7 +156,6 @@ export default class NewClass extends cc.Component {
             GameCtr.jarPool.put(jar);
         }
         
-
         if(GameCtr.honeyValue>GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus){
             jar.getComponent("jar").setFull();
             GameCtr.honeyValue-=Math.ceil(GameCtr.manufactureConfig[GameCtr.ManufactureLevel-1].perBonus);
@@ -150,6 +165,13 @@ export default class NewClass extends cc.Component {
             jar.getComponent("jar").honey=Math.ceil(GameCtr.honeyValue);
             GameCtr.honeyValue-=Math.ceil(GameCtr.honeyValue);
         }
+        jar.getComponent("jar").money=0;
+        if(this._workTimes==this._initialRedJarTime){
+            jar.getComponent("jar").setMoney();
+            GameCtr.honeyValue+=jar.getComponent("jar").honey;
+            jar.getComponent("jar").money=1;
+        }
+       
         jar.getComponent("jar").isTransfering=false;
         this.setHoneyValue();
 
@@ -322,6 +344,21 @@ export default class NewClass extends cc.Component {
         return GameCtr.ManufactureLevel==GameCtr.maxManufactureLevel;
     }
 
+    getPackage(data){
+
+        if(this.node.getChildByName("getRedPackage")){return}
+        let getPackage=cc.instantiate(this.getRedPackage);
+        getPackage.parent=this.node;
+        getPackage.getComponent("getRedPackage").setValue(data.m);
+        getPackage.getComponent("getRedPackage").setSurplusMoney();
+
+        getPackage.getComponent("getRedPackage").shouldShare(data.m);
+
+
+        
+    }
+
+
     update(dt){
         if(!this._upLine){return}
         if(this._speedUpTime>0){
@@ -335,6 +372,7 @@ export default class NewClass extends cc.Component {
             this._doubleTime+=dt;
             if(this._doubleTime>=GameCtr.otherConfig.doubleInterval){
                 this._btn_doubleIncome.getComponent(cc.Button).interactable=true;
+
                 this._btn_doubleIncome.runAction(cc.repeatForever(cc.sequence(
                     cc.scaleTo(0.4,1.6),
                     cc.scaleTo(0.4,1.5)
@@ -359,6 +397,9 @@ export default class NewClass extends cc.Component {
                 GameCtr.getInstance().getLevel().updateLevelProgress();
                 GameCtr.getInstance().getLevel().showBtnUpGrade();
                 this.showBtn()
+                if(this._jarNode.children[i].getComponent("jar").money>0){
+                    HttpCtr.getCash(this.getPackage.bind(this));
+                }
                 this.showBubbleMoney(this._jarNode.children[i].getComponent("jar").honey*GameCtr.incomeRate);
                 this._jarNode.children[i].isTransfering=false;
                 this._jarNode.children[i].stopAllActions();

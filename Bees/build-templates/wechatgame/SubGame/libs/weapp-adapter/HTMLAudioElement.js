@@ -3,7 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = undefined;
 
 var _HTMLMediaElement2 = require('./HTMLMediaElement');
 
@@ -30,4 +29,3 @@ var HTMLAudioElement = function (_HTMLMediaElement) {
 }(_HTMLMediaElement3.default);
 
 exports.default = HTMLAudioElement;
-module.exports = exports['default'];

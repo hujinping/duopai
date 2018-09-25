@@ -24,4 +24,3 @@ var imageConstructor = wx.createImage().constructor;
 // };
 
 exports.default = imageConstructor;
-module.exports = exports['default'];

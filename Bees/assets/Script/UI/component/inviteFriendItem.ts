@@ -38,7 +38,7 @@ export default class NewClass extends cc.Component {
     initBtnEvent(btn){
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
             if(e.target.getName()=="btn_get"){
-                HttpCtr.openRed(2,this.showRedPackage.bind(this));
+                HttpCtr.getCash(this.showRedPackage.bind(this));
             }else if(e.target.getName()=="head"){
                 WXCtr.share({invite:true,callback:()=>{
                     console.log("log----------------邀请好友---------");

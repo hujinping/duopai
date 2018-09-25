@@ -76,4 +76,3 @@ var EventTarget = function () {
 }();
 
 exports.default = EventTarget;
-module.exports = exports["default"];

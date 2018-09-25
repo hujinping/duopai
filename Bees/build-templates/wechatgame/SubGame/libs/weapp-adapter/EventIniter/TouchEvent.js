@@ -3,7 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = undefined;
 
 var _index = require('../util/index.js');
 
@@ -42,4 +41,3 @@ wx.onTouchStart(touchEventHandlerFactory('touchstart'));
 wx.onTouchMove(touchEventHandlerFactory('touchmove'));
 wx.onTouchEnd(touchEventHandlerFactory('touchend'));
 wx.onTouchCancel(touchEventHandlerFactory('touchcancel'));
-module.exports = exports['default'];
