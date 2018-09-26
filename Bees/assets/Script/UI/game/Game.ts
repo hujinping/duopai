@@ -604,6 +604,8 @@ export default class Game extends cc.Component {
         this._btn_pfTurntable.getComponent(cc.Button).interactable=false;
     }
 
+
+    
     updateSpeedUpState(dt){
         if(!GameCtr.isAudited){return}
 
