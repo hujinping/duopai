@@ -339,6 +339,8 @@ export default class WXCtr {
                 WXCtr.videoAd.offClose(WXCtr.videoAdCallback);
                 WXCtr.outvideoAdCallback = callback;
                 GameCtr.vedioTimes--;
+
+                GameCtr.ufoTimes
                 WXCtr.videoAd.onClose(callback);
             }
             WXCtr.videoAd.show();

@@ -41,5 +41,7 @@ export default class UrlConfig {
     static OPEN_RED="/weixinapi.php?method=openRed";                          //红包获得 
     static DO_EXCHANGE="/weixinapi.php?method=doexchange";                    //红包兑换 
     static OPEN_CLICK="/weixinapi.php?method=openClick";                      //点击统计
+    static GET_CASH="/weixinapi.php?method=getCash";                          //现金红包
+    
     
 }

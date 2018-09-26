@@ -101,8 +101,6 @@ export default class Game extends cc.Component {
         this.initNode();
         this.initBubbleHoneys();
         this.setRealMoney();
-        // AudioManager.getInstance().playMusic("audio/bgMusic");
-        // cc.audioEngine.setVolume(AudioManager.getInstance().getMusicId(),0);
         this.checkOffline();
         GameCtr.getInstance().setPlayTimes();
         this.refreshMoreNewGame();
@@ -113,32 +111,21 @@ export default class Game extends cc.Component {
         let bgMusic=cc.instantiate(this.bgMusic);
         bgMusic.parent=this.node;
         bgMusic.tag=999999;
-
     }
 
     initEvent(){
         cc.game.on(cc.game.EVENT_SHOW,()=>{
             this.checkOffline();
-            // let bgMusic=this.node.getChildByName('bgMusic');
-            // let bgMusicCom=bgMusic.getComponent(cc.AudioSource);
-            // bgMusicCom.volume=1;
-
             while(this.node.getChildByTag(999999)){
                 this.node.removeChildByTag(999999);
-
             }
-
             let bgMusic=cc.instantiate(this.bgMusic);
             bgMusic.parent=this.node;
             bgMusic.tag=999999;
-            console.log("log-----------重启背景音乐-------------");
         });
 
         cc.game.on(cc.game.EVENT_HIDE,()=>{
             GameCtr.getInstance().setTimestamp();
-            // let bgMusic=this.node.getChildByName('bgMusic');
-            // let bgMusicCom=bgMusic.getComponent(cc.AudioSource);
-            // bgMusicCom.volume=0;
         });
     }
 
@@ -177,7 +164,6 @@ export default class Game extends cc.Component {
         )))
 
         this._lb_upSpeedTime.active=false;
-        this._btn_upSpeed.active=false;
         this._authTipNode.active=false;
 
         this._pipelineNode.tag=1000;
@@ -203,6 +189,7 @@ export default class Game extends cc.Component {
         this._exchange.active=GameCtr.isAudited;
         this._btn_more.active=GameCtr.isAudited;
         this._adNode.active=GameCtr.isAudited;
+        this._btn_upSpeed.active=GameCtr.isAudited;
 
 
         this.initCombs();
@@ -221,9 +208,8 @@ export default class Game extends cc.Component {
                     GameCtr.getInstance().getManufacture().resetLineAction();
                     this._speedTime=0;
                     this.startSpeedUpTimer(GameCtr.otherConfig.speedUpPersist);
-                    this._btn_upSpeed.active=false;
+                    this._btn_upSpeed.getComponent(cc.Button).interactable=false;
                     this._btn_upSpeed.stopAllActions();
-                    //this.showRocketAction();
                 }
                 this._bonusFrame.active=false;
                 if(GameCtr.vedioTimes<=0){
@@ -379,8 +365,7 @@ export default class Game extends cc.Component {
     startSpeedUpTimer(_timeCount){
         this._timeCount=_timeCount;
         this._lb_upSpeedTime.active=true;
-        this._btn_upSpeed.opacity=0;
-        //AudioManager.getInstance().playMusic("audio/speeUp");
+
         GameCtr.getInstance().emitEvent("startSpeedUp",null);
         this.setCombsSpeed(2);
         this.countDown();
@@ -402,10 +387,9 @@ export default class Game extends cc.Component {
                 if(this._timeCount<0){
                     this.setCombsSpeed(1);
                     GameCtr.globalSpeedRate=1;
-                    this._btn_upSpeed.opacity=255;
+                    this._btn_upSpeed.getComponent(cc.Button).interactable=false;
                     this._lb_upSpeedTime.active=false;
                     GameCtr.getInstance().getManufacture().resetLineAction();
-                    //AudioManager.getInstance().playMusic("audio/bgMusic");
                     GameCtr.getInstance().emitEvent("stopSpeedUp",null);
                     this._lb_upSpeedTime.stopAllActions();
                 }
@@ -626,7 +610,7 @@ export default class Game extends cc.Component {
         if(this._speedTime>=0){
             this._speedTime+=dt;
             if(this._speedTime>=GameCtr.otherConfig.speedUpInterval){
-                this._btn_upSpeed.active=true;
+                this._btn_upSpeed.getComponent(cc.Button).interactable=true;
                 this._btn_upSpeed.runAction(cc.repeatForever(cc.sequence(
                     cc.scaleTo(0.2,1.15),
                     cc.scaleTo(0.2,1.0)
@@ -639,11 +623,10 @@ export default class Game extends cc.Component {
     updateUfoTime(dt){
         if(this._ufoTime>=0){
             this._ufoTime+=dt;
-            if(this._ufoTime>=GameCtr.otherConfig.ufoInterval){
-                if(GameCtr.ufoTimes>=0){
+            if(this._ufoTime>=120){
+                if(GameCtr.vedioTimes>=0){
                     let ufo =cc.instantiate(this.ufo);
                     ufo.parent=this.node;
-                    GameCtr.ufoTimes--
                     this._ufoTime=0;
                 } 
             }
@@ -705,10 +688,10 @@ export default class Game extends cc.Component {
     }
 
     commitDataToServer(){
-        // HttpCtr.setGold(GameCtr.rich);
-        // //WXCtr.submitScoreToWx(GameCtr.rich);
-        // this.unschedule(this.commitDataToServer.bind(this));
-        // this.scheduleOnce(this.commitDataToServer.bind(this),10);
+        HttpCtr.setGold(GameCtr.rich);
+        WXCtr.submitScoreToWx(GameCtr.rich);
+        this.unschedule(this.commitDataToServer.bind(this));
+        this.scheduleOnce(this.commitDataToServer.bind(this),10);
     }
 
 
