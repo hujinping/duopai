@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "btn_go",
+    "texture": "1aaede54-ed6f-4869-a93a-70d1937e836b",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      693,
+      228
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      693,
+      228
+    ]
+  }
+}

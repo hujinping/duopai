@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "btn_error_clicked",
+    "texture": "de22f90c-92b9-4f30-a3b2-9d4e55f9f522",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      340,
+      358
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      340,
+      358
+    ]
+  }
+}

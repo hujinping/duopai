@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "word_tip01",
+    "texture": "45462d36-d4f8-4dbc-9a40-1790cee4ec61",
+    "atlas": "",
+    "rect": [
+      1,
+      0,
+      591,
+      82
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      593,
+      82
+    ]
+  }
+}

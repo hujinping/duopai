@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "countDown_3",
+    "texture": "da0b54f3-f37b-468a-b020-2f05bc423c8b",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      176,
+      291
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      176,
+      291
+    ]
+  }
+}

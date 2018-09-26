@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "selfInfoFrame",
+    "texture": "43d2c420-da90-4239-b7b4-f712752b5daf",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      593,
+      344
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      593,
+      344
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "btn_signIn",
+    "texture": "44fca028-d38a-46b3-8968-3c455e3a3803",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      160,
+      219
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      160,
+      219
+    ]
+  }
+}
