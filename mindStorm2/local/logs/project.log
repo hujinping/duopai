@@ -295,3 +295,14 @@ Node path: "PromptDialog"
 Asset url: "db://assets/Res/prefab/view/PromptDialog.prefab"
 Missing uuid: "2deb2834-ba4f-4fa8-b220-e822f5fa1c9f"
 
+2018-09-26T03:47:46.019Z - error: Package Watcher Error: Error watching file for changes: EPERM
+    at FSWatcher.on.on.on.on.on.on.e (C:\CocosCreator\resources\app.asar\editor-framework\lib\main\editor.js:1:5101)
+    at emitOne (events.js:96:13)
+    at FSWatcher.emit (events.js:191:7)
+    at FSWatcher._handleError (C:\CocosCreator\resources\app.asar\node_modules\chokidar\index.js:252:10)
+    at C:\CocosCreator\resources\app.asar\node_modules\chokidar\lib\nodefs-handler.js:54:5
+    at Array.forEach (native)
+    at fsWatchBroadcast (C:\CocosCreator\resources\app.asar\node_modules\chokidar\lib\nodefs-handler.js:53:36)
+    at C:\CocosCreator\resources\app.asar\node_modules\chokidar\lib\nodefs-handler.js:94:21
+    at FSReqWrap.oncomplete (fs.js:114:15)
+2018-09-26T03:47:51.445Z - info: shutdown preview server
