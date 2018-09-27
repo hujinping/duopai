@@ -10,6 +10,7 @@ export default class NewClass extends cc.Component {
     _btn_close=null;
     _lb_bonus=null;
     _offlineIncome=0;
+
     onLoad(){
         this._btn_get=this.node.getChildByName("btn_get");
         this._btn_close=this.node.getChildByName("btn_close")
@@ -39,10 +40,11 @@ export default class NewClass extends cc.Component {
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
             if(e.target.getName()=="btn_get"){
                 let callFunc=()=>{
+                    GameCtr.getInstance().getGame().setMaskVisit(false);
                     GameCtr.money+=Math.floor(2*this._offlineIncome);
                     GameCtr.rich+=Math.floor(2*this._offlineIncome);
-                    GameCtr.getInstance().getGame().setMaskVisit(false);
                     GameCtr.getInstance().getLevel().setMoney();
+                    GameCtr.getInstance().getGame().playGoldEft();
                     this.node.destroy();
                 }
                 if(GameCtr.vedioTimes<=0){
@@ -54,10 +56,11 @@ export default class NewClass extends cc.Component {
                 }
                 
             }else if(e.target.getName()=="btn_close"){
+                GameCtr.getInstance().getGame().setMaskVisit(false);
                 GameCtr.money+=Math.floor(this._offlineIncome);
                 GameCtr.rich+=Math.floor(this._offlineIncome);
-                GameCtr.getInstance().getGame().setMaskVisit(false);
                 GameCtr.getInstance().getLevel().setMoney();
+                GameCtr.getInstance().getGame().playGoldEft();
                 this.node.destroy();
             }
             AudioManager.getInstance().playSound("audio/btnClose");

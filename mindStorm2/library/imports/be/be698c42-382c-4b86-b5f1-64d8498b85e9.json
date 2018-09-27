@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "thirdPlace",
+    "texture": "21e457c8-0beb-4300-acb8-80b37dafd05c",
+    "atlas": "",
+    "rect": [
+      0,
+      1,
+      180,
+      254
+    ],
+    "offset": [
+      0,
+      -0.5
+    ],
+    "originalSize": [
+      180,
+      255
+    ]
+  }
+}

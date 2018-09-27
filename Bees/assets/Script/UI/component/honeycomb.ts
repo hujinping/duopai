@@ -169,6 +169,7 @@ export default class NewClass extends cc.Component {
         if(cc.find("Canvas").getChildByName("combUpgrade")){return;}
         let combUpgrade=cc.instantiate(this.combUpgrade);
         combUpgrade.parent=cc.find("Canvas");
+        combUpgrade.setLocalZOrder(1);
         combUpgrade.getComponent("combUpgrade").init(this._level,this._unlockNum);
         combUpgrade.y=-1218;
         combUpgrade.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0)));

@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "selfRankFrame",
+    "texture": "a9f1da79-a76e-48d0-8867-93ae1d899b31",
+    "atlas": "",
+    "rect": [
+      0,
+      2,
+      1047,
+      275
+    ],
+    "offset": [
+      0,
+      -1
+    ],
+    "originalSize": [
+      1047,
+      277
+    ]
+  }
+}

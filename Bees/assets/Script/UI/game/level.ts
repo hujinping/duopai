@@ -58,6 +58,7 @@ export default class NewClass extends cc.Component {
                 if(this.isMaxLevel()){return}
                 let levelUpgrade=cc.instantiate(this.levelUpgrade);
                 levelUpgrade.parent=cc.find("Canvas");
+                levelUpgrade.setLocalZOrder(1);
                 levelUpgrade.y=-1218;
                 levelUpgrade.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0)));
                 GameCtr.getInstance().getGame().setMaskVisit(true);

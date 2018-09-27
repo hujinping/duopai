@@ -30,12 +30,14 @@ export default class NewClass extends cc.Component {
                 if(!GameCtr.isAudited){
                     GameCtr.money+=this._bonusValue;
                     GameCtr.rich+=this._bonusValue;
+                    GameCtr.getInstance().getGame().playGoldEft();
                 }
                 AudioManager.getInstance().playSound("audio/btnClose");
             }else if(e.target.getName()=="btn_get"){
                 let callFunc=()=>{
                     GameCtr.money+=2*this._bonusValue;
                     GameCtr.rich+=2*this._bonusValue;
+                    GameCtr.getInstance().getGame().playGoldEft();
                     this.node.destroy();
                 }
                 if(GameCtr.vedioTimes<=0){

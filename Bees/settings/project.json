@@ -15,7 +15,6 @@
   "design-resolution-width": 1080,
   "excluded-modules": [
     "LabelOutline",
-    "ParticleSystem",
     "TiledMap",
     "ScrollBar",
     "PageView",

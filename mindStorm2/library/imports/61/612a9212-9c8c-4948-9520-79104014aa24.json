@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "friendRank",
+    "texture": "0f6a1124-9237-4e9c-b5aa-ea4af576e827",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      670,
+      165
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      670,
+      165
+    ]
+  }
+}

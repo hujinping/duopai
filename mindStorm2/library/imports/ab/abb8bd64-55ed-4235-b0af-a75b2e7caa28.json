@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "gameEntrance01",
+    "texture": "29605d31-a598-407a-a432-5cc25fab2748",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      593,
+      301
+    ],
+    "offset": [
+      0,
+      0.5
+    ],
+    "originalSize": [
+      593,
+      302
+    ]
+  }
+}

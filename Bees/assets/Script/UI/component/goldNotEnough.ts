@@ -31,7 +31,7 @@ export default class NewClass extends cc.Component {
             combs_speed+=(GameCtr.combConfig[i].initialIncome+GameCtr.combConfig[i].incomeMatrix*(combsUnlock[i].level-1)*combsUnlock[i].level)/(GameCtr.combConfig[i].baseSpeed*2)
         }
         let finalSpeed =combs_speed>=manufactures_speed?manufactures_speed:combs_speed;
-        this._offlineIncome =5*60*finalSpeed;
+        this._offlineIncome =2*60*finalSpeed;
         this._lb_bonus.getComponent(cc.Label).string="$"+Util.formatNumber(Math.floor(this._offlineIncome));
     }
 
@@ -39,9 +39,10 @@ export default class NewClass extends cc.Component {
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
             if(e.target.getName()=="btn_get"){
                 let callFunc=()=>{
-                    GameCtr.money+=Math.floor(this._offlineIncome);
-                    GameCtr.rich+=Math.floor(this._offlineIncome);
+                    GameCtr.money+=Math.floor(2*this._offlineIncome);
+                    GameCtr.rich+=Math.floor(2*this._offlineIncome);
                     GameCtr.getInstance().getLevel().setMoney();
+                    GameCtr.getInstance().getGame().playGoldEft();
                     this.node.destroy();
                 }
                 WXCtr.share({callback:callFunc});

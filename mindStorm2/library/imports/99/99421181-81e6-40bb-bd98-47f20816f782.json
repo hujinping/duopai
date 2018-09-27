@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "btn_morePower",
+    "texture": "6aa37161-d2e9-47fa-be69-59a5c366c2fa",
+    "atlas": "1628c57b-9540-406b-ac65-fa724b1719b3",
+    "rect": [
+      1090,
+      2,
+      503,
+      152
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      503,
+      152
+    ]
+  }
+}

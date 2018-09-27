@@ -4,6 +4,7 @@ import GameCtr from "../../Controller/GameCtr";
 import Util from "../../Common/Util";
 import WXCtr from "../../Controller/WXCtr";
 import HttpCtr from "../../Controller/HttpCtr";
+import UserManager from "../../Common/UserManager";
 @ccclass
 export default class NewClass extends cc.Component {
 
@@ -36,7 +37,7 @@ export default class NewClass extends cc.Component {
     _plug=null;
     _pulleyList=[];
     _jarNode=null;
-    _doubleTime=0;
+    _doubleTime=-1;
     _isActioning=false;
     _initialRedJarTime=null;
     _workTimes=0;
@@ -72,7 +73,7 @@ export default class NewClass extends cc.Component {
         }
         this._plug.setLocalZOrder(1);
         this._lb_doubleTime.active=false;
-        this._btn_doubleIncome.getComponent(cc.Button).interactable=false;
+        //this._btn_doubleIncome.getComponent(cc.Button).interactable=false;
 
         
         this.resetLineAction();
@@ -92,12 +93,12 @@ export default class NewClass extends cc.Component {
 
     doCaculateHoneyJar(){
         if(!GameCtr.isAudited) {return}
-
-        if(window.localStorage.getItem("initialRedJar")){
+        let key="data_"+1;
+        if(UserManager.user[key]>0){
             this._initialRedJarTime=null;
         }else{
             this._initialRedJarTime=6+Math.floor(Math.random()*6);
-            window.localStorage.setItem("initialRedJar","true");
+            HttpCtr.setUserDataState(1,1);
         }
     }
 
@@ -211,8 +212,7 @@ export default class NewClass extends cc.Component {
         bubbleMoney.x=450;
         bubbleMoney.y=300;
         bubbleMoney.getComponent("bubbleMoney").setMoney(money);
-        AudioManager.getInstance().playSound("audio/gold");
-
+        //AudioManager.getInstance().playSound("audio/gold");
         bubbleMoney.runAction(cc.sequence(
             cc.moveBy(0.3,cc.p(0,80)),
             cc.delayTime(0.2),
@@ -236,6 +236,7 @@ export default class NewClass extends cc.Component {
                 
                 let manufactureUpgrade=cc.instantiate(this.manufactureUpgrade);
                 manufactureUpgrade.parent=cc.find("Canvas");
+                manufactureUpgrade.setLocalZOrder(1);
                 manufactureUpgrade.y=-1218;
                 manufactureUpgrade.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0)));
                 GameCtr.getInstance().getGame().setMaskVisit(true);
@@ -346,16 +347,13 @@ export default class NewClass extends cc.Component {
 
     getPackage(data){
 
-        if(this.node.getChildByName("getRedPackage")){return}
+        if(cc.find("Canvas").getChildByName("getRedPackage")){return}
         let getPackage=cc.instantiate(this.getRedPackage);
-        getPackage.parent=this.node;
+        getPackage.parent=cc.find("Canvas");
+        getPackage.setLocalZOrder(1);
         getPackage.getComponent("getRedPackage").setValue(data.m);
         getPackage.getComponent("getRedPackage").setSurplusMoney();
-
-        getPackage.getComponent("getRedPackage").shouldShare(data.m);
-
-
-        
+        getPackage.getComponent("getRedPackage").shouldShare(data.m); 
     }
 
 

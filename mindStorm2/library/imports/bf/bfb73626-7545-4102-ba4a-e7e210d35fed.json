@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "progress_cov",
+    "texture": "9946107d-fca1-4729-93fd-98a32baddb36",
+    "atlas": "",
+    "rect": [
+      1,
+      0,
+      928,
+      68
+    ],
+    "offset": [
+      0,
+      0.5
+    ],
+    "originalSize": [
+      930,
+      69
+    ]
+  }
+}

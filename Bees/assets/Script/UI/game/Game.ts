@@ -35,6 +35,7 @@ export default class Game extends cc.Component {
     _exchange=null;
     _mask=null;
     _combUpgrade=null;
+    _otherNode=null;
     _interval3=0;
     _pfTurnableTime=0;
     _manufactureUpgrade=null;
@@ -131,20 +132,20 @@ export default class Game extends cc.Component {
 
     initNode(){
         this._adNode=this.node.getChildByName("adNode");
-        this._mask=this.node.getChildByName("otherNode").getChildByName("mask");
-        this._bonusFrame=this.node.getChildByName("otherNode").getChildByName("bonusFrame");
-
+        this._otherNode=this.node.getChildByName("otherNode");
+        this._mask=this._otherNode.getChildByName("mask");
+        this._bonusFrame=this._otherNode.getChildByName("bonusFrame");
         this._btn_pfTurntable=this._bonusFrame.getChildByName("btn_pfTurntable");
         this._btn_sevenLogin=this._bonusFrame.getChildByName("btn_sevenLogin");
         this._btn_invite=this._bonusFrame.getChildByName("btn_invite");
         this._btn_rank=this._bonusFrame.getChildByName("btn_rank");
-        this._btn_bonus=this.node.getChildByName("otherNode").getChildByName("btn_bonus");
-        this._btn_upSpeed=this.node.getChildByName("otherNode").getChildByName("btn_speedUp");
-        this._btn_more=this.node.getChildByName("otherNode").getChildByName("btn_more");
-        this._exchange=this.node.getChildByName("otherNode").getChildByName("exchange");
+        this._btn_bonus=this._otherNode.getChildByName("btn_bonus");
+        this._btn_upSpeed=this._otherNode.getChildByName("btn_speedUp");
+        this._btn_more=this._otherNode.getChildByName("btn_more");
+        this._exchange=this._otherNode.getChildByName("exchange");
         this._btn_exchange=this._exchange.getChildByName("btn_exchange");
-        this._lb_money=this.node.getChildByName("otherNode").getChildByName("exchange").getChildByName("lb_money");
-        this._lb_upSpeedTime=this.node.getChildByName("otherNode").getChildByName("lb_upSpeedTime");
+        this._lb_money=this._otherNode.getChildByName("exchange").getChildByName("lb_money");
+        this._lb_upSpeedTime=this._otherNode.getChildByName("lb_upSpeedTime");
         this._authTipNode=this.node.getChildByName("authTipNode");
         this._honeycombContent=this.node.getChildByName("honeycombNode").getChildByName("content");
         this._pipelineNode=this._honeycombContent.getChildByName("pipelineNode");
@@ -168,6 +169,8 @@ export default class Game extends cc.Component {
 
         this._pipelineNode.tag=1000;
         this._glassPipelineNode.tag=1000;
+
+        this._otherNode.setLocalZOrder(1);
         this._glassPipelineNode.setLocalZOrder(0);
         this._pipelineNode.setLocalZOrder(10);
 
@@ -199,6 +202,7 @@ export default class Game extends cc.Component {
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
             AudioManager.getInstance().playSound("audio/open_panel");
             if(e.target.getName()=="btn_speedUp"){
+                if(!this._btn_upSpeed.getComponent(cc.Button).interactable){return}
                 let callFunc=()=>{
                     if(GameCtr.globalSpeedRate>1){
                         this.showToast("正在加速中...");
@@ -234,6 +238,7 @@ export default class Game extends cc.Component {
                 }
                 if(cc.find("Canvas").getChildByName("pfTurntable")){return}
                 let pfTurntable=cc.instantiate(this.pfTurntable);
+                pfTurntable.setLocalZOrder(1);
                 pfTurntable.parent=cc.find("Canvas");
             }else if(e.target.getName()=="btn_sevenLogin"){
                 this._bonusFrame.active=false;
@@ -248,17 +253,20 @@ export default class Game extends cc.Component {
                 this.setMaskVisit(true);
                 let invite=cc.instantiate(this.invite);
                 invite.parent=cc.find("Canvas");
+                invite.setLocalZOrder(1);
                 HttpCtr.openClick(GameCtr.clickType.invite);
             }else if(e.target.getName()=="btn_exchange"){
                 this._bonusFrame.active=false;
                 if(cc.find("Canvas").getChildByName("exchange1")){return}
                 let exchange=cc.instantiate(this.exchange);
                 exchange.parent=cc.find("Canvas");
+                exchange.setLocalZOrder(1);
             }else if(e.target.getName()=="btn_more"){
                 this._bonusFrame.active=false;
                 if(cc.find("Canvas").getChildByName("moreNode")){return}
                 let moreNode=cc.instantiate(this.moreNode);
                 moreNode.parent=cc.find("Canvas");
+                moreNode.setLocalZOrder(1);
                 HttpCtr.openClick(GameCtr.clickType.more);
             }else if(e.target.getName()=="btn_bonus"){
                 this._bonusFrame.active=!this._bonusFrame.active;
@@ -401,26 +409,13 @@ export default class Game extends cc.Component {
         if(!GameCtr.isAudited){return};
         if(cc.find("Canvas").getChildByName("goldNotEnough")){return};
         let goldNotEnough=cc.instantiate(this.goldNotEnough);
-        
         goldNotEnough.parent=cc.find("Canvas");
+        goldNotEnough.setLocalZOrder(1);
     }
 
 
     getCurSpeedUpTime(){
         return this._timeCount;
-    }
-
-    showRocketAction(){
-        let rocket=cc.instantiate(this.rocket);
-        rocket.parent=cc.find("Canvas");
-        rocket.x=45;
-        rocket.y=-613;
-        rocket.runAction(cc.sequence(
-            cc.moveTo(0.5,cc.p(0,1300)),
-            cc.callFunc(()=>{
-                rocket.destroy();
-            })
-        ))
     }
 
     checkOffline(){
@@ -433,6 +428,7 @@ export default class Game extends cc.Component {
 
         let offlineIncome=cc.instantiate(this.offlineIncome);
         offlineIncome.parent=cc.find("Canvas");
+        offlineIncome.setLocalZOrder(1);
         offlineIncome.getComponent("offlineIncome").init(offlineTime);
     }
 
@@ -694,6 +690,15 @@ export default class Game extends cc.Component {
         WXCtr.submitScoreToWx(GameCtr.rich);
         this.unschedule(this.commitDataToServer.bind(this));
         this.scheduleOnce(this.commitDataToServer.bind(this),10);
+    }
+
+    playGoldEft(){
+        let goldEft=this.node.getChildByName("otherNode").getChildByName("offLineEft");
+        let particle=goldEft.getComponent(cc.ParticleSystem);
+        particle.resetSystem();
+        for(let i=0;i<particle.totalParticles;i++){
+            particle.addParticle();
+        }
     }
 
 

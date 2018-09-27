@@ -68,7 +68,7 @@ export default class NewClass extends cc.Component {
         
         GameCtr.realMoney+=money;
         GameCtr.getInstance().getGame().setRealMoney();
-        HttpCtr.setFriendBonusState(this.node.tag,10);
+        HttpCtr.setUserDataState(this.node.tag,10);
         this.disableBtn();
     }
 

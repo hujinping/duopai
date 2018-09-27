@@ -244,45 +244,6 @@ export default class HttpCtr {
         }
     }
 
-    // //获取我的战绩
-    // static getSelfArchieve(callback = null) {
-    //     Http.send({
-    //         url: Http.UrlConfig.SELF_ARCHIEVE,
-    //         success: (res)=>{
-    //             if(res.code == Http.Code.OK){
-    //                 if(callback) callback(res);
-    //             }
-    //         },
-    //         data: {
-    //             user_id: UserManager.user_id,
-    //         }
-    //     });
-    // }
-
-    // //获取今日最强数据
-    // static getTodayList(callback = null) {
-    //     Http.send({
-    //         url: Http.UrlConfig.TODAY_LIST,
-    //         success: (res)=>{
-    //             if(res.code == Http.Code.OK){
-    //                 if(callback) callback(res);
-    //             }
-    //         },
-    //     });
-    // }
-
-    //获取历史最强数据
-    // static getHistoryList(callback = null) {
-    //     Http.send({
-    //         url: Http.UrlConfig.HISTORY_LIST,
-    //         success: (res)=>{
-    //             if(res.code == Http.Code.OK){
-    //                 if(callback) callback(res);
-    //             }
-    //         }
-    //     });
-    // }
-
     //获取签到列表
     static getLoginAwardList(callback = null) {
         Http.send({
@@ -337,12 +298,6 @@ export default class HttpCtr {
         });
     }
 
-
-
-
-
-
-
     static setGold(_gold) {
         Http.send({
             url: Http.UrlConfig.SET_GOLD_DATA,
@@ -362,14 +317,14 @@ export default class HttpCtr {
         });
     }
 
-    static setFriendBonusState(idx, value) {
+    static setUserDataState(idx, value) {
         let sendData = {
             uid: UserManager.user_id,
             voucher: UserManager.voucher
         };
         let key = "data_" + idx;
         sendData[key] = value;
-        console.log("log----------setFriendBonusState=:",sendData);
+        console.log("log---------sendData=:",sendData);
         Http.send({
             url: Http.UrlConfig.SET_GOLD_DATA,
             success: (res) => {
