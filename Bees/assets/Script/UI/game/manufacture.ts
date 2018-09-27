@@ -212,7 +212,7 @@ export default class NewClass extends cc.Component {
         bubbleMoney.x=450;
         bubbleMoney.y=300;
         bubbleMoney.getComponent("bubbleMoney").setMoney(money);
-        //AudioManager.getInstance().playSound("audio/gold");
+        AudioManager.getInstance().playSound("audio/get_money");
         bubbleMoney.runAction(cc.sequence(
             cc.moveBy(0.3,cc.p(0,80)),
             cc.delayTime(0.2),

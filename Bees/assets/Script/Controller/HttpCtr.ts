@@ -172,15 +172,15 @@ export default class HttpCtr {
             url: Http.UrlConfig.ADConfig,
             success: (res) => {
                 console.log("获取广告配置", res);
-                if (res.data.videoid) {
-                    WXCtr.setVideoAd(res.data.videoid);
-                }
+                WXCtr.setVideoAd();
                 if (res.data.advid) {
                     WXCtr.bannerId = res.data.advid;
+                    WXCtr.setBannerAd(100,300);
                 }
             },
             data: {
-                uid: UserManager.user_id
+                uid: UserManager.user_id,
+                voucher: UserManager.voucher
             }
         });
     }
@@ -407,6 +407,22 @@ export default class HttpCtr {
                 }
             },
 
+            data: {
+                uid: UserManager.user_id,
+                voucher: UserManager.voucher,
+            }
+        });
+    }
+
+    static pushMsg(callback){
+        Http.send({
+            url: Http.UrlConfig.PUSH_MSG,
+            success: (res) => {
+                console.log("log---------pushMsg -->res=:",res);
+                if(res.ret==1){
+                    callback(res.data);
+                }
+            },
             data: {
                 uid: UserManager.user_id,
                 voucher: UserManager.voucher,

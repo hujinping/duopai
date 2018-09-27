@@ -214,8 +214,8 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 0
+      "x": -119,
+      "y": 232
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -233,9 +233,9 @@
     },
     "_enabled": true,
     "_spriteFrame": {
-      "__uuid__": "51ec39fd-adb5-4657-b9e7-3f58a0184f62"
+      "__uuid__": "a7ae4b45-ed48-41b9-be42-5e3402eeb044"
     },
-    "_type": 0,
+    "_type": 1,
     "_sizeMode": 0,
     "_fillType": 0,
     "_fillCenter": {
@@ -314,8 +314,8 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": -242,
-      "y": 451
+      "x": -340,
+      "y": 670
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -408,8 +408,8 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 331,
-      "y": 470
+      "x": -119,
+      "y": -221
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -453,8 +453,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 30,
-      "height": 22
+      "width": 100,
+      "height": 50
     },
     "_rotationX": 0,
     "_rotationY": 0,
@@ -473,30 +473,26 @@
     "groupIndex": 0
   },
   {
-    "__type__": "cc.Sprite",
+    "__type__": "cc.Label",
     "_name": "",
     "_objFlags": 0,
     "node": {
       "__id__": 13
     },
     "_enabled": true,
-    "_spriteFrame": {
-      "__uuid__": "2b5dd52b-a3ac-438e-95c6-ad9197566d7c"
-    },
-    "_type": 0,
-    "_sizeMode": 1,
-    "_fillType": 0,
-    "_fillCenter": {
-      "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 0
-    },
-    "_fillStart": 0,
-    "_fillRange": 0,
-    "_isTrimmedMode": true,
-    "_srcBlendFactor": 770,
-    "_dstBlendFactor": 771,
-    "_atlas": null
+    "_useOriginalSize": false,
+    "_actualFontSize": 50,
+    "_fontSize": 50,
+    "_lineHeight": 50,
+    "_enableWrapText": true,
+    "_N$file": null,
+    "_isSystemFontUsed": true,
+    "_spacingX": 0,
+    "_N$string": "关闭",
+    "_N$horizontalAlign": 0,
+    "_N$verticalAlign": 0,
+    "_N$fontFamily": "Arial",
+    "_N$overflow": 0
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -657,8 +653,8 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 396
+      "x": -119,
+      "y": 628
     },
     "_skewX": 0,
     "_skewY": 0,

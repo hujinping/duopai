@@ -19,6 +19,8 @@ export default class Game extends cc.Component {
     _honeycombContent=null;
     _pipelineNode=null;
     _glassPipelineNode=null;
+    _adNode=null;
+    _noticeNode=null;
     _authTipNode=null;
     _bonusFrame=null;
     _btn_bonus=null;
@@ -31,7 +33,7 @@ export default class Game extends cc.Component {
     _btn_more=null;
     _lb_upSpeedTime=null;
     _lb_money=null;
-    _adNode=null;
+    _lb_notice=null;
     _exchange=null;
     _mask=null;
     _combUpgrade=null;
@@ -108,10 +110,11 @@ export default class Game extends cc.Component {
         WXCtr.getFriendRankingData();                   //获取好友排行榜数据
         this.commitDataToServer();
         this.scheduleOnce(this.updateGameData.bind(this),1);
-
+        WXCtr.setBannerAd(100,300);
         let bgMusic=cc.instantiate(this.bgMusic);
         bgMusic.parent=this.node;
         bgMusic.tag=999999;
+        HttpCtr.pushMsg(this.showNotice.bind(this));
     }
 
     initEvent(){
@@ -134,6 +137,8 @@ export default class Game extends cc.Component {
         this._adNode=this.node.getChildByName("adNode");
         this._otherNode=this.node.getChildByName("otherNode");
         this._mask=this._otherNode.getChildByName("mask");
+        this._noticeNode=this._otherNode.getChildByName("noticeNode");
+        this._lb_notice=this._noticeNode.getChildByName("mask").getChildByName("lb_notice");
         this._bonusFrame=this._otherNode.getChildByName("bonusFrame");
         this._btn_pfTurntable=this._bonusFrame.getChildByName("btn_pfTurntable");
         this._btn_sevenLogin=this._bonusFrame.getChildByName("btn_sevenLogin");
@@ -153,6 +158,10 @@ export default class Game extends cc.Component {
         this._btn_bonus.runAction(cc.repeatForever(cc.sequence(
             cc.moveBy(0.5,cc.p(20,0)),
             cc.moveBy(0.5,cc.p(-20,0)),
+        )))
+        this._btn_upSpeed.runAction(cc.repeatForever(cc.sequence(
+            cc.scaleTo(0.2,1.15),
+            cc.scaleTo(0.2,1.0)
         )))
         this._btn_more.runAction(cc.repeatForever(cc.sequence(
             cc.rotateBy(0.1,-10),
@@ -219,7 +228,15 @@ export default class Game extends cc.Component {
                 if(GameCtr.vedioTimes<=0){
                     WXCtr.share({callback:callFunc});
                 }else{
-                    WXCtr.showVideoAd(callFunc.bind(this));
+                    // WXCtr.showVideoAd(callFunc.bind(this));\
+                    WXCtr.offCloseVideo();
+                    WXCtr.showVideoAd();
+                    WXCtr.onCloseVideo((res) => {
+                        if (res) {
+                            callFunc()
+                        }
+                    });
+
                 }
                 HttpCtr.openClick(GameCtr.clickType.speedUp);
 
@@ -699,6 +716,21 @@ export default class Game extends cc.Component {
         for(let i=0;i<particle.totalParticles;i++){
             particle.addParticle();
         }
+    }
+
+    showNotice(data){
+        this.scheduleOnce(()=>{
+            this._noticeNode.active=true;
+            this._noticeNode.runAction(cc.fadeIn(0));
+            this._lb_notice.getComponent(cc.Label).string=data[0].title;
+            this._lb_notice.x=400
+            this._lb_notice.runAction(cc.sequence(
+                cc.moveTo(7,cc.p(-1000,0)),
+                cc.callFunc(()=>{
+                    this._noticeNode.runAction(cc.fadeOut(1.5));
+                })
+            ));
+        },data[0].stime)
     }
 
 

@@ -17,6 +17,11 @@ export default class NewClass extends cc.Component {
         this.loadConf();
         this.initBtnStart();
         GameCtr.getInstance();
+
+        this._btnStart.runAction(cc.repeatForever(cc.sequence(
+            cc.scaleTo(0.4,1.05),
+            cc.scaleTo(0.4,1.0)
+        )))
     }
 
     initBtnStart(){

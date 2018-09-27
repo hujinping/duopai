@@ -50,6 +50,7 @@ export default class RankingView extends cc.Component {
     private isGetFriendList = false;
     private curPageIndex=0;
     private interval=0;
+    private isShowFrenidRank=false;
 
     onLoad() {
         GameCtr.getInstance().setRanking(this);
@@ -120,6 +121,13 @@ export default class RankingView extends cc.Component {
 
         if(this.sprFreindRankScroll.node.active){
             WXCtr.showFriendRanking(this.curPageIndex);
+            this.scheduleOnce(function() { //重点
+                if (this.tex) {
+                    this.tex.initWithElement(window.sharedCanvas);
+                    this.tex.handleLoadedTexture();
+                    this.sprFreindRankScroll.spriteFrame= new cc.SpriteFrame(this.tex);
+                }
+            }, 1);
         } 
     }
 
@@ -137,6 +145,13 @@ export default class RankingView extends cc.Component {
 
         if(this.sprFreindRankScroll.node.active){
             WXCtr.showFriendRanking(this.curPageIndex);
+            this.scheduleOnce(function() { //重点
+                if (this.tex) {
+                    this.tex.initWithElement(window.sharedCanvas);
+                    this.tex.handleLoadedTexture();
+                    this.sprFreindRankScroll.spriteFrame= new cc.SpriteFrame(this.tex);
+                }
+            },1);
         }
     }
 
@@ -216,6 +231,19 @@ export default class RankingView extends cc.Component {
             this.isGetFriendList = true;
             WXCtr.showFriendRanking(this.curPageIndex);
         }
+
+        if(!this.isShowFrenidRank){
+            window.sharedCanvas.width = 1080;
+            window.sharedCanvas.height = 1920;
+            this.scheduleOnce(function() { //重点
+                if (this.tex) {
+                    this.tex.initWithElement(window.sharedCanvas);
+                    this.tex.handleLoadedTexture();
+                    this.sprFreindRankScroll.spriteFrame= new cc.SpriteFrame(this.tex);
+                }
+            }, 1);
+            this.isShowFrenidRank=true;
+        }
     }
 
     loadImg(spr, imgUrl) {
@@ -234,16 +262,16 @@ export default class RankingView extends cc.Component {
     }
 
      // 刷新子域的纹理
-     _updateSubDomainCanvas() {
-        if (window.sharedCanvas != undefined && this.tex != null && this.ndRanking.active && this.sprFreindRankScroll.node.active) {
-            this.tex.initWithElement(window.sharedCanvas);
-            this.tex.handleLoadedTexture();
-            this.sprFreindRankScroll.spriteFrame = new cc.SpriteFrame(this.tex);
-        }
-    }
+    //  _updateSubDomainCanvas() {
+    //     if (window.sharedCanvas != undefined && this.tex != null && this.ndRanking.active && this.sprFreindRankScroll.node.active) {
+    //         this.tex.initWithElement(window.sharedCanvas);
+    //         this.tex.handleLoadedTexture();
+    //         this.sprFreindRankScroll.spriteFrame = new cc.SpriteFrame(this.tex);
+    //     }
+    // }
     
-    update() {
-        this._updateSubDomainCanvas();
-    }
+    // update() {
+    //     this._updateSubDomainCanvas();
+    // }
 
 };

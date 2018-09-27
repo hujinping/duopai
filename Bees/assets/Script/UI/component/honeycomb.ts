@@ -155,6 +155,7 @@ export default class NewClass extends cc.Component {
         let unlockCombTip=cc.instantiate(this.unlockCombTip);
         unlockCombTip.parent=cc.find("Canvas");
         unlockCombTip.y=-1218;
+        unlockCombTip.setLocalZOrder(1);
         unlockCombTip.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0)));
         unlockCombTip.getComponent("unlockCombTip").init(this._level);
         GameCtr.getInstance().getGame().setMaskVisit(true);

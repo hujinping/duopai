@@ -172,6 +172,7 @@ export default class WXCtr {
                     WXCtr.getUserInfo();
                     WXCtr.getSelfData();
                     WXCtr.getShareConfig();
+                    HttpCtr.getAdConfig();
                 }
             })
         }
@@ -307,20 +308,7 @@ export default class WXCtr {
         }
     }
 
-    //视频广告
-    static setVideoAd(videoId) {
-        if (window.wx != undefined) {
-            WXCtr.videoAd = wx.createRewardedVideoAd({ adUnitId: videoId });
-            WXCtr.videoAd.onLoad(() => {
-                console.log('banner 广告加载成功')
-            });
-            WXCtr.videoAd.load();
-            WXCtr.videoAd.onError(err => {
-                console.log(err)
-            });
-            WXCtr.videoAd.onClose(WXCtr.videoAdCallback);
-        }
-    }
+
 
     static restoreVideoAdOnClose(callback: Function = null) {
         WXCtr.videoAd.onClose(() => {
@@ -332,22 +320,7 @@ export default class WXCtr {
         WXCtr.setBannerAd(100,300);
     }
 
-    static showVideoAd(callback: Function = null) {
-        if (WXCtr.videoAd) {
-            WXCtr.hideBannerAd();
-            if (callback != null) {
-                WXCtr.videoAd.offClose(WXCtr.videoAdCallback);
-                WXCtr.outvideoAdCallback = callback;
-                GameCtr.vedioTimes--;
-
-                GameCtr.ufoTimes
-                WXCtr.videoAd.onClose(callback);
-            }
-            WXCtr.videoAd.show();
-        }else{
-            //GameCtr.ins.getGame().showToast("")
-        }
-    }
+   
 
     static showBannerAd() {
         if (cc.isValid(WXCtr.bannerAd) && WXCtr.bannerAd) {
@@ -361,29 +334,8 @@ export default class WXCtr {
         }
     }
 
-    static onCloseVideo(callback) {
-        // 用户点击了【关闭广告】按钮
-        let call: Function = (res) => {
-            if (res && res.isEnded || res === undefined) {
-                // 正常播放结束，可以下发游戏奖励
-                callback(true);
-                HttpCtr.videoCheck(WXCtr.launchOption.query);
-            }
-            else {
-                // 播放中途退出，不下发游戏奖励
-                callback(false);
-            }
-        };
-        
-        WXCtr.videoAd.onClose(call);
-        WXCtr.videoAdCallback = call;
-    }
 
-    static offCloseVideo() {
-        if (WXCtr.videoAdCallback) {
-            WXCtr.videoAd.offClose(WXCtr.videoAdCallback);
-        }
-    }
+
 
     //banner广告
     static setBannerAd(height = null, width = null) {
@@ -402,7 +354,7 @@ export default class WXCtr {
                 left = (WXCtr.screenWidth - realWidth) / 2;
             }
             WXCtr.bannerAd = wx.createBannerAd({
-                adUnitId: WXCtr.advid,
+                adUnitId:"adunit-4d43fbf2baf8747c",
                 style: {
                     left: left,
                     top: WXCtr.screenHeight - top * WXCtr.heightRatio,
@@ -552,6 +504,53 @@ export default class WXCtr {
             }
         });
     }
+
+
+    static setVideoAd() {
+        if (window.wx != undefined && wx.createRewardedVideoAd) {
+            WXCtr.videoAd = wx.createRewardedVideoAd({ adUnitId:"adunit-cf448a58c6f5d542"});
+            WXCtr.videoAd.onLoad(() => {
+            });
+            WXCtr.videoAd.load();
+            WXCtr.videoAd.onError(err => {
+                WXCtr.videoAd = null; 
+                console.log(err)
+            }); 
+        }
+    }
+
+    static showVideoAd() {
+        if (WXCtr.videoAd) {
+            WXCtr.videoAd.show();
+            GameCtr.vedioTimes--;
+            console.log("今天剩余观看视频次数为：", GameCtr.vedioTimes);
+            //LocalStorage.save("VideoTimes", { day: Util.getCurrTimeYYMMDD(), times: GameCtr.surplusVideoTimes });
+        }
+    }
+
+    static onCloseVideo(callback) {
+        let call: Function = (res) => {
+            if (res && res.isEnded || res === undefined) {
+                // 正常播放结束，可以下发游戏奖励
+                callback(true);
+                HttpCtr.videoCheck(WXCtr.launchOption.query);
+            }
+            else {
+                // 播放中途退出，不下发游戏奖励
+                callback(false);
+            }
+        };
+        WXCtr.videoAd.onClose(call);
+        WXCtr.videoAdCallback = call;
+    }
+
+    static offCloseVideo() {
+        if (WXCtr.videoAdCallback) {
+            WXCtr.videoAd.offClose(WXCtr.videoAdCallback);
+            WXCtr.videoAdCallback = null;
+        }
+    }
+
 
 
     /**

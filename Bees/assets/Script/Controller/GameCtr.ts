@@ -59,13 +59,10 @@ export default class GameCtr {
     public static guide=null;
     public static tipHandTag=1500;
     public static realMoney=null;
-    public static vedioTimes=0;
+    public static vedioTimes=6;
     public static honeyPool=null;
     public static jarPool=null;
     public static bubbleMoneyPool=null;
-
-    public static ufoTimes=6;
-
 
     public static clickType={
         speedUp:1,                   //加速分享
@@ -84,11 +81,13 @@ export default class GameCtr {
 
     constructor() {
         GameCtr.ins = this;
+        WXCtr.getSystemInfo()
         WXCtr.getLaunchOptionsSync();
         WXCtr.createUserInfoBtn();
         WXCtr.getAuthSetting();
         WXCtr.showShareMenu();
         WXCtr.wxOnLogin();
+        
 
         GameCtr.honeyPool=new cc.NodePool();
         GameCtr.jarPool=new cc.NodePool();
@@ -442,7 +441,7 @@ export default class GameCtr {
                         //         GameCtr.chanelCheck(WXCtr.launchOption.query.channel_id, UserManager.user_id);
                         //         GameCtr.seekJion(WXCtr.launchOption.query.Send_user_id, WXCtr.launchOption.query.isInvite);
                         //         GameCtr.getToolInfo();
-                        //         WXCtr.getAdConfig();
+                        //         
                         //         GameCtr.getUserInfoCtr();
                         //     }
                         // });

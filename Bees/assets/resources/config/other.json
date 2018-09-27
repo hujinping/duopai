@@ -4,5 +4,5 @@
     "doubleInterval": 180,
     "doublePersist": 60,
     "pfTurntableInterval": 120,
-    "ufoInterval": 60
+    "ufoInterval": 5
 }
