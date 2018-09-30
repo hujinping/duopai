@@ -32,6 +32,9 @@ export default class NewClass extends cc.Component {
             if(e.target.getName()=="btn_close"){
                 this.node.destroy();
                 AudioManager.getInstance().playSound("audio/btnClose");
+                if(this._shareGetMoney){
+                    GameCtr.getInstance().getGame().setRealMoney(this._shareGetMoney); 
+                }
             }else if(e.target.getName()=="btn_storage"){
                 if(!this._shareGet){
                     AudioManager.getInstance().playSound("audio/open_panel");
@@ -40,8 +43,7 @@ export default class NewClass extends cc.Component {
                 }else{
                     AudioManager.getInstance().playSound("audio/open_panel");
                     let callFunc=()=>{
-                        GameCtr.realMoney+=this._shareGetMoney;
-                        GameCtr.getInstance().getGame().setRealMoney();
+                        GameCtr.getInstance().getGame().setRealMoney(this._shareGetMoney);
                         this.node.destroy();
                     }
                     WXCtr.share({callback:callFunc});

@@ -1,14 +1,14 @@
 {
   "ver": "1.0.0",
-  "uuid": "84e1d3bd-3571-4240-b3bf-12fb4b6bd4af",
+  "uuid": "9a7386df-9dab-4f3e-ac13-c0c755e33fdb",
   "type": "sprite",
   "wrapMode": "clamp",
   "filterMode": "bilinear",
   "subMetas": {
-    "adPedestal": {
+    "signTitle": {
       "ver": "1.0.3",
-      "uuid": "d9262c1c-5084-46eb-b6ea-bfefbf84c824",
-      "rawTextureUuid": "84e1d3bd-3571-4240-b3bf-12fb4b6bd4af",
+      "uuid": "a72c31a5-2549-4b82-b23b-bdd8518ad842",
+      "rawTextureUuid": "9a7386df-9dab-4f3e-ac13-c0c755e33fdb",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,
@@ -16,10 +16,10 @@
       "offsetY": 0,
       "trimX": 0,
       "trimY": 0,
-      "width": 797,
-      "height": 273,
-      "rawWidth": 797,
-      "rawHeight": 273,
+      "width": 334,
+      "height": 83,
+      "rawWidth": 334,
+      "rawHeight": 83,
       "borderTop": 0,
       "borderBottom": 0,
       "borderLeft": 0,

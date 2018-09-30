@@ -3,13 +3,13 @@ import UserManager from "../Common/UserManager";
 import WXCtr from "./WXCtr";
 import GameCtr from "./GameCtr";
 import ViewManager from "../Common/ViewManager";
+import Util from "../Common/Util";
+import Canvas from "../../../SubGame/build/SubGame/libs/weapp-adapter/Canvas";
 
 /**
  * 所有Http请求统一控制
  */
-
 const { ccclass, property } = cc._decorator;
-
 @ccclass
 export default class HttpCtr {
 
@@ -22,12 +22,10 @@ export default class HttpCtr {
                     console.log("log-------------http:login--->resp=:", resp);
                     UserManager.user_id = resp.data.uid;
                     UserManager.voucher = resp.data.voucher
-                    HttpCtr.getUserInfo();
+                    HttpCtr.getUserInfo(null,showWorldRanking);
                     HttpCtr.getSettingConfig();
                     HttpCtr.chanelCheck(WXCtr.launchOption.query);
-                    if(showWorldRanking){
-                        GameCtr.getInstance().getRanking().showWorldRanking();
-                    }
+                    
                     if (WXCtr.launchOption.query) {
                         HttpCtr.invitedByFriend(WXCtr.launchOption.query);
                     }
@@ -59,7 +57,7 @@ export default class HttpCtr {
     }
 
     //获取个人信息
-    static getUserInfo(callBack = null) {
+    static getUserInfo(callBack = null,showWorldRanking=false) {
         Http.send({
             url: Http.UrlConfig.GET_USERINFO,
             success: (resp) => {
@@ -70,6 +68,11 @@ export default class HttpCtr {
                     console.log("log--------GameCtr.realMoney=:",GameCtr.realMoney);
                     if (callBack) {
                         callBack(resp.user);
+                    }
+                    if(showWorldRanking){
+                        console.log("log---------排行授权  刷新排行");
+                        GameCtr.getInstance().getRanking().showWorldRanking();
+                        GameCtr.getInstance().getRanking().initSelfInfo();
                     }
                 }
             },
@@ -124,7 +127,25 @@ export default class HttpCtr {
             success: (resp) => {
                 console.log("获取游戏配置=：", resp);
                 GameCtr.isAudited =resp.ok;
+                //GameCtr.isAudited =false;
+                console.log("获取游戏配置 GameCtr.isAudited=：", GameCtr.isAudited);
                 GameCtr.setting = resp;
+                GameCtr.advTime =resp.advTime;
+                GameCtr.advVedioTime=resp.advVideoTime;
+                GameCtr.isGetSetting=true;
+                GameCtr.getInstance().getLoding().refreshMoreNewGame();
+                let vedioInfo=localStorage.getItem("VideoTimes");
+                if(!vedioInfo ){
+                    GameCtr.vedioTimes=GameCtr.setting.advSum;
+                }else {
+                    let obj=JSON.parse(vedioInfo);
+                    
+                    if(obj.day!=Util.getCurrTimeYYMMDD()){
+                        GameCtr.vedioTimes=GameCtr.setting.advSum;
+                    }else{
+                        GameCtr.vedioTimes=obj.times;
+                    }
+                }
             }
         });
     }
@@ -265,7 +286,7 @@ export default class HttpCtr {
         Http.send({
             url: Http.UrlConfig.DO_TODAY,
             success: (res) => {
-                console.log("log--------res=:", res);
+                console.log("log-------DO_TODAY-res=:", res);
                 if (res.m) {
                     callback(res);
                 } else {
@@ -306,7 +327,6 @@ export default class HttpCtr {
                     console.log("log-----------金币上报成功--------------_gold=:", _gold);
                 } else {
                     ViewManager.toast(res.msg);
-                    console.log("log-----------金币上报失败--------------");
                 }
             },
             data: {
@@ -365,7 +385,18 @@ export default class HttpCtr {
                 if(res.ret!=1){
                     GameCtr.getInstance().getGame().showToast(res.msg);
                 }else{
+                    GameCtr.realMoney-=1000;
                     GameCtr.getInstance().getGame().showToast("兑换成功");
+                    GameCtr.getInstance().getGame().setRealMoney(0);
+
+                    let exchange1= cc.find("Canvas").getChildByName("exchange1");
+                    if(exchange1){
+                        exchange1.getComponent("exchange1").setRealyMoney();
+                        let exchange2= exchange1.getChildByName("exchange2");
+                        if(exchange2){
+                            exchange2.getComponent("exchange2").setRealMoney();
+                        }
+                    }
                 }
             },
             data: {
@@ -377,22 +408,24 @@ export default class HttpCtr {
         });
     }
 
-    static openClick(_clickid){
-        Http.send({
-            url: Http.UrlConfig.OPEN_CLICK,
-            success: (res) => {
-                if(res.ret!=1){
-                    GameCtr.getInstance().getGame().showToast(res.msg);
+    static openClick(_clickid,_appid=null){
+        if(_appid || GameCtr.setting.onclick){
+            //console.log("log--------------点击统计------clilkid appid=:",_clickid,_appid);
+            Http.send({
+                url: Http.UrlConfig.OPEN_CLICK,
+                success: (res) => {
+                    if(res.ret!=1){
+                        GameCtr.getInstance().getGame().showToast(res.msg);
+                    }
+                },
+                data: {
+                    uid: UserManager.user_id,
+                    voucher: UserManager.voucher,
+                    clickid:_clickid,
+                    appid:_appid
                 }
-                
-            },
-
-            data: {
-                uid: UserManager.user_id,
-                voucher: UserManager.voucher,
-                clickid:_clickid,
-            }
-        });
+            });     
+        }
     }
 
 
@@ -429,6 +462,4 @@ export default class HttpCtr {
             }
         });
     }
-
-    // update (dt) {}
 }

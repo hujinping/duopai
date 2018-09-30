@@ -63,46 +63,6 @@ export default class GameData {
     }
 
     
-
-    
-    //---------------------------从网络获取数据------------------------------------
-    static getNetData(){
-        // GameCtr.getUserInfo((data) => {
-        //     if(!data){//获取网络数据失败
-        //         GameCtr.startGame();
-        //         return;
-        //     }
-        //     console.log("getUserInfoByNet 只要进到这个回调函数，则表明最终收到了正确的网络数据，则需与本地数据比对，极有可能刷新所有游戏数据",)
-        //     console.log("getUserInfoByNet data",data)
-        //     console.log("getUserInfoByNet data",data.level)
-        //     console.log("getUserInfoByNet data",data.money)
-        //     let netData = {
-        //         _guideStep:GameData.localData._guideStep,
-        //         experience:data.exp,
-        //         gold:data.gold,
-        //         level:data.level,
-        //         diamonds:data.money,
-        //         maxPlaneLevel:data.maxfeiji,
-        //         planeData:{},
-        //         storageTime:data.data_3,//上次上传的时间
-        //     };
-
-        //     for (let i = 1; i <= GameData.maxPlane; i++) {
-        //         let key = "feiji_shop_" + i;
-        //         netData.planeData[key] = data[key];
-        //     }
-        //     for(let i = 1; i <= GameData.maxApron; i++) {
-        //         let key1 = "feiji_" + i;
-        //         let key2 = "feiji_switch_" + i;
-        //         netData.planeData[key1] = data[key1] == "NaN" ? 0 : data[key1];
-        //         netData.planeData[key2] = (data[key2] == "true");
-        //     }
-
-        //     GameData.valueData_1(netData);
-        // });
-    }
-
-
     static valueData_1(netData){
         console.log("//初始化各种变量1",GameData.localData)
         GameData.localData = netData;

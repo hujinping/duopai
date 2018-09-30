@@ -8,6 +8,7 @@ import Level from "../UI/game/level";
 import RankingView from "../UI/ranking/RankingView";
 import HttpCtr from "./HttpCtr";
 import Http from "../Common/Http";
+import Loading from "../UI/loading/loading";
 //import Collide from "../View/game/Collide";
 
 const { ccclass, property } = cc._decorator;
@@ -22,7 +23,7 @@ export default class GameCtr {
     private mLevel: Level;
     private mRanking:RankingView;
     private eventTarget=null;
-    
+    private mLoading: Loading;
     public static selfInfo=null;
     public static isAudited= false;                     //已审核
     public static reviveTimes = 0;                      //第几次复活
@@ -63,6 +64,9 @@ export default class GameCtr {
     public static honeyPool=null;
     public static jarPool=null;
     public static bubbleMoneyPool=null;
+    public static isGetSetting=false;
+    public static advTime=120;
+    public static advVedioTime=60;
 
     public static clickType={
         speedUp:1,                   //加速分享
@@ -127,6 +131,14 @@ export default class GameCtr {
 
     removeListener(event){
         this.eventTarget.off(event);
+    }
+
+    setLoading(loading:Loading){
+        this.mLoading = loading;
+    }
+
+    getLoding(){
+        return this.mLoading;
     }
 
     //设置game实例(游戏)
@@ -370,13 +382,28 @@ export default class GameCtr {
                     //GameCtr.ins.mEnd.showSlider(resp.data);
                 }else if (slideType == "nav") {
                     GameCtr.newGameData=resp.data;
-                    GameCtr.getInstance().getGame().refreshMoreNewGame();
                 }
             },
             data: {
                 slide_type: slideType
             }
         });
+    }
+
+
+    static showLoading(showMask = true) {
+        if (window.wx != undefined) {
+            wx.showLoading({
+                title: "疯狂加载中",
+                mask: showMask
+            });
+        }
+    }
+
+    static hideLoading() {
+        if (window.wx != undefined) {
+            wx.hideLoading();
+        }
     }
 
     //分享到群检测
@@ -417,9 +444,11 @@ export default class GameCtr {
                 success: (resp) => {
                     if (resp.code == Http.Code.OK) {
                         UserManager.user_id = resp.data.user_id;
-                        if (showWorldRanking) {
-                            GameCtr.getInstance().getRanking().showWorldRanking();
-                        }
+                        // if (showWorldRanking) {
+                        //     GameCtr.getInstance().getRanking().showWorldRanking();
+                        //     console.log("log-------------showWorldRanking-----------");
+                        //     GameCtr.getInstance().getRanking().initSelfInfo();
+                        // }
                         // Http.send({
                         //     url: Http.UrlConfig.SAVE_INFO,
                         //     data:

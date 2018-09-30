@@ -19,7 +19,6 @@ export default class Game extends cc.Component {
     _honeycombContent=null;
     _pipelineNode=null;
     _glassPipelineNode=null;
-    _adNode=null;
     _noticeNode=null;
     _authTipNode=null;
     _bonusFrame=null;
@@ -38,13 +37,21 @@ export default class Game extends cc.Component {
     _mask=null;
     _combUpgrade=null;
     _otherNode=null;
+    _carouselNode=null;
+    _carouselIndex=0;
+
+    
     _interval3=0;
     _pfTurnableTime=0;
     _manufactureUpgrade=null;
-    _speedTime=0;
     _ufoTime=0;
     _timeCount=-1;
+    _speedTime=-1;
+    _bannerTime=0;
     _combList=[];
+    _pusgMsg=[];
+    _carouseAds=[];
+    _canUpSpeed=true;
 
     @property(cc.Prefab)
     honeyComb:cc.Prefab=null;
@@ -97,35 +104,42 @@ export default class Game extends cc.Component {
     @property(cc.Prefab)
     bgMusic:cc.Prefab=null;
 
+    @property(cc.Prefab)
+    ad:cc.Prefab=null;
+
     onLoad(){
         GameCtr.getInstance().setGame(this);
         GameCtr.getInstance().initEventTarget();
         this.initEvent();
         this.initNode();
         this.initBubbleHoneys();
-        this.setRealMoney();
+        this.setRealMoney(0);
         this.checkOffline();
         GameCtr.getInstance().setPlayTimes();
-        this.refreshMoreNewGame();
         WXCtr.getFriendRankingData();                   //获取好友排行榜数据
         this.commitDataToServer();
         this.scheduleOnce(this.updateGameData.bind(this),1);
-        WXCtr.setBannerAd(100,300);
+        this.initBgMusic();
+        this.refreshBanner();
+    }
+
+    start(){
+        //GameCtr.hideLoading();
+    }
+
+    initBgMusic(){
+        while(this.node.getChildByTag(999999)){
+            this.node.removeChildByTag(999999);
+        }
         let bgMusic=cc.instantiate(this.bgMusic);
         bgMusic.parent=this.node;
         bgMusic.tag=999999;
-        HttpCtr.pushMsg(this.showNotice.bind(this));
     }
 
     initEvent(){
         cc.game.on(cc.game.EVENT_SHOW,()=>{
             this.checkOffline();
-            while(this.node.getChildByTag(999999)){
-                this.node.removeChildByTag(999999);
-            }
-            let bgMusic=cc.instantiate(this.bgMusic);
-            bgMusic.parent=this.node;
-            bgMusic.tag=999999;
+            this.initBgMusic();
         });
 
         cc.game.on(cc.game.EVENT_HIDE,()=>{
@@ -134,11 +148,11 @@ export default class Game extends cc.Component {
     }
 
     initNode(){
-        this._adNode=this.node.getChildByName("adNode");
+        
         this._otherNode=this.node.getChildByName("otherNode");
         this._mask=this._otherNode.getChildByName("mask");
-        this._noticeNode=this._otherNode.getChildByName("noticeNode");
-        this._lb_notice=this._noticeNode.getChildByName("mask").getChildByName("lb_notice");
+        // this._noticeNode=this._otherNode.getChildByName("noticeNode");
+        // this._lb_notice=this._noticeNode.getChildByName("mask").getChildByName("lb_notice");
         this._bonusFrame=this._otherNode.getChildByName("bonusFrame");
         this._btn_pfTurntable=this._bonusFrame.getChildByName("btn_pfTurntable");
         this._btn_sevenLogin=this._bonusFrame.getChildByName("btn_sevenLogin");
@@ -148,6 +162,7 @@ export default class Game extends cc.Component {
         this._btn_upSpeed=this._otherNode.getChildByName("btn_speedUp");
         this._btn_more=this._otherNode.getChildByName("btn_more");
         this._exchange=this._otherNode.getChildByName("exchange");
+        this._carouselNode=this._otherNode.getChildByName("carouselNode");
         this._btn_exchange=this._exchange.getChildByName("btn_exchange");
         this._lb_money=this._otherNode.getChildByName("exchange").getChildByName("lb_money");
         this._lb_upSpeedTime=this._otherNode.getChildByName("lb_upSpeedTime");
@@ -195,16 +210,58 @@ export default class Game extends cc.Component {
         this.initBtnEvent(this._btn_exchange);
         this.initBtnEvent(this._btn_more);
 
+        console.log("log-------GameCtr.isAudited=:",GameCtr.isAudited);
         this._btn_sevenLogin.active=GameCtr.isAudited;
         this._btn_pfTurntable.active=GameCtr.isAudited;
         this._btn_invite.active=GameCtr.isAudited;
         this._exchange.active=GameCtr.isAudited;
         this._btn_more.active=GameCtr.isAudited;
-        this._adNode.active=GameCtr.isAudited;
         this._btn_upSpeed.active=GameCtr.isAudited;
+        this._btn_bonus.active=GameCtr.isAudited;
 
-
+        this._btn_upSpeed.active=true;
+    
         this.initCombs();
+        this.initCarousel();
+    }
+
+    initCarousel(){
+        if(!GameCtr.isAudited){return;}
+        if(!GameCtr.setting.nav.navB||GameCtr.setting.nav.navB<=0){return;}
+
+        for(let i=0;i<GameCtr.setting.nav.navB.length;i++){
+            let ad=cc.instantiate(this.ad);
+            ad.parent=this._carouselNode;
+            ad.scale=1.0;
+            ad.x=i==0?0:-1800;
+            ad.getComponent("ad").init(GameCtr.setting.nav.navB[i]);
+            this._carouseAds.push(ad);
+        }
+        this._carouselIndex=0
+        this.scheduleOnce(()=>{
+            this._carouseAds[this._carouselIndex].getComponent("ad").doScale();
+        },2)
+        this.scheduleOnce(this.doCarousel.bind(this),5);
+    }
+
+    doCarousel(){
+        if(this._carouseAds.length<=1){ //广告位推荐位大于1个，才有轮播功能
+            return 
+        }
+        this._carouseAds[this._carouselIndex].x=0;
+        this._carouseAds[this._carouselIndex].getComponent("ad").doScale();
+        for(let i=0;i<this._carouseAds.length;i++){
+            if(i==this._carouselIndex){
+                continue;
+            }
+            this._carouseAds[i].scale=1;
+            this._carouseAds[i].getComponent("ad").stopActions();
+            this._carouseAds[i].x=-1800;//移除屏幕之外
+        }
+
+        this._carouselIndex++;
+        this._carouselIndex=this._carouselIndex%this._carouseAds.length;
+        this.scheduleOnce(this.doCarousel.bind(this),5);
     }
 
     initBtnEvent(btn){
@@ -212,34 +269,42 @@ export default class Game extends cc.Component {
             AudioManager.getInstance().playSound("audio/open_panel");
             if(e.target.getName()=="btn_speedUp"){
                 if(!this._btn_upSpeed.getComponent(cc.Button).interactable){return}
+                if(GameCtr.globalSpeedRate>1){
+                    this.showToast("正在加速中...");
+                    return;
+                }
+
                 let callFunc=()=>{
-                    if(GameCtr.globalSpeedRate>1){
-                        this.showToast("正在加速中...");
-                        return;
-                    }
                     GameCtr.globalSpeedRate=2;
                     GameCtr.getInstance().getManufacture().resetLineAction();
                     this._speedTime=0;
                     this.startSpeedUpTimer(GameCtr.otherConfig.speedUpPersist);
                     this._btn_upSpeed.getComponent(cc.Button).interactable=false;
                     this._btn_upSpeed.stopAllActions();
+                    this._canUpSpeed=false;
                 }
                 this._bonusFrame.active=false;
                 if(GameCtr.vedioTimes<=0){
+                    if(!GameCtr.isAudited){
+                        GameCtr.getInstance().getGame().showToast("今日视频已看完");
+                        return;
+                    }
+
                     WXCtr.share({callback:callFunc});
                 }else{
-                    // WXCtr.showVideoAd(callFunc.bind(this));\
                     WXCtr.offCloseVideo();
                     WXCtr.showVideoAd();
                     WXCtr.onCloseVideo((res) => {
+                        console.log("log------------dianji------res=:",res);
                         if (res) {
-                            callFunc()
+                            callFunc();
+                        }else{
+                            this.showToast("视频未看完，无法领取奖励");
                         }
                     });
 
                 }
                 HttpCtr.openClick(GameCtr.clickType.speedUp);
-
             }else if(e.target.getName()=="btn_rank"){
                 this._bonusFrame.active=false;
                 if(cc.find("Canvas").getChildByName("ranking")){return}
@@ -247,6 +312,7 @@ export default class Game extends cc.Component {
                 ranking.parent=cc.find("Canvas");
                 ranking.setLocalZOrder(10);
                 HttpCtr.openClick(GameCtr.clickType.rank);
+               
             }else if(e.target.getName()=="btn_pfTurntable"){
                 this._bonusFrame.active=false;
                 if(!this._btn_pfTurntable.getComponent(cc.Button).interactable){
@@ -263,7 +329,7 @@ export default class Game extends cc.Component {
                 this.setMaskVisit(true);
                 let signin=cc.instantiate(this.signIn);
                 signin.parent=cc.find("Canvas");
-                signin.setLocalZOrder(50);
+                signin.setLocalZOrder(1);
             }else if(e.target.getName()=="btn_invite"){
                 this._bonusFrame.active=false;
                 if(cc.find("Canvas").getChildByName("invite")){return}
@@ -371,10 +437,10 @@ export default class Game extends cc.Component {
         this._combList.push(honeyComb);
     }
 
-
     unlockComb(){
         if(GameCtr.comblevel>=30){return}
         GameCtr.comblevel++;
+        GameCtr.getInstance().getManufacture().doCaculateHoneyJar();
         let comb=this.getComb(GameCtr.comblevel);
         let preComb=this.getComb(GameCtr.comblevel-1);
         if(preComb && preComb.getComponent("honeycomb").getUnlock()){
@@ -413,13 +479,27 @@ export default class Game extends cc.Component {
                     this.setCombsSpeed(1);
                     GameCtr.globalSpeedRate=1;
                     this._btn_upSpeed.getComponent(cc.Button).interactable=false;
+                    this._btn_upSpeed.stopAllActions();
                     this._lb_upSpeedTime.active=false;
                     GameCtr.getInstance().getManufacture().resetLineAction();
                     GameCtr.getInstance().emitEvent("stopSpeedUp",null);
                     this._lb_upSpeedTime.stopAllActions();
+
+                    if(this._canUpSpeed){
+                        this._btn_upSpeed.getComponent(cc.Button).interactable=true;
+                        this._btn_upSpeed.runAction(cc.repeatForever(cc.sequence(
+                            cc.scaleTo(0.2,1.15),
+                            cc.scaleTo(0.2,1.0)
+                        )))
+                    }
                 }
             })
         ),this._timeCount+2))
+    }
+
+    stopUpSpeedAction(){
+        this._btn_upSpeed.getComponent(cc.Button).interactable=false;
+        this._btn_upSpeed.stopAllActions();
     }
 
     showGoldNotEnough(){
@@ -430,6 +510,14 @@ export default class Game extends cc.Component {
         goldNotEnough.setLocalZOrder(1);
     }
 
+    refreshBanner(){
+        this._bannerTime++;
+        if(this._bannerTime>=GameCtr.advTime){
+            WXCtr.setBannerAd(100,300);
+            this._bannerTime=0;
+        }
+        this.scheduleOnce(this.refreshBanner.bind(this),1);
+    }
 
     getCurSpeedUpTime(){
         return this._timeCount;
@@ -458,12 +546,14 @@ export default class Game extends cc.Component {
         this._mask.active=isVisit;
     }
 
-    setRealMoney(){
+    setRealMoney(add){
+        GameCtr.realMoney+=add;
+        let notice=cc.find("Canvas").getChildByName("noticeNode");
+        notice.getComponent("notice").addNotice(add);
         if(GameCtr.realMoney){
             this._lb_money.getComponent(cc.Label).string=(GameCtr.realMoney/100).toFixed(2);
         }
     }
-
 
     showAuthTip(){
         this._authTipNode.active=true;
@@ -568,8 +658,8 @@ export default class Game extends cc.Component {
         let hand=this.createTipHand(this.node);
         hand.tag=GameCtr.tipHandTag+4
         hand.scale=0.6;
-        hand.x=380;
-        hand.y=650;
+        hand.x=12;
+        hand.y=565;
     }
 
     closeGuideStep(parent,step){
@@ -617,19 +707,18 @@ export default class Game extends cc.Component {
         this._btn_pfTurntable.getComponent(cc.Button).interactable=false;
     }
 
-
-    
     updateSpeedUpState(dt){
-        if(!GameCtr.isAudited){return}
-
         if(this._speedTime>=0){
             this._speedTime+=dt;
             if(this._speedTime>=GameCtr.otherConfig.speedUpInterval){
-                this._btn_upSpeed.getComponent(cc.Button).interactable=true;
-                this._btn_upSpeed.runAction(cc.repeatForever(cc.sequence(
-                    cc.scaleTo(0.2,1.15),
-                    cc.scaleTo(0.2,1.0)
-                )))
+                this._canUpSpeed=true;
+                if(GameCtr.globalSpeedRate==1){
+                    this._btn_upSpeed.getComponent(cc.Button).interactable=true;
+                    this._btn_upSpeed.runAction(cc.repeatForever(cc.sequence(
+                        cc.scaleTo(0.2,1.15),
+                        cc.scaleTo(0.2,1.0)
+                    )))
+                }
                 this._speedTime=-1;
             }
         }
@@ -638,19 +727,17 @@ export default class Game extends cc.Component {
     updateUfoTime(dt){
         if(this._ufoTime>=0){
             this._ufoTime+=dt;
-            if(this._ufoTime>=120){
-                if(GameCtr.vedioTimes>=0){
-                    let ufo =cc.instantiate(this.ufo);
-                    ufo.parent=this.node;
-                    this._ufoTime=0;
-                } 
+            if(this._ufoTime>=GameCtr.advVedioTime){
+                let ufo =cc.instantiate(this.ufo);
+                ufo.parent=this.node;
+                this._ufoTime=0;
             }
         }
     }
 
     caculateHideHoney(){
         let combsUnlock=JSON.parse(GameCtr.getInstance().getCombsUnlock());
-        for(let i=0;i<combsUnlock.length;i++){//
+        for(let i=0;i<combsUnlock.length;i++){
             if(this._honeycombContent.y>=(i+1)*408){  
                 GameCtr.honeyValue+=(GameCtr.combConfig[i].initialIncome+GameCtr.combConfig[i].incomeMatrix*(combsUnlock[i].level-1)*combsUnlock[i].level)/(GameCtr.combConfig[i].baseSpeed*2)
             }
@@ -660,25 +747,7 @@ export default class Game extends cc.Component {
         }
     }
 
-    refreshMoreNewGame(){
-        if(!GameCtr.isAudited){return;}
-        if(!GameCtr.setting.nav.banner||GameCtr.setting.nav.banner<=0){return;}
-        this._adNode.active=true;
-        let children = this._adNode.getChildByName("adFrame").children;
-
-        for(let i=0;i<GameCtr.setting.nav.banner.length;i++){
-            if(i>=4)return;
-            let node = this._adNode.getChildByName("adFrame").getChildByName("ad"+i);
-            let sp = node.getComponent(cc.Sprite);
-            GameCtr.loadImg(sp,GameCtr.setting.nav.banner[i].img)
-            let obj = {appid:GameCtr.setting.nav.banner[i].appid,path:GameCtr.setting.nav.banner[i].path}
-            console.log("%%%",obj)
-            node.on(cc.Node.EventType.TOUCH_START, ()=>{
-                WXCtr.gotoOther(obj);
-            });
-        }
-    }
-
+    
     upgradeNodeUpdate(){
         if(this._combUpgrade){
             this._combUpgrade.getComponent("combUpgrade").doUpdate()
@@ -710,29 +779,16 @@ export default class Game extends cc.Component {
     }
 
     playGoldEft(){
-        let goldEft=this.node.getChildByName("otherNode").getChildByName("offLineEft");
-        let particle=goldEft.getComponent(cc.ParticleSystem);
-        particle.resetSystem();
-        for(let i=0;i<particle.totalParticles;i++){
-            particle.addParticle();
+        for(let i=1;i<=2;i++){
+            let goldEft=this.node.getChildByName("otherNode").getChildByName("offLineEft"+i);
+            let particle=goldEft.getComponent(cc.ParticleSystem);
+            particle.resetSystem();
+            for(let j=0;j<particle.totalParticles;j++){
+                particle.addParticle();
+            }
         }
+        AudioManager.getInstance().playSound("audio/gold")
     }
-
-    showNotice(data){
-        this.scheduleOnce(()=>{
-            this._noticeNode.active=true;
-            this._noticeNode.runAction(cc.fadeIn(0));
-            this._lb_notice.getComponent(cc.Label).string=data[0].title;
-            this._lb_notice.x=400
-            this._lb_notice.runAction(cc.sequence(
-                cc.moveTo(7,cc.p(-1000,0)),
-                cc.callFunc(()=>{
-                    this._noticeNode.runAction(cc.fadeOut(1.5));
-                })
-            ));
-        },data[0].stime)
-    }
-
 
     update(dt){
         this._interval3+=dt;

@@ -5,6 +5,7 @@ import ViewManager from "../Common/ViewManager";
 import HttpCtr from "./HttpCtr";
 import GameCtr from "./GameCtr";
 import GameData from "../Common/GameData";
+import Util from "../Common/Util";
 
 const { ccclass, property } = cc._decorator;
 
@@ -334,9 +335,6 @@ export default class WXCtr {
         }
     }
 
-
-
-
     //banner广告
     static setBannerAd(height = null, width = null) {
         if (window.wx != undefined && wx.createBannerAd) {
@@ -381,10 +379,6 @@ export default class WXCtr {
         if (data && data.Challenge){
             qureyInfo = "Challenge=";
         }
-        if (data &&  data.pfTurnable){
-            GameData.pfTurntable++;
-            HttpCtr.openClick(GameCtr.clickType.pfTurntable);
-        }
         if (window.wx != undefined) {
             window.wx.shareAppMessage({
                 title: WXCtr.shareTitle,
@@ -396,7 +390,7 @@ export default class WXCtr {
                             console.log("shareTickets == ", res.shareTickets);
                             WXCtr.getWxShareInfo(res.shareTickets[0], data.callback);
                         } else {
-                            ViewManager.toast("请分享到群！");
+                            GameCtr.getInstance().getGame().showToast("请分享到群！");
                         }
                     }else{
                         if(data.callback){
@@ -524,10 +518,11 @@ export default class WXCtr {
             WXCtr.videoAd.show();
             GameCtr.vedioTimes--;
             console.log("今天剩余观看视频次数为：", GameCtr.vedioTimes);
-            //LocalStorage.save("VideoTimes", { day: Util.getCurrTimeYYMMDD(), times: GameCtr.surplusVideoTimes });
+            localStorage.setItem("VideoTimes", JSON.stringify({ day: Util.getCurrTimeYYMMDD(), times: GameCtr.vedioTimes }));
         }
     }
 
+    
     static onCloseVideo(callback) {
         let call: Function = (res) => {
             if (res && res.isEnded || res === undefined) {

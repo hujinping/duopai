@@ -41,6 +41,7 @@ export default class NewClass extends cc.Component {
     _isActioning=false;
     _initialRedJarTime=null;
     _workTimes=0;
+    _canDouble=true;
     
     
     onLoad(){
@@ -82,7 +83,7 @@ export default class NewClass extends cc.Component {
         this.initBtnEvent(this._btn_doubleIncome);
         this.showBtn();
         this.initJars();
-        this._btn_doubleIncome.active=GameCtr.isAudited;
+        this._btn_doubleIncome.active=true;
     }
 
     initJars(){
@@ -93,12 +94,25 @@ export default class NewClass extends cc.Component {
 
     doCaculateHoneyJar(){
         if(!GameCtr.isAudited) {return}
+        this._workTimes=0;
         let key="data_"+1;
         if(UserManager.user[key]>0){
             this._initialRedJarTime=null;
         }else{
             this._initialRedJarTime=6+Math.floor(Math.random()*6);
             HttpCtr.setUserDataState(1,1);
+        }
+
+        if(GameCtr.comblevel<=25){
+            if(GameCtr.comblevel%5==0){
+                let key="data_"+(Math.floor(GameCtr.comblevel/5)+1);
+                if(UserManager.user[key]>0){
+                    this._initialRedJarTime=null;
+                }else{
+                    this._initialRedJarTime=6+Math.floor(Math.random()*6);
+                    HttpCtr.setUserDataState((Math.floor(GameCtr.comblevel/5)+1),1);
+                }
+            }
         }
     }
 
@@ -198,6 +212,7 @@ export default class NewClass extends cc.Component {
     }
 
 
+
     showBubbleMoney(money){
         let bubbleMoney=null;
         if(GameCtr.bubbleMoneyPool.size()>0){
@@ -243,24 +258,37 @@ export default class NewClass extends cc.Component {
                 GameCtr.getInstance().getGame().setManufactureUpgrade(manufactureUpgrade);
                 AudioManager.getInstance().playSound("audio/open_panel");
             }else if(e.target.getName()=="btn_boubleIncome"){
-                
+                if(!this._btn_doubleIncome.getComponent(cc.Button).interactable){return;}
+                if(GameCtr.incomeRate>1){
+                    GameCtr.getInstance().getGame().showToast("双倍收益中...");
+                    return;
+                }
+
                 let callFunc=()=>{
-                    if(GameCtr.incomeRate>1){
-                        GameCtr.getInstance().getGame().showToast("双倍收益中...");
-                        return;
-                    }
-                    if(!this._btn_doubleIncome.getComponent(cc.Button).interactable){return;}
                     this._doubleTime=0;
                     this._btn_doubleIncome.getComponent(cc.Button).interactable=false;
                     this._btn_doubleIncome.stopAllActions();
                     GameCtr.incomeRate=2;
+                    this._canDouble=false;
                     this.startDoubleTimer(GameCtr.otherConfig.doublePersist);
                 }
                 
                 if(GameCtr.vedioTimes<=0){
+                    if(!GameCtr.isAudited){
+                        GameCtr.getInstance().getGame().showToast("今日视频已看完");
+                        return;
+                    }
                     WXCtr.share({callback:callFunc});
                 }else{
-                    WXCtr.showVideoAd(callFunc.bind(this));
+                    WXCtr.offCloseVideo();
+                    WXCtr.showVideoAd();
+                    WXCtr.onCloseVideo((res) => {
+                        if (res) {
+                            callFunc();
+                        }else{
+                            GameCtr.getInstance().getGame().showToast("视频未看完，无法领取奖励");
+                        }
+                    });
                 }
 
             }else if(e.target.getName()=="mask"){
@@ -331,6 +359,9 @@ export default class NewClass extends cc.Component {
         if(this._timeCount1<0){
             GameCtr.incomeRate=1;
             this._lb_doubleTime.active=false;
+            if(this._canDouble){
+                this._btn_doubleIncome.getComponent(cc.Button).interactable=true;
+            }
             return;
         }
         let minStr=Math.floor(this._timeCount1/60)<10?"0"+Math.floor(this._timeCount1/60):""+Math.floor(this._timeCount1/60);
@@ -346,7 +377,6 @@ export default class NewClass extends cc.Component {
     }
 
     getPackage(data){
-
         if(cc.find("Canvas").getChildByName("getRedPackage")){return}
         let getPackage=cc.instantiate(this.getRedPackage);
         getPackage.parent=cc.find("Canvas");
@@ -356,6 +386,9 @@ export default class NewClass extends cc.Component {
         getPackage.getComponent("getRedPackage").shouldShare(data.m); 
     }
 
+    disableDoubleIncome(){
+        this._btn_doubleIncome.getComponent(cc.Button).interactable=false;
+    }
 
     update(dt){
         if(!this._upLine){return}
@@ -370,7 +403,7 @@ export default class NewClass extends cc.Component {
             this._doubleTime+=dt;
             if(this._doubleTime>=GameCtr.otherConfig.doubleInterval){
                 this._btn_doubleIncome.getComponent(cc.Button).interactable=true;
-
+                this._canDouble=true;
                 this._btn_doubleIncome.runAction(cc.repeatForever(cc.sequence(
                     cc.scaleTo(0.4,1.6),
                     cc.scaleTo(0.4,1.5)

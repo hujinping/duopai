@@ -77,8 +77,8 @@
     },
     "_rotationX": 0,
     "_rotationY": 0,
-    "_scaleX": 1,
-    "_scaleY": 1,
+    "_scaleX": 1.2,
+    "_scaleY": 1.2,
     "_position": {
       "__type__": "cc.Vec2",
       "x": 0,
@@ -491,13 +491,13 @@
     "_cascadeOpacityEnabled": true,
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 1,
+      "x": 0.5,
       "y": 0.5
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 72,
-      "height": 100
+      "width": 33.6,
+      "height": 120
     },
     "_rotationX": 0,
     "_rotationY": 0,
@@ -505,8 +505,8 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": -61,
-      "y": 279
+      "x": -91,
+      "y": 270
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -524,8 +524,8 @@
     },
     "_enabled": true,
     "_useOriginalSize": false,
-    "_actualFontSize": 50,
-    "_fontSize": 50,
+    "_actualFontSize": 60,
+    "_fontSize": 60,
     "_lineHeight": 50,
     "_enableWrapText": true,
     "_N$file": {
@@ -533,7 +533,7 @@
     },
     "_isSystemFontUsed": false,
     "_spacingX": 0,
-    "_N$string": "100",
+    "_N$string": "4",
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",

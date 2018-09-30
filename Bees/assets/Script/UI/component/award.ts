@@ -1,5 +1,6 @@
 import AudioManager from "../../Common/AudioManager";
 import GameCtr from "../../Controller/GameCtr";
+import Util from "../../Common/Util";
 const {ccclass, property} = cc._decorator;
 @ccclass
 export default class NewClass extends cc.Component {
@@ -21,7 +22,6 @@ export default class NewClass extends cc.Component {
         this._award=this.node.getChildByName("award");
         this._light=this.node.getChildByName("light");
         this._starNode=this.node.getChildByName("starNode");
-
         this.initBtnEvent(this._btn_getAward);
     }
 
@@ -53,7 +53,7 @@ export default class NewClass extends cc.Component {
             if(awardData.gold){
                 this._lb_des.getComponent(cc.Label).string=awardData.des;
                 let speed=this.getIncomeSpeed();
-                this._lb_des.getComponent(cc.Label).string=Math.floor(speed*awardData.gold*60)+"金币";
+                this._lb_des.getComponent(cc.Label).string=Util.formatNumber(Math.floor(speed*awardData.gold*60))+"金币";
             }
         });
     }
@@ -80,11 +80,13 @@ export default class NewClass extends cc.Component {
             let curSpeedUpTime=GameCtr.getInstance().getGame().getCurSpeedUpTime();
             let speedUpTime=curSpeedUpTime>0?speedup*60+curSpeedUpTime:speedup*60;
             GameCtr.getInstance().getGame().startSpeedUpTimer(speedUpTime);
+            GameCtr.getInstance().getGame().stopUpSpeedAction();
         }
 
         if(doubleIncome){
             GameCtr.incomeRate=2;
             GameCtr.getInstance().getManufacture().startDoubleTimer(speedup*60);
+            GameCtr.getInstance().getManufacture().disableDoubleIncome();
         }
     }
 

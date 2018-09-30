@@ -23,7 +23,9 @@ export default class NewClass extends cc.Component {
                             if(cc.find("Canvas").getChildByName("ufoAward")){return};
                             let ufoAward=cc.instantiate(this.ufoAward);
                             ufoAward.parent=cc.find("Canvas");
+                            ufoAward.setLocalZOrder(1);
                             HttpCtr.openClick(GameCtr.clickType.ufo);
+                            
                         })
                         this.treatureBox.runAction(cc.repeatForever(cc.sequence(
                             cc.rotateBy(0.1,-10),

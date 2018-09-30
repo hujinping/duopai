@@ -60,6 +60,8 @@ export default class NewClass extends cc.Component {
     }
 
 
-
+    setRealyMoney(){
+        this._lb_money.getComponent(cc.Label).string= "￥"+(GameCtr.realMoney/100).toFixed(2);
+    }
 
 }

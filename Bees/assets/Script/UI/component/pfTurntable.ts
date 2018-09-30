@@ -48,19 +48,13 @@ export default class pfTurntable extends cc.Component {
     // update (dt) {},
     callBack_btn(){
         if(GameData.pfTurntable < 1){
-            WXCtr.share({pfTurnable:true})
+            WXCtr.share({callback:()=>{
+                GameData.pfTurntable++;
+            }})
         }else{
             GameData.pfTurntable--;
-            //按钮禁用
             this.btn.node.active = false;
             this.btnSp.active = true;
-            //请求数据
-            // let func = (data)=>{
-            //     this.data = data.data;
-            //     this.requestResults()
-            // }
-            //GameCtr.turntableInfo(func);
-
             this.data = {type:Math.floor(Math.random()*7)};
             this.requestResults();
             GameCtr.getInstance().getGame().disableBtnPfturnable();

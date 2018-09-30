@@ -82,8 +82,10 @@ export default class RankingView extends cc.Component {
     initSelfInfo(){
         if(UserManager.user){
             this.loadImg(this.headImg,UserManager.user.icon);
-            this.lb_name.string=UserManager.user.nick;
-            this.lb_location.string=UserManager.user.city;
+            let name=UserManager.user.nick?UserManager.user.nick:"游客";
+            let city=UserManager.user.city?UserManager.user.city:"未知";
+            this.lb_name.string=name;
+            this.lb_location.string=city;
         }
     }
 
@@ -98,6 +100,7 @@ export default class RankingView extends cc.Component {
     //显示世界排行
     showWorldRanking() {
         console.log('点击了世界排行榜');
+        this.curPageIndex=0;
         this.ndWorldScr.active = true;
         this.sprFreindRankScroll.node.active = false;
         if (!WXCtr.authed) {
@@ -224,6 +227,7 @@ export default class RankingView extends cc.Component {
 
     //显示好友排行
     showFreindRanking() {
+        this.curPageIndex=0;
         this.sprFreindRankScroll.node.active = true;
         this.ndWorldScr.active = false;
         this.showAuthTip(false);

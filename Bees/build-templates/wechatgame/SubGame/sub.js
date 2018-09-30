@@ -378,81 +378,74 @@ class RankListHandler {
 
 
     showRank(index = 0) {
-        console.log("log--------子域显示排行--index=:", index);
         if (index * 7 >= this.friends.length) { return; }
         this.render.clearAll();
         var startIndex = index * 7;
         var endIndex = (index * 7 + 7) > this.friends.length ? this.friends.length : (index * 7 + 7);
         for (var i = startIndex; i < endIndex; i++) {
             let off_y = i % 7 >= 3 ? 35 : 0;
-            var picBg = new Image().color("#ffffff").move(200, 535 + 130 * (i % 7) + off_y).fillRect(100, 100).addTo(this.render);
+            var picBg = new Image().color("#ffffff").move(230, 535 + 130 * (i % 7) + off_y).fillRect(100, 100).addTo(this.render);
             new Image().image(this.friends[i].avatarUrl).move(5, 5).size(90, 90).addTo(picBg);
             new Label().text(this.friends[i].nickname).color("#8B5A11").move(500, 585 + 130 * (i % 7) + off_y).fontSize(40).addTo(this.render);
             var score = this.friends[i].KVDataList.length >= 1 ? this.friends[i].KVDataList[0].value : 0;
-            new Label().text(this.formatNumber(score)).color("#00ff00").move(800, 585 + 130 * (i % 7) + off_y).fontSize(50).addTo(this.render);
-            new Label().text(i + 1).color("#8B5A11").move(150, 585 + 130 * (i % 7) + off_y).fontSize(50).addTo(this.render);
+            new Label().text(this.formatNumber(score)).color("#8B5A11").move(800, 585 + 130 * (i % 7) + off_y).fontSize(50).addTo(this.render);
+            new Label().text(i + 1).color("#8B5A11").move(170, 585 + 130 * (i % 7) + off_y).fontSize(50).addTo(this.render);
         }
         this.render.startRender();
     }
 
 
     submitScore(score, LIST_KEY) {
-        console.log('子域提交分数提交分数');
-        if (window.wx != undefined) {
-            window.wx.getUserCloudStorage({
-                // 以key/value形式存储
-                keyList: [LIST_KEY],
-                success: (getres) => {
-                    console.log('提交分数成功--------------', getres)
-                    if (getres.KVDataList.length != 0) {
-                        if (getres.KVDataList[0].value > score) {
-                            return;
-                        }
+        console.log('子域提交分数提交分数', score, LIST_KEY);
+        wx.getUserCloudStorage({
+            keyList: [LIST_KEY],
+            success: (getres) => {
+                console.log('提交分数成功--------------', getres)
+                if (getres.KVDataList.length != 0) {
+                    if (getres.KVDataList[0].value > score) {
+                        return;
                     }
-                    // 对用户托管数据进行写数据操作
-                    window.wx.setUserCloudStorage({
-                        KVDataList: [{
-                            key: LIST_KEY,
-                            value: "" + score
-                        }],
-                        success: (res) => {
-                            console.log('setUserCloudStorage', 'success', res)
-                        },
-                        fail: function(res) {
-                            console.log('setUserCloudStorage', 'fail')
-                        },
-                        complete: function(res) {
-                            console.log('setUserCloudStorage', 'ok')
-                        }
-                    });
-                },
-                fail: function(res) {
-                    console.log('提交分数失败', 'fail')
-                },
-                complete: (res) => {
-                    console.log('提交分数完成', 'ok')
-                    this.friend([this.keys.ScoreKey]).then((res) => {
-                        let data = res.data;
-                        data.sort((a, b) => {
-                            if (a.KVDataList.length == 0 && b.KVDataList.length == 0) {
-                                return 0;
-                            }
-                            if (a.KVDataList.length == 0) {
-                                return 1;
-                            }
-                            if (b.KVDataList.length == 0) {
-                                return -1;
-                            }
-                            return b.KVDataList[0].value - a.KVDataList[0].value;
-                        });
-
-                        this.friends = data;
-                    });
                 }
-            });
-        } else {
-            cc.log("提交得分:" + LIST_KEY + " : " + score)
-        }
+                wx.setUserCloudStorage({
+                    KVDataList: [{
+                        key: LIST_KEY,
+                        value: "" + score
+                    }],
+                    success: (res) => {
+                        console.log('setUserCloudStorage', 'success', res)
+                    },
+                    fail: function(res) {
+                        console.log('setUserCloudStorage', 'fail')
+                    },
+                    complete: function(res) {
+                        console.log('setUserCloudStorage', 'ok')
+                    }
+                });
+            },
+            fail: function(res) {
+                console.log('提交分数失败', 'fail')
+            },
+            complete: (res) => {
+                console.log('提交分数完成', 'ok')
+                this.friend([this.keys.ScoreKey]).then((res) => {
+                    let data = res.data;
+                    data.sort((a, b) => {
+                        if (a.KVDataList.length == 0 && b.KVDataList.length == 0) {
+                            return 0;
+                        }
+                        if (a.KVDataList.length == 0) {
+                            return 1;
+                        }
+                        if (b.KVDataList.length == 0) {
+                            return -1;
+                        }
+                        return b.KVDataList[0].value - a.KVDataList[0].value;
+                    });
+
+                    this.friends = data;
+                });
+            }
+        });
     }
 
 

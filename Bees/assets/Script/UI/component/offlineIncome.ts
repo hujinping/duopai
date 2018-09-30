@@ -18,7 +18,7 @@ export default class NewClass extends cc.Component {
         this._lb_bonus.getComponent(cc.Label).string=""
         this.initBtn(this._btn_get);
         this.initBtn(this._btn_close);
-        this._btn_get.active=GameCtr.isAudited;
+        //this._btn_get.active=GameCtr.isAudited;
     }
 
 
@@ -48,11 +48,26 @@ export default class NewClass extends cc.Component {
                     this.node.destroy();
                 }
                 if(GameCtr.vedioTimes<=0){
+                    if(!GameCtr.isAudited){
+                        GameCtr.getInstance().getGame().showToast("今日视频已看完");
+                        this.node.destroy();
+                        return;
+                    }
+
                     WXCtr.share({callback:callFunc});
                     HttpCtr.openClick(GameCtr.clickType.offLineShare);
                 }else{
-                    WXCtr.showVideoAd(callFunc.bind(this));
-                    HttpCtr.openClick(GameCtr.clickType.offLineVedio);
+                    
+                    WXCtr.offCloseVideo();
+                    WXCtr.showVideoAd();
+                    WXCtr.onCloseVideo((res) => {
+                        if (res) {
+                            callFunc();
+                        }else{
+                            GameCtr.getInstance().getGame().showToast("视频未看完，无法领取奖励");
+                        }
+                    });
+                    HttpCtr.openClick(GameCtr.clickType.offLineVedio); 
                 }
                 
             }else if(e.target.getName()=="btn_close"){

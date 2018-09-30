@@ -12,9 +12,9 @@ export default class NewClass extends cc.Component {
     _lb_name=null;
     _lb_count=null;
     _head=null;
-
     _name=null;
     _url=null;
+    _defaultHead=null;
   
 
     @property(cc.Prefab)
@@ -29,6 +29,7 @@ export default class NewClass extends cc.Component {
         this._lb_name=this.node.getChildByName("lb_name");
         this._lb_count=this.node.getChildByName("lb_count");
         this._head=this.node.getChildByName("head");
+        this._defaultHead=this.node.getChildByName("defaltHead");
         
         this.initBtnEvent(this._btn_get);
 
@@ -59,24 +60,23 @@ export default class NewClass extends cc.Component {
         icon_get.active=true;
     }
 
-    showRedPackage(money){
+    showRedPackage(data){
         if(cc.find("Canvas").getChildByName("getRedPackage")){return}
         let getPackage=cc.instantiate(this.getRedPackage);
         getPackage.parent=cc.find("Canvas");
-        getPackage.getComponent("getRedPackage").setValue(money);
+        getPackage.setLocalZOrder(1);
+        getPackage.getComponent("getRedPackage").setValue(data.m);
         getPackage.getComponent("getRedPackage").setSurplusMoney();
-        
-        GameCtr.realMoney+=money;
-        GameCtr.getInstance().getGame().setRealMoney();
+        GameCtr.getInstance().getGame().setRealMoney(data.m);
         HttpCtr.setUserDataState(this.node.tag,10);
         this.disableBtn();
     }
 
     setName(name){
-        if(this._name){return}
-        this._name=name;
+        if(name==null){return}
+        this._name=name==false?"游客":name;
         this._btn_get.active=true;
-        this._lb_name.getComponent(cc.Label).string=Util.cutstr(name,4);
+        this._lb_name.getComponent(cc.Label).string=Util.cutstr(this._name,4);
     }
 
     setCount(count){
@@ -84,9 +84,15 @@ export default class NewClass extends cc.Component {
     }
 
     setHeadImg(url){
-        if(this._url){return}
-
-        this._url=url
+        this._url=url;
+        if(this._url==null){return}
+        if(this._url==false){
+            this._defaultHead.active=true;
+            return;
+        }else{
+            this._defaultHead.active=false;
+        }
+        
         let sp=this._head.getComponent(cc.Sprite);
         cc.loader.load({
             url: url,

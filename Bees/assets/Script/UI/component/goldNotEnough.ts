@@ -47,6 +47,7 @@ export default class NewClass extends cc.Component {
                 }
                 WXCtr.share({callback:callFunc});
                 HttpCtr.openClick(GameCtr.clickType.goldNotEnoughShare);
+                
             }else if(e.target.getName()=="btn_close"){
                 this.node.destroy();
             }
