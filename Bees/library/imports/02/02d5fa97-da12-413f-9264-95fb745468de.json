@@ -1,0 +1,23 @@
+{
+  "__type__": "cc.SpriteAtlas",
+  "_name": "game2.plist",
+  "_objFlags": 0,
+  "_rawFiles": null,
+  "_spriteFrames": {
+    "c": {
+      "__uuid__": "8fb6d61e-3444-4261-9397-063a0bfea2da"
+    },
+    "combA": {
+      "__uuid__": "55420e2f-37ed-4b5a-9651-a4f84d4eaa60"
+    },
+    "combFrame": {
+      "__uuid__": "d981375c-072c-4a4c-a39d-da21ba20c82f"
+    },
+    "frame3": {
+      "__uuid__": "bddbb205-1ad3-4da5-98a0-6d366ca566b9"
+    },
+    "frame9G2": {
+      "__uuid__": "7ed12241-ac09-448c-bfb1-d99f1372caa4"
+    }
+  }
+}

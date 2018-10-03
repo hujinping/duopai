@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "icon_gold",
+    "texture": "d8489cab-a6e6-4f31-bae7-6fe0ab10a18c",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      775,
+      771
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      775,
+      771
+    ]
+  }
+}

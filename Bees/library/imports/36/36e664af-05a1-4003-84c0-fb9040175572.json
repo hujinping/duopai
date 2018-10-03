@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "word_offLineIncome",
+    "texture": "4f48f530-9507-4da1-b996-0c52ad2d32c4",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      204,
+      49
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      204,
+      49
+    ]
+  }
+}

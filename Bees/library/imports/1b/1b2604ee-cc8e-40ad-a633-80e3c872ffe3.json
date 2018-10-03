@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "trabecula",
+    "texture": "6df2b131-c5c5-449c-a00a-ecae2318132e",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      637,
+      123
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      637,
+      123
+    ]
+  }
+}

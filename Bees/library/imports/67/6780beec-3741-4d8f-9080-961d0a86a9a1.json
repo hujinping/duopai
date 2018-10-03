@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "word_fulLevel",
+    "texture": "6ee2fbcb-aa8e-46ae-aaa5-a4083baabd68",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      70,
+      35
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      70,
+      35
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "authTip",
+    "texture": "8f7f4118-4c15-4541-9b35-fe9a71fc00ee",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      709,
+      480
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      709,
+      480
+    ]
+  }
+}

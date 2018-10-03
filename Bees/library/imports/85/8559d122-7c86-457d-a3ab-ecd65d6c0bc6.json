@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "productLine",
+    "texture": "20913642-f49d-47d1-b437-2ceb2fd07bd0",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      1080,
+      12
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      1080,
+      12
+    ]
+  }
+}

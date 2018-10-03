@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "word_productSpeed",
+    "texture": "4a28dd49-a5da-4589-acf7-fca4f7c63fb8",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      170,
+      40
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      170,
+      40
+    ]
+  }
+}

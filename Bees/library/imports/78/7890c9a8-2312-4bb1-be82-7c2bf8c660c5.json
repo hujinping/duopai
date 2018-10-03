@@ -1,0 +1,28 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "bearing",
+    "texture": "7701e598-0c77-423e-88b4-11be3718a2a1",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      36,
+      12
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      36,
+      12
+    ],
+    "capInsets": [
+      5,
+      3,
+      6,
+      5
+    ]
+  }
+}

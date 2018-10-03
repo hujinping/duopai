@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "word_combIncome",
+    "texture": "9dbceffc-08f7-4925-b33b-f30b444544df",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      169,
+      40
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      169,
+      40
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "luckyWheel ",
+    "texture": "28275038-055e-4e9c-ac8e-453b529345b7",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      347,
+      347
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      347,
+      347
+    ]
+  }
+}

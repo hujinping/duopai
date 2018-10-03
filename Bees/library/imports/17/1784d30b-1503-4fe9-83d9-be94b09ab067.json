@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "jobArea",
+    "texture": "71ef8525-2403-46ff-a085-e33d38d2146d",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      73,
+      383
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      73,
+      383
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "word_getAuth",
+    "texture": "964671e9-7175-4460-9816-dd0467629442",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      169,
+      41
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      169,
+      41
+    ]
+  }
+}

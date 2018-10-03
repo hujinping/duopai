@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "word_combLevel1",
+    "texture": "0725e568-7b83-46b2-b936-763d5a06b8e7",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      204,
+      66
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      204,
+      66
+    ]
+  }
+}

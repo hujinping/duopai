@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "pipeline",
+    "texture": "dcd769af-37ea-44cf-ba96-5141bee54c33",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      326,
+      203
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      326,
+      203
+    ]
+  }
+}

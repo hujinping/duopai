@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "liquid4",
+    "texture": "4a141430-48af-4c7d-81b0-8aa387bada34",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      23,
+      30
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      23,
+      30
+    ]
+  }
+}

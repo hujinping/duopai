@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "word_honeySpeed",
+    "texture": "bcf9b69a-40a5-44e7-9232-c502a8cd8300",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      170,
+      40
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      170,
+      40
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "downside",
+    "texture": "9fb4f47b-41cc-4ad8-8e70-eca4cc55cf6e",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      1080,
+      258
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      1080,
+      258
+    ]
+  }
+}

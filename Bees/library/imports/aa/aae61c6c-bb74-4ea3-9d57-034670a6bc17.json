@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "wordk_like",
+    "texture": "9b775747-d125-485e-85b7-8e3d7d7a3f8a",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      144,
+      41
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      144,
+      41
+    ]
+  }
+}

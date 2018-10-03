@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "awardLight",
+    "texture": "7a6b5eee-6874-4f72-961d-841922427e04",
+    "atlas": "",
+    "rect": [
+      7,
+      5,
+      873,
+      856
+    ],
+    "offset": [
+      1,
+      1.5
+    ],
+    "originalSize": [
+      885,
+      869
+    ]
+  }
+}

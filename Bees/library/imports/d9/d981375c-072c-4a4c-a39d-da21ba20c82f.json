@@ -1,0 +1,23 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "combFrame",
+    "texture": "6e19295d-86e4-45a0-b62a-0c702ad9fb7b",
+    "atlas": "02d5fa97-da12-413f-9264-95fb745468de",
+    "rect": [
+      2,
+      127,
+      793,
+      218
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      793,
+      218
+    ],
+    "rotated": 1
+  }
+}

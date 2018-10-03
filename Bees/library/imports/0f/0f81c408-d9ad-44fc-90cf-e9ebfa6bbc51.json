@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "btn_boubleIncome",
+    "texture": "bd7711dc-f897-4521-a46e-b37a3f7fb242",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      95,
+      78
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      95,
+      78
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "btn_pfTurnble",
+    "texture": "0c97a6d4-7f21-4d26-917d-b1a9e3f01d57",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      111,
+      97
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      111,
+      97
+    ]
+  }
+}

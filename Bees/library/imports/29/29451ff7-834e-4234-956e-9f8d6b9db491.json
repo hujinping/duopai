@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "word_honeyIncome",
+    "texture": "27d3a3c3-9551-428a-a911-5f5ba32a06be",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      169,
+      40
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      169,
+      40
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "liquidPipeline",
+    "texture": "71fe3f08-fc99-40ea-85a7-ceac1776b4c6",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      165,
+      408
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      165,
+      408
+    ]
+  }
+}
