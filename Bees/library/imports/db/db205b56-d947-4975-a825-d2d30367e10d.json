@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "authBtn",
+    "texture": "2212af10-abeb-4a57-88bc-89801e16d259",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      420,
+      102
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      420,
+      102
+    ]
+  }
+}

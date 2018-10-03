@@ -3,7 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = undefined;
 
 var _Node2 = require('./Node');
 
@@ -34,4 +33,3 @@ var Element = function (_Node) {
 }(_Node3.default);
 
 exports.default = Element;
-module.exports = exports['default'];

@@ -13,4 +13,3 @@ var ImageBitmap = function ImageBitmap() {
 };
 
 exports.default = ImageBitmap;
-module.exports = exports["default"];

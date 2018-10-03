@@ -25,14 +25,16 @@ var CanvasCtr = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.ndFriend = null;
         _this.scrRanking = null;
-        // @property(cc.Node)
-        // ndSelf: cc.Node = null;
+        _this.ndSelf = null;
         _this.ndOverRanking = null;
-        _this.overCells = [];
-        _this.ndsurpass = null;
+        _this.EndScrRanking = null;
+        _this.ndOverSelf = null;
         _this.mSelfData = null;
         _this.mSelfRank = null;
         return _this;
+        // start () {
+        // }
+        // update (dt) {}
     }
     CanvasCtr.prototype.onLoad = function () {
         this.handleWxMessage();
@@ -54,7 +56,7 @@ var CanvasCtr = /** @class */ (function (_super) {
                     _this.compareWithScore(data.score);
                 }
                 else if (data.messageType == Message_Type.Show_WholeRanking) { //显示完整排行榜
-                    _this.showFriendRanking(data.pageIndex);
+                    _this.showFriendRanking();
                 }
                 else if (data.messageType == Message_Type.Show_OverRanking) { //显示结束排行榜
                     _this.showOverRanking();
@@ -116,9 +118,12 @@ var CanvasCtr = /** @class */ (function (_super) {
                         return b.KVDataList[0].value - a.KVDataList[0].value;
                     });
                     _this.mFriendRankData = data;
-                    _this.getSelfRank();
+                    _this.mSelfRank = _this.getSelfRank();
                     if (showOver) {
-                        //this.showOverRanking();
+                        _this.showOverRanking();
+                    }
+                    else {
+                        _this.getSelfRank();
                     }
                 },
                 fail: function (res) {
@@ -152,6 +157,7 @@ var CanvasCtr = /** @class */ (function (_super) {
                                 return b.KVDataList[0].value - a.KVDataList[0].value;
                             });
                             _this.mGroupData = data;
+                            _this.showGroupRanking();
                         },
                         fail: function (res) {
                             console.log("wx.getFriendCloudStorage fail", res);
@@ -206,130 +212,44 @@ var CanvasCtr = /** @class */ (function (_super) {
         }
     };
     CanvasCtr.prototype.compareWithScore = function (selfScore) {
-        if (!this.mFriendRankData) {
-            console.log("没有好友排行榜信息，请先获取好友排行榜信息");
-            return;
-        }
-        console.log("this.mFriendRankData =========", this.mFriendRankData);
-        console.log("this.mSelfRank ============", this.mSelfRank);
-        for (var i = 0; i < this.mFriendRankData.length; i++) {
-            var data = this.mFriendRankData[i];
-            if (data.avatarUrl == this.mSelfData.avatarUrl) {
-                data.KVDataList[0].value = selfScore;
-            }
-        }
-        this.mFriendRankData.sort(function (a, b) {
-            if (a.KVDataList.length == 0 && b.KVDataList.length == 0) {
-                return 0;
-            }
-            if (a.KVDataList.length == 0) {
-                return 1;
-            }
-            if (b.KVDataList.length == 0) {
-                return -1;
-            }
-            return b.KVDataList[0].value - a.KVDataList[0].value;
-        });
-        this.mSelfRank = this.getSelfRank();
+    };
+    CanvasCtr.prototype.showFriendRanking = function () {
         this.ndOverRanking.active = false;
-        this.ndFriend.active = false;
-        for (var i = 0; i < this.mFriendRankData.length; i++) {
-            var data = this.mFriendRankData[i];
-            if (i == this.mSelfRank - 1) {
-                this.ndsurpass.active = true;
-                this.createImage(data.avatarUrl, this.ndsurpass.getChildByName("image").getComponent(cc.Sprite));
-                return;
-            }
-        }
-    };
-    CanvasCtr.prototype.CloseCompareWithScore = function () {
-        this.ndsurpass.active = false;
-    };
-    CanvasCtr.prototype.createImage = function (avatarUrl, sprHead) {
-        if (window.wx != undefined) {
-            try {
-                var image_1 = wx.createImage();
-                image_1.onload = function () {
-                    try {
-                        var texture = new cc.Texture2D();
-                        texture.initWithElement(image_1);
-                        texture.handleLoadedTexture();
-                        sprHead.spriteFrame = new cc.SpriteFrame(texture);
-                    }
-                    catch (e) {
-                        cc.log(e);
-                        sprHead.node.active = false;
-                    }
-                };
-                image_1.src = avatarUrl;
-            }
-            catch (e) {
-                cc.log(e);
-                sprHead.node.active = false;
-            }
-        }
-        else {
-            cc.loader.load({
-                url: avatarUrl,
-                type: 'jpg'
-            }, function (err, texture) {
-                sprHead.spriteFrame = new cc.SpriteFrame(texture);
-            });
-        }
-    };
-    CanvasCtr.prototype.showFriendRanking = function (pageIndex) {
-        this.CloseCompareWithScore();
+        this.EndScrRanking.node.active = false;
         this.ndFriend.active = true;
-        this.ndOverRanking.active = false;
         this.scrRanking.node.active = true;
         console.log("显示好友排行榜", this.mFriendRankData);
         if (!this.mFriendRankData) {
             console.log("没有好友排行榜信息，请先获取好友排行榜信息");
             return;
         }
-        this.scrRanking.loadRanking(this.mFriendRankData, pageIndex);
+        this.scrRanking.loadRanking(this.mFriendRankData);
+        console.log("显示自己信息：", this.mSelfData);
+        if (!this.mSelfRank) {
+            this.mSelfRank = this.getSelfRank();
+        }
+        var selfRanking = this.ndSelf.getComponent(RankingCell_1.default);
+        selfRanking.setData(this.mSelfRank, this.mSelfData, false);
     };
     CanvasCtr.prototype.closeFriendRanking = function () {
         this.scrRanking.clear();
-        this.ndFriend.active = false;
-        this.ndOverRanking.active = true;
-        this.CloseCompareWithScore();
     };
     CanvasCtr.prototype.showOverRanking = function () {
-        return;
         if (!this.mFriendRankData) {
             console.log("没有好友排行榜信息，请先获取好友排行榜信息");
             return;
         }
-        if (!this.mSelfRank) {
-            this.mSelfRank = this.getSelfRank();
-        }
         console.log("this.mFriendRankData =========", this.mFriendRankData);
-        console.log("this.mSelfRank ============", this.mSelfRank);
-        this.ndFriend.active = false;
         this.ndOverRanking.active = true;
-        this.CloseCompareWithScore();
-        for (var i = 0; i < this.mFriendRankData.length; i++) {
-            var rankingCell = null;
-            var data = this.mFriendRankData[i];
-            if (i == this.mSelfRank) {
-                rankingCell = this.overCells[1];
-            }
-            else if (i == this.mSelfRank + 1) {
-                rankingCell = this.overCells[2];
-            }
-            else if (i == this.mSelfRank - 1) {
-                rankingCell = this.overCells[0];
-            }
-            if (rankingCell) {
-                rankingCell.node.active = true;
-                rankingCell.setData(i, data);
-            }
-        }
+        this.EndScrRanking.node.active = true;
+        this.ndFriend.active = false;
+        this.scrRanking.node.active = false;
+        var selfRanking = this.ndOverSelf.getComponent(RankingCell_1.default);
+        selfRanking.setSelfOverData(this.mSelfData);
+        this.EndScrRanking.loadOverRanking(this.mFriendRankData);
     };
     CanvasCtr.prototype.closeOverRanking = function () {
-        this.ndOverRanking.active = false;
-        this.CloseCompareWithScore();
+        this.EndScrRanking.clear();
     };
     CanvasCtr.prototype.getSelfRank = function () {
         var rank = 0;
@@ -344,6 +264,15 @@ var CanvasCtr = /** @class */ (function (_super) {
         }
         return rank;
     };
+    CanvasCtr.prototype.showGroupRanking = function () {
+        if (!this.mGroupData) {
+            console.log("没有群好友排行榜信息，请先获取");
+            return;
+        }
+        console.log("this.mGroupData =========", this.mFriendRankData);
+        this.closeOverRanking();
+        this.EndScrRanking.loadOverRanking(this.mGroupData);
+    };
     __decorate([
         property(cc.Node)
     ], CanvasCtr.prototype, "ndFriend", void 0);
@@ -352,13 +281,16 @@ var CanvasCtr = /** @class */ (function (_super) {
     ], CanvasCtr.prototype, "scrRanking", void 0);
     __decorate([
         property(cc.Node)
-    ], CanvasCtr.prototype, "ndOverRanking", void 0);
-    __decorate([
-        property([RankingCell_1.default])
-    ], CanvasCtr.prototype, "overCells", void 0);
+    ], CanvasCtr.prototype, "ndSelf", void 0);
     __decorate([
         property(cc.Node)
-    ], CanvasCtr.prototype, "ndsurpass", void 0);
+    ], CanvasCtr.prototype, "ndOverRanking", void 0);
+    __decorate([
+        property(Ranking_1.default)
+    ], CanvasCtr.prototype, "EndScrRanking", void 0);
+    __decorate([
+        property(cc.Node)
+    ], CanvasCtr.prototype, "ndOverSelf", void 0);
     CanvasCtr = __decorate([
         ccclass
     ], CanvasCtr);

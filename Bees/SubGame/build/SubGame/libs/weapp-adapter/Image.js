@@ -19,4 +19,3 @@ var _HTMLImageElement2 = _interopRequireDefault(_HTMLImageElement);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 ;
-module.exports = exports['default'];

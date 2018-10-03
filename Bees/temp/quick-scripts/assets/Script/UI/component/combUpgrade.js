@@ -17,6 +17,7 @@ var NewClass = /** @class */ (function (_super) {
         _this._lb_cost = null;
         _this._level = null;
         _this._unlockNum = null;
+        _this._interval = 0;
         return _this;
     }
     NewClass.prototype.onLoad = function () {
@@ -31,9 +32,6 @@ var NewClass = /** @class */ (function (_super) {
         this._level = level;
         this._unlockNum = unlockNum;
         this._lb_des.getComponent(cc.Label).string = this._unlockNum + 1;
-        if (this._unlockNum >= GameCtr_1.default.maxPerCombLevel) {
-            this._lb_des.getComponent(cc.Label).string = this._unlockNum;
-        }
         this.showCells();
         this.showSpeed();
         this.showhoneyProduction();
@@ -52,8 +50,8 @@ var NewClass = /** @class */ (function (_super) {
         var speed = this.node.getChildByName("speed");
         var lb_value = speed.getChildByName("lb_value");
         var lb_add = speed.getChildByName("lb_add");
-        lb_value.getComponent(cc.Label).string = 100 + this._unlockNum + "%";
-        lb_add.getComponent(cc.Label).string = "+" + GameCtr_1.default.combConfig[this._level - 1].speedMatrix * 100 + "%";
+        lb_value.getComponent(cc.Label).string = "100%";
+        lb_add.getComponent(cc.Label).string = "+0%";
     };
     NewClass.prototype.showhoneyProduction = function () {
         var honeyPorduction = this.node.getChildByName("honeyProduction");
@@ -66,8 +64,7 @@ var NewClass = /** @class */ (function (_super) {
         var upgrade = this.node.getChildByName("upgrade");
         this._btn_upgrade = upgrade.getChildByName("btn_upgrade");
         this._lb_cost = this._btn_upgrade.getChildByName("lb_cost");
-        this._lb_cost.getComponent(cc.Label).string = "$" + Util_1.default.formatNumber(GameCtr_1.default.combConfig[this._level - 1].levelUpCost +
-            GameCtr_1.default.combConfig[this._level - 1].upMatrix * (this._unlockNum - 1));
+        this._lb_cost.getComponent(cc.Label).string = "￥" + Util_1.default.formatNumber(GameCtr_1.default.combConfig[this._level - 1].levelUpCost + GameCtr_1.default.combConfig[this._level - 1].upMatrix * (this._unlockNum));
     };
     NewClass.prototype.initBtnEvent = function (btn) {
         var _this = this;
@@ -79,24 +76,17 @@ var NewClass = /** @class */ (function (_super) {
                 AudioManager_1.default.getInstance().playSound("audio/btnClose");
             }
             else if (e.target.getName() == "btn_upgrade") {
-                if (_this._unlockNum < GameCtr_1.default.maxPerCombLevel && GameCtr_1.default.money < GameCtr_1.default.combConfig[_this._level - 1].levelUpCost + GameCtr_1.default.combConfig[_this._level - 1].upMatrix * (_this._unlockNum - 1)) {
-                    GameCtr_1.default.getInstance().getGame().showGoldNotEnough();
-                    return;
-                }
                 if (!_this._btn_upgrade.getComponent(cc.Button).interactable) {
                     return;
                 }
-                AudioManager_1.default.getInstance().playSound("audio/levelup");
+                AudioManager_1.default.getInstance().playSound("audio/btn_click");
                 var comb = GameCtr_1.default.getInstance().getGame().getComb(_this._level);
                 comb.getComponent("honeycomb").upgrade();
                 _this._unlockNum++;
                 _this._lb_des.getComponent(cc.Label).string = _this._unlockNum + 1;
                 if (_this._unlockNum == GameCtr_1.default.maxPerCombLevel) {
                     _this._btn_upgrade.getComponent(cc.Button).interactable = false;
-                    var lb_cost = _this._btn_upgrade.getChildByName("lb_cost");
-                    var word_fullLevel = _this._btn_upgrade.getChildByName("word_levelFull");
-                    lb_cost.active = false;
-                    word_fullLevel.active = true;
+                    _this._lb_cost.getComponent(cc.Label).string = "已满级";
                     return;
                 }
                 _this.showCells();
@@ -108,25 +98,22 @@ var NewClass = /** @class */ (function (_super) {
         });
     };
     NewClass.prototype.updateBtnState = function () {
-        if (GameCtr_1.default.money < GameCtr_1.default.combConfig[this._level - 1].levelUpCost + GameCtr_1.default.combConfig[this._level - 1].upMatrix * (this._unlockNum - 1)) {
+        if (GameCtr_1.default.money < GameCtr_1.default.combConfig[this._level - 1].levelUpCost + GameCtr_1.default.combConfig[this._level - 1].upMatrix * this._unlockNum) {
             this._btn_upgrade.getComponent(cc.Button).interactable = false;
         }
         else {
             this._btn_upgrade.getComponent(cc.Button).interactable = true;
         }
-        if (this._unlockNum >= GameCtr_1.default.maxPerCombLevel) {
-            this._btn_upgrade.getComponent(cc.Button).interactable = false;
-            var lb_cost = this._btn_upgrade.getChildByName("lb_cost");
-            var word_fullLevel = this._btn_upgrade.getChildByName("word_levelFull");
-            lb_cost.active = false;
-            word_fullLevel.active = true;
-        }
     };
-    NewClass.prototype.doUpdate = function () {
+    NewClass.prototype.doUpdate = function (dt) {
         if (this._btn_upgrade.getComponent(cc.Button).interactable || this._unlockNum >= GameCtr_1.default.maxPerCombLevel) {
             return;
         }
-        this.updateBtnState();
+        this._interval += dt;
+        if (this._interval >= 0.5) {
+            this.updateBtnState();
+            this._interval = 0;
+        }
     };
     NewClass = __decorate([
         ccclass

@@ -1,159 +1,54 @@
-2018-09-26T14:14:24.599Z - normal: Load ~/.CocosCreator/settings.json
-2018-09-26T14:14:24.603Z - normal: checking language setting...
-2018-09-26T14:14:24.603Z - normal: Language: zh
-2018-09-26T14:14:25.566Z - success: protocol editor-framework registered
-2018-09-26T14:14:25.566Z - success: protocol app registered
-2018-09-26T14:14:25.566Z - success: protocol theme registered
-2018-09-26T14:14:25.566Z - success: protocol packages registered
-2018-09-26T14:14:25.567Z - success: protocol unpack registerred
-2018-09-26T14:14:25.567Z - success: protocol disable-commonjs registerred
-2018-09-26T14:14:25.825Z - normal: connected!
-2018-09-26T14:14:25.827Z - normal: Check project /Users/hujinping/duopai/Bees
-2018-09-26T14:14:25.828Z - normal: Initializing Cocos2d
-2018-09-26T14:14:26.095Z - normal: Initializing Asset Database
-2018-09-26T14:14:26.131Z - success: protocol uuid registerred
-2018-09-26T14:14:26.131Z - success: protocol db registerred
-2018-09-26T14:14:26.131Z - success: protocol thumbnail registerred
-2018-09-26T14:14:26.132Z - normal: Loading editor/builtin packages
-2018-09-26T14:14:26.157Z - success: anysdk loaded
-2018-09-26T14:14:26.293Z - success: assets loaded
-2018-09-26T14:14:26.297Z - success: builder loaded
-2018-09-26T14:14:26.300Z - success: cocos-analytics loaded
-2018-09-26T14:14:26.304Z - success: console loaded
-2018-09-26T14:14:26.334Z - success: fb-instant-games loaded
-2018-09-26T14:14:26.339Z - success: hierarchy loaded
-2018-09-26T14:14:26.344Z - success: inspector loaded
-2018-09-26T14:14:26.346Z - success: keystore loaded
-2018-09-26T14:14:26.352Z - success: node-library loaded
-2018-09-26T14:14:26.353Z - success: package-asset loaded
-2018-09-26T14:14:26.355Z - success: preferences loaded
-2018-09-26T14:14:26.358Z - success: project-exporter loaded
-2018-09-26T14:14:26.377Z - success: project-importer loaded
-2018-09-26T14:14:26.381Z - success: project-settings loaded
-2018-09-26T14:14:26.385Z - success: ui-kit loaded
-2018-09-26T14:14:26.391Z - success: ui-grid loaded
-2018-09-26T14:14:26.396Z - success: scene loaded
-2018-09-26T14:14:26.397Z - success: sprite-editor loaded
-2018-09-26T14:14:26.403Z - success: store loaded
-2018-09-26T14:14:26.410Z - success: timeline loaded
-2018-09-26T14:14:26.410Z - normal: Loading builtin packages
-2018-09-26T14:14:26.421Z - success: asset-db-debugger loaded
-2018-09-26T14:14:26.422Z - success: color-picker loaded
-2018-09-26T14:14:26.427Z - success: package-manager loaded
-2018-09-26T14:14:26.429Z - success: qqplay-adapter loaded
-2018-09-26T14:14:26.436Z - success: sdkbox loaded
-2018-09-26T14:14:26.442Z - success: tester loaded
-2018-09-26T14:14:26.445Z - success: ui-kit-preview-extra loaded
-2018-09-26T14:14:26.451Z - success: ui-kit-preview loaded
-2018-09-26T14:14:26.455Z - success: ui-tree loaded
-2018-09-26T14:14:26.457Z - success: weapp-adapter loaded
-2018-09-26T14:14:27.542Z - normal: Initializing project /Users/hujinping/duopai/Bees
-2018-09-26T14:14:27.545Z - normal: Loading packages
-2018-09-26T14:14:27.550Z - normal: Watching packages
-2018-09-26T14:14:27.630Z - normal: Run Application
-2018-09-26T14:14:29.930Z - success: preview server running at http://localhost:7456
-2018-09-26T14:14:34.715Z - normal: 1.9.3
-2018-09-26T14:15:21.798Z - normal: Start building with options : {
-  "androidStudio": true,
-  "apiLevel": "",
-  "appABIs": [],
-  "appKey": "",
-  "appSecret": "",
-  "buildPath": "/Users/hujinping/duopai/Bees/build",
-  "debug": false,
-  "dest": "/Users/hujinping/duopai/Bees/build/wechatgame",
-  "encryptJs": true,
-  "excludeScenes": [],
-  "excludedModules": [
-    "LabelOutline",
-    "ParticleSystem",
-    "TiledMap",
-    "ScrollBar",
-    "PageView",
-    "PageViewIndicator",
-    "Slider",
-    "VideoPlayer",
-    "WebView",
-    "RichText",
-    "MotionStreak",
-    "Collider",
-    "Graphics",
-    "DragonBones",
-    "Physics",
-    "StudioComponent",
-    "RenderTexture",
-    "Chipmunk",
-    "Camera",
-    "Intersection",
-    "Native NetWork"
-  ],
-  "fb-instant-games": {},
-  "includeAnySDK": false,
-  "includeEruda": false,
-  "includeSDKBox": false,
-  "inlineSpriteFrames": true,
-  "inlineSpriteFrames_native": true,
-  "jailbreakPlatform": false,
-  "md5Cache": false,
-  "mergeStartScene": false,
-  "oauthLoginServer": "",
-  "optimizeHotUpdate": false,
-  "orientation": {
-    "landscapeLeft": true,
-    "landscapeRight": true,
-    "portrait": false,
-    "upsideDown": false
-  },
-  "packageName": "org.cocos2d.helloworld",
-  "platform": "wechatgame",
-  "previewHeight": "720",
-  "previewWidth": "1280",
-  "privateKey": "",
-  "qqplay": {
-    "REMOTE_SERVER_ROOT": "",
-    "orientation": "portrait"
-  },
-  "renderMode": "0",
-  "scenes": [
-    "8b5893b3-be1e-4090-a758-f92e65d0657b",
-    "bb5b00a5-8f96-459e-81b4-6d04a7d42443"
-  ],
-  "sourceMaps": false,
-  "startScene": "8b5893b3-be1e-4090-a758-f92e65d0657b",
-  "template": "link",
-  "title": "bees",
-  "useDebugKeystore": true,
-  "vsVersion": "auto",
-  "webOrientation": "auto",
-  "wechatgame": {
-    "REMOTE_SERVER_ROOT": "",
-    "appid": "wx560a332bda795d99",
-    "isSubdomain": false,
-    "orientation": "portrait",
-    "subContext": "SubGame"
-  },
-  "xxteaKey": "eae37e1b-3e2d-4c",
-  "zipCompressJs": true,
-  "project": "/Users/hujinping/duopai/Bees",
-  "projectName": "bees",
-  "debugBuildWorker": false
-}
-2018-09-26T14:15:21.802Z - normal: Building /Users/hujinping/duopai/Bees
-2018-09-26T14:15:21.803Z - normal: Destination /Users/hujinping/duopai/Bees/build/wechatgame
-2018-09-26T14:15:22.200Z - normal: Delete /Users/hujinping/duopai/Bees/build/wechatgame/**/*
-2018-09-26T14:15:28.257Z - normal: Compiled project javascript file successfully
-2018-09-26T14:15:28.258Z - normal: Start building assets
-2018-09-26T14:15:28.258Z - normal: Start spawn build-worker
-2018-09-26T14:15:28.919Z - normal: Finish spawn build-worker
-2018-09-26T14:15:28.919Z - normal: Start init build-worker
-2018-09-26T14:15:30.457Z - normal: 1.9.3
-2018-09-26T14:15:30.596Z - normal: Finish init build-worker
-2018-09-26T14:15:30.596Z - normal: Start build-assets in worker
-2018-09-26T14:15:32.471Z - normal: Finish build-assets in worker
-2018-09-26T14:15:32.475Z - normal: Finish building assets
-2018-09-26T14:15:32.527Z - normal: Start building raw assets
-2018-09-26T14:15:32.528Z - normal: Start building plugin scripts
-2018-09-26T14:15:32.736Z - normal: Finish building raw assets
-2018-09-26T14:15:32.742Z - normal: Generating main.js from /Applications/CocosCreator.app/Contents/Resources/static/build-templates/shares/main.js
-2018-09-26T14:15:34.515Z - normal: Built to "/Users/hujinping/duopai/Bees/build/wechatgame" successfully
-2018-09-27T14:19:11.757Z - info: shutdown preview server
+2018-09-02T12:56:40.056Z - normal: Load ~/.CocosCreator/settings.json
+2018-09-02T12:56:40.059Z - normal: checking language setting...
+2018-09-02T12:56:40.059Z - normal: Language: zh
+2018-09-02T12:56:40.980Z - success: protocol editor-framework registered
+2018-09-02T12:56:40.981Z - success: protocol app registered
+2018-09-02T12:56:40.981Z - success: protocol theme registered
+2018-09-02T12:56:40.981Z - success: protocol packages registered
+2018-09-02T12:56:40.981Z - success: protocol unpack registerred
+2018-09-02T12:56:40.981Z - success: protocol disable-commonjs registerred
+2018-09-02T12:56:41.220Z - normal: connected!
+2018-09-02T12:56:41.222Z - normal: Check project /Users/hujinping/Desktop/Bees
+2018-09-02T12:56:41.223Z - normal: Initializing Cocos2d
+2018-09-02T12:56:41.487Z - normal: Initializing Asset Database
+2018-09-02T12:56:41.526Z - success: protocol uuid registerred
+2018-09-02T12:56:41.526Z - success: protocol db registerred
+2018-09-02T12:56:41.527Z - success: protocol thumbnail registerred
+2018-09-02T12:56:41.527Z - normal: Loading editor/builtin packages
+2018-09-02T12:56:41.552Z - success: anysdk loaded
+2018-09-02T12:56:41.693Z - success: assets loaded
+2018-09-02T12:56:41.698Z - success: builder loaded
+2018-09-02T12:56:41.701Z - success: cocos-analytics loaded
+2018-09-02T12:56:41.706Z - success: console loaded
+2018-09-02T12:56:41.735Z - success: fb-instant-games loaded
+2018-09-02T12:56:41.741Z - success: hierarchy loaded
+2018-09-02T12:56:41.747Z - success: inspector loaded
+2018-09-02T12:56:41.749Z - success: keystore loaded
+2018-09-02T12:56:41.759Z - success: node-library loaded
+2018-09-02T12:56:41.762Z - success: package-asset loaded
+2018-09-02T12:56:41.765Z - success: preferences loaded
+2018-09-02T12:56:41.769Z - success: project-exporter loaded
+2018-09-02T12:56:41.789Z - success: project-importer loaded
+2018-09-02T12:56:41.793Z - success: project-settings loaded
+2018-09-02T12:56:41.797Z - success: ui-kit loaded
+2018-09-02T12:56:41.802Z - success: ui-grid loaded
+2018-09-02T12:56:41.807Z - success: scene loaded
+2018-09-02T12:56:41.808Z - success: sprite-editor loaded
+2018-09-02T12:56:41.813Z - success: store loaded
+2018-09-02T12:56:41.818Z - success: timeline loaded
+2018-09-02T12:56:41.818Z - normal: Loading builtin packages
+2018-09-02T12:56:41.823Z - success: asset-db-debugger loaded
+2018-09-02T12:56:41.824Z - success: color-picker loaded
+2018-09-02T12:56:41.828Z - success: package-manager loaded
+2018-09-02T12:56:41.833Z - success: sdkbox loaded
+2018-09-02T12:56:41.839Z - success: tester loaded
+2018-09-02T12:56:41.842Z - success: ui-kit-preview-extra loaded
+2018-09-02T12:56:41.845Z - success: ui-kit-preview loaded
+2018-09-02T12:56:41.849Z - success: ui-tree loaded
+2018-09-02T12:56:42.985Z - normal: Initializing project /Users/hujinping/Desktop/Bees
+2018-09-02T12:56:42.989Z - normal: Loading packages
+2018-09-02T12:56:42.993Z - normal: Watching packages
+2018-09-02T12:56:43.002Z - normal: Run Application
+2018-09-02T12:56:44.126Z - success: preview server running at http://localhost:7456
+2018-09-02T12:56:48.184Z - normal: 1.9.1
+2018-09-02T13:51:06.835Z - info: shutdown preview server

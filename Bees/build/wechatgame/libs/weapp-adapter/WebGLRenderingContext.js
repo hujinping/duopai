@@ -13,4 +13,3 @@ var WebGLRenderingContext = function WebGLRenderingContext() {
 };
 
 exports.default = WebGLRenderingContext;
-module.exports = exports["default"];

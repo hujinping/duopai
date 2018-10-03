@@ -14,8 +14,11 @@ var RankingCell = /** @class */ (function (_super) {
         _this.lbRank = null;
         _this.lbName = null;
         _this.lbScore = null;
+        _this.lbGrade = null;
+        _this.lbtitle = null;
         _this.medalFrames = [];
         _this.bgFrames = [];
+        _this.gradeList = ["王\n者", "宗\n师", "大\n师", "进\n阶", "入\n门", "渣\n渣"];
         return _this;
         // start () {
         // }
@@ -23,19 +26,77 @@ var RankingCell = /** @class */ (function (_super) {
     }
     // LIFE-CYCLE CALLBACKS:
     // onLoad () {}
-    RankingCell.prototype.setData = function (rank, data) {
+    RankingCell.prototype.setData = function (rank, data, boolSetBg) {
         this.createImage(data.avatarUrl);
         this.lbName.string = this.cutstr(data.nickname, 10);
         this.setMedal(rank);
-        //this.setBg(rank);
+        if (boolSetBg) {
+            this.setBg(rank);
+        }
         if (!data.KVDataList) {
             return;
         }
         var score = data.KVDataList.length != 0 ? data.KVDataList[0].value : 0;
-        this.lbScore.string = this.formatNumber(Number(score)) + '';
+        this.lbScore.string = score;
+    };
+    RankingCell.prototype.setOverData = function (rank, data) {
+        if (!data.KVDataList) {
+            return;
+        }
+        this.createImage(data.avatarUrl);
+        this.lbName.string = this.cutstr(data.nickname, 10);
+        this.setMedal(rank);
+        var idx = rank % 2;
+        if (idx == 0)
+            this.sprBg.spriteFrame = this.bgFrames[idx];
+        else
+            this.sprBg.spriteFrame = null;
+        var score = data.KVDataList.length != 0 ? data.KVDataList[0].value : 0;
+        this.lbScore.string = score;
+        return this.setLbGrade(score);
+    };
+    RankingCell.prototype.setSelfOverData = function (data) {
+        if (!data.KVDataList) {
+            return;
+        }
+        this.createImage(data.avatarUrl);
+        this.lbName.string = this.cutstr(data.nickname, 10);
+        var score = data.KVDataList.length != 0 ? data.KVDataList[0].value : 0;
+        this.setLbGrade(score);
+    };
+    RankingCell.prototype.setLbGrade = function (score) {
+        var lb = this.lbGrade.getComponent(cc.Label);
+        if (score < 2000) {
+            lb.string = this.gradeList[5];
+            return 5;
+        }
+        else if (score >= 2000 && score < 10000) {
+            lb.string = this.gradeList[4];
+            return 4;
+        }
+        else if (score >= 10000 && score < 30000) {
+            lb.string = this.gradeList[3];
+            return 3;
+        }
+        else if (score >= 30000 && score < 50000) {
+            lb.string = this.gradeList[2];
+            return 2;
+        }
+        else if (score >= 50000 && score < 80000) {
+            lb.string = this.gradeList[1];
+            return 1;
+        }
+        else if (score >= 100000) {
+            lb.string = this.gradeList[0];
+            return 0;
+        }
+    };
+    RankingCell.prototype.setTitle = function (string) {
+        this.sprBg.node.active = false;
+        this.lbtitle.getComponent(cc.Label).string = string;
     };
     RankingCell.prototype.setBg = function (idx) {
-        idx = idx % 2;
+        idx = 0;
         this.sprBg.spriteFrame = this.bgFrames[idx];
     };
     RankingCell.prototype.setMedal = function (idx) {
@@ -108,42 +169,6 @@ var RankingCell = /** @class */ (function (_super) {
         // }
         return str;
     };
-    RankingCell.prototype.formatNumber = function (number) {
-        if (number > Math.pow(10, 33)) {
-            return (number / Math.pow(10, 33)).toFixed(1) + "gg";
-        }
-        if (number > Math.pow(10, 30)) {
-            return (number / Math.pow(10, 30)).toFixed(1) + "ff";
-        }
-        else if (number > Math.pow(10, 27)) {
-            return (number / Math.pow(10, 27)).toFixed(1) + "ee";
-        }
-        else if (number > Math.pow(10, 24)) {
-            return (number / Math.pow(10, 24)).toFixed(1) + "dd";
-        }
-        else if (number > Math.pow(10, 21)) {
-            return (number / Math.pow(10, 21)).toFixed(1) + "cc";
-        }
-        else if (number > Math.pow(10, 18)) {
-            return (number / Math.pow(10, 18)).toFixed(1) + "bb";
-        }
-        else if (number > Math.pow(10, 15)) {
-            return (number / Math.pow(10, 15)).toFixed(1) + "aa";
-        }
-        else if (number > Math.pow(10, 12)) {
-            return (number / Math.pow(10, 12)).toFixed(1) + "T";
-        }
-        else if (number > Math.pow(10, 9)) { //十亿
-            return (number / Math.pow(10, 9)).toFixed(1) + "B";
-        }
-        else if (number > Math.pow(10, 6)) { //百万
-            return (number / Math.pow(10, 6)).toFixed(1) + "M";
-        }
-        else if (number > Math.pow(10, 3)) { //千
-            return (number / Math.pow(10, 3)).toFixed(1) + "K";
-        }
-        return number;
-    };
     __decorate([
         property(cc.Sprite)
     ], RankingCell.prototype, "sprBg", void 0);
@@ -162,6 +187,12 @@ var RankingCell = /** @class */ (function (_super) {
     __decorate([
         property(cc.Label)
     ], RankingCell.prototype, "lbScore", void 0);
+    __decorate([
+        property(cc.Label)
+    ], RankingCell.prototype, "lbGrade", void 0);
+    __decorate([
+        property(cc.Label)
+    ], RankingCell.prototype, "lbtitle", void 0);
     __decorate([
         property([cc.SpriteFrame])
     ], RankingCell.prototype, "medalFrames", void 0);

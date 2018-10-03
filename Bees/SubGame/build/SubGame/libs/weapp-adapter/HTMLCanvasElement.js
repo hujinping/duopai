@@ -31,4 +31,3 @@ var canvasConstructor = canvas.constructor;
 // canvasConstructor.__proto__.__proto__ = new HTMLElement();
 
 exports.default = canvasConstructor;
-module.exports = exports['default'];

@@ -5,11 +5,8 @@ cc._RF.push(module, 'e659baZaMVDzKDI5WvkuwsU', 'WXCtr');
 Object.defineProperty(exports, "__esModule", { value: true });
 //微信全局方法
 var Http_1 = require("../Common/Http");
-var UserManager_1 = require("../Common/UserManager");
-var ViewManager_1 = require("../Common/ViewManager");
 var HttpCtr_1 = require("./HttpCtr");
 var GameCtr_1 = require("./GameCtr");
-var GameData_1 = require("../Common/GameData");
 var _a = cc._decorator, ccclass = _a.ccclass, property = _a.property;
 var Message_Type;
 (function (Message_Type) {
@@ -30,11 +27,6 @@ var I6P = {
 };
 var WXCtr = /** @class */ (function () {
     function WXCtr() {
-        if (WXCtr_1.videoAdCallback == null) {
-            WXCtr_1.videoAdCallback = function (res) {
-                WXCtr_1.onCloseVideo(res);
-            };
-        }
     }
     WXCtr_1 = WXCtr;
     //获取启动参数
@@ -93,56 +85,78 @@ var WXCtr = /** @class */ (function () {
     //创建用户授权按钮
     WXCtr.createUserInfoBtn = function () {
         if (window.wx != undefined) {
-            var screenWidth_1;
-            var screenHeight_1;
-            var widthRatio_1;
-            var heightRatio_1;
+            console.log("创建用户授权按钮");
+            var model_1;
             wx.getSystemInfo({
                 success: function (res) {
-                    WXCtr_1.Height = res.windowHeight;
                     console.log("获取设备信息成功", res);
-                    screenWidth_1 = res.screenWidth;
-                    screenHeight_1 = res.screenHeight;
-                    widthRatio_1 = screenWidth_1 / I6P.w;
-                    heightRatio_1 = screenHeight_1 / I6P.h;
+                    model_1 = res.model;
+                    WXCtr_1.screenWidth = res.screenWidth;
+                    WXCtr_1.screenHeight = res.screenHeight;
+                    WXCtr_1.widthRatio = WXCtr_1.screenWidth / I6P.w;
+                    WXCtr_1.heightRatio = WXCtr_1.screenHeight / I6P.h;
+                    //GameCtr.getPhone(model)
                 }
             });
             WXCtr_1.userInfoBtn = wx.createUserInfoButton({
                 type: 'image',
-                image: 'res/raw-assets/resources/textures/rank/authBtn.png',
+                image: 'res/raw-assets/resources/textures/authBtn.png',
                 style: {
-                    left: (screenWidth_1 / 2 - 80),
-                    top: (screenHeight_1 / 2 - 40) + (50 * heightRatio_1),
-                    width: 160 * widthRatio_1,
-                    height: 40 * heightRatio_1,
+                    left: (WXCtr_1.screenWidth / 2 - 80),
+                    top: (WXCtr_1.screenHeight / 2 - 40) + (50 * WXCtr_1.heightRatio),
+                    width: 160 * WXCtr_1.widthRatio,
+                    height: 40 * WXCtr_1.heightRatio,
                 }
             });
-            WXCtr_1.userInfoBtn.hide();
-            WXCtr_1.userInfoBtn.onTap(function (res) {
-                console.log("UserInfoBtn tap", res);
-                if (res.userInfo) {
-                    GameCtr_1.default.getInstance().getRanking().showAuthTip(false);
-                    WXCtr_1.wxOnLogin(res.userInfo, true);
+        }
+    };
+    WXCtr.onUserInfoBtnTap = function (callback) {
+        var call = function (res) {
+            console.log("UserInfoBtn tap", res);
+            if (res.userInfo) {
+                WXCtr_1.wxGetUsrInfo();
+                if (callback) {
+                    callback(true);
+                }
+                WXCtr_1.userInfoBtn.destroy();
+            }
+            else {
+                //callback(false);
+            }
+        };
+        WXCtr_1.userInfoBtn.onTap(call);
+    };
+    WXCtr.wxGetUsrInfo = function () {
+        if (window.wx != undefined) {
+            window.wx.getUserInfo({
+                //openIdList: ['selfOpenId'],
+                lang: "zh_CN",
+                withCredentials: true,
+                success: function (res) {
+                    var info = res.userInfo;
+                    WXCtr_1.authed = true;
+                    HttpCtr_1.default.saveUserInfo(res);
+                    GameCtr_1.default.getInstance().saveSelfInfoToLocal(res.userInfo);
+                    GameCtr_1.default.getInstance().emitEvent("getSelfInfoSuccess", null);
+                    GameCtr_1.default.getInstance().emitEvent("getSelfInfoSuccess1", null);
+                    //console.log("获取自己信息返回值", res);
+                },
+                fail: function (res) {
+                    console.log("获取自己信息失败", res);
                 }
             });
         }
     };
     //登录微信
-    WXCtr.wxOnLogin = function (userInfo, showWorldRanking) {
-        if (userInfo === void 0) { userInfo = null; }
-        if (showWorldRanking === void 0) { showWorldRanking = false; }
+    WXCtr.wxOnLogin = function () {
         if (window.wx != undefined) {
             //登录微信
-            if (userInfo) {
-                WXCtr_1.wxLoginSuccess = true;
-            }
             window.wx.login({
                 success: function (loginResp) {
                     console.log("微信登录返回值res", loginResp);
-                    HttpCtr_1.default.login(loginResp.code, showWorldRanking);
-                    WXCtr_1.getUserInfo();
-                    WXCtr_1.getSelfData();
+                    HttpCtr_1.default.login(loginResp.code);
                     WXCtr_1.getShareConfig();
+                    WXCtr_1.getReviveData();
                 }
             });
         }
@@ -150,8 +164,7 @@ var WXCtr = /** @class */ (function () {
     WXCtr.getUserInfo = function () {
         //获取用户信息
         window.wx.getUserInfo({
-            openIdList: ['selfOpenId'],
-            withCredentials: true,
+            //openIdList: ['selfOpenId'],
             lang: "zh_CN",
             success: function (res) {
                 var info = res.userInfo;
@@ -166,7 +179,7 @@ var WXCtr = /** @class */ (function () {
                     province: info.province,
                 };
                 GameCtr_1.default.getInstance().saveSelfInfoToLocal(res.userInfo);
-                //GameCtr.getInstance().emitEvent("getSelfInfoSuccess",null);
+                GameCtr_1.default.getInstance().emitEvent("getSelfInfoSuccess", null);
                 WXCtr_1.wxLoginSuccess = true;
                 WXCtr_1.authed = true;
                 HttpCtr_1.default.saveUserInfo(res);
@@ -276,44 +289,11 @@ var WXCtr = /** @class */ (function () {
             WXCtr_1.videoAd.onError(function (err) {
                 console.log(err);
             });
-            WXCtr_1.videoAd.onClose(WXCtr_1.videoAdCallback);
         }
     };
-    WXCtr.restoreVideoAdOnClose = function (callback) {
-        if (callback === void 0) { callback = null; }
-        WXCtr_1.videoAd.onClose(function () {
-            if (callback != null) {
-                WXCtr_1.videoAd.offClose(callback);
-            }
-            WXCtr_1.videoAd.onClose(WXCtr_1.videoAdCallback);
-        });
-        WXCtr_1.setBannerAd(100, 300);
-    };
-    WXCtr.showVideoAd = function (callback) {
-        if (callback === void 0) { callback = null; }
+    WXCtr.showVideoAd = function () {
         if (WXCtr_1.videoAd) {
-            WXCtr_1.hideBannerAd();
-            if (callback != null) {
-                WXCtr_1.videoAd.offClose(WXCtr_1.videoAdCallback);
-                WXCtr_1.outvideoAdCallback = callback;
-                GameCtr_1.default.vedioTimes--;
-                GameCtr_1.default.ufoTimes;
-                WXCtr_1.videoAd.onClose(callback);
-            }
             WXCtr_1.videoAd.show();
-        }
-        else {
-            //GameCtr.ins.getGame().showToast("")
-        }
-    };
-    WXCtr.showBannerAd = function () {
-        if (cc.isValid(WXCtr_1.bannerAd) && WXCtr_1.bannerAd) {
-            WXCtr_1.bannerAd.show();
-        }
-    };
-    WXCtr.hideBannerAd = function () {
-        if (cc.isValid(WXCtr_1.bannerAd) && WXCtr_1.bannerAd) {
-            WXCtr_1.bannerAd.hide();
         }
     };
     WXCtr.onCloseVideo = function (callback) {
@@ -338,73 +318,56 @@ var WXCtr = /** @class */ (function () {
         }
     };
     //banner广告
-    WXCtr.setBannerAd = function (height, width) {
+    WXCtr.createBannerAd = function (height) {
         if (height === void 0) { height = null; }
-        if (width === void 0) { width = null; }
-        if (window.wx != undefined && wx.createBannerAd) {
-            if (WXCtr_1.bannerAd && WXCtr_1.bannerAd.destroy) {
+        if (window.wx != undefined) {
+            if (WXCtr_1.bannerAd) {
                 WXCtr_1.bannerAd.destroy();
             }
-            var top = 140;
+            var top = 100;
             if (height)
                 top = height;
-            var widthNum = 375;
-            var left = 0;
-            if (width) {
-                widthNum = width;
-                var realWidth = width * WXCtr_1.widthRatio;
-                realWidth = realWidth < 300 ? 300 : realWidth;
-                left = (WXCtr_1.screenWidth - realWidth) / 2;
-            }
             WXCtr_1.bannerAd = wx.createBannerAd({
-                adUnitId: WXCtr_1.advid,
+                adUnitId: WXCtr_1.bannerId,
                 style: {
-                    left: left,
+                    left: 0,
                     top: WXCtr_1.screenHeight - top * WXCtr_1.heightRatio,
-                    width: widthNum * WXCtr_1.widthRatio,
+                    width: 375 * WXCtr_1.widthRatio,
                 }
             });
             WXCtr_1.bannerAd.show();
-            WXCtr_1.bannerAd.onError(function () {
-            });
         }
     };
-    //分享 
-    WXCtr.share = function (data) {
-        var qureyInfo = "";
-        if (data && data.invite) {
-            qureyInfo = "invite=";
+    WXCtr.hideBannerAd = function () {
+        if (WXCtr_1.bannerAd) {
+            WXCtr_1.bannerAd.destroy();
         }
-        if (data && data.Challenge) {
-            qureyInfo = "Challenge=";
-        }
-        if (data && data.pfTurnable) {
-            GameData_1.default.pfTurntable++;
-            HttpCtr_1.default.openClick(GameCtr_1.default.clickType.pfTurntable);
-        }
+    };
+    //分享 revive是否是复活分享
+    WXCtr.share = function (type) {
         if (window.wx != undefined) {
             window.wx.shareAppMessage({
                 title: WXCtr_1.shareTitle,
                 imageUrl: WXCtr_1.shareImg,
-                query: qureyInfo + UserManager_1.default.user_id,
+                query: "",
                 success: function (res) {
-                    if (GameCtr_1.default.setting.share) {
+                    //console.log("分享成功回调返回值", res);
+                    if (type == "revive") {
+                        GameCtr_1.default.getInstance().emitEvent("shareSuccess", null);
                         if (res.shareTickets != undefined && res.shareTickets.length > 0) {
-                            console.log("shareTickets == ", res.shareTickets);
-                            WXCtr_1.getWxShareInfo(res.shareTickets[0], data.callback);
+                            console.log("分享到群成功");
+                            WXCtr_1.getWxShareInfo(res.shareTickets[0], 'revive');
                         }
                         else {
-                            ViewManager_1.default.toast("请分享到群！");
+                            //GameCtr.getGold("friend");
                         }
                     }
-                    else {
-                        if (data.callback) {
-                            data.callback();
-                        }
+                    else if ("morePower") {
+                        GameCtr_1.default.powerValue++;
+                        GameCtr_1.default.getInstance().emitEvent("morePowerSuccess", null);
+                        GameCtr_1.default.getInstance().emitEvent("morePowerSuccess1", null);
                     }
                 },
-                complete: function () {
-                }
             });
         }
         else {
@@ -419,20 +382,6 @@ var WXCtr = /** @class */ (function () {
                     console.log("获取分享信息成功！！！", resp);
                     HttpCtr_1.default.shareGroupCheck(resp.encryptedData, resp.iv, callback);
                 },
-            });
-        }
-    };
-    WXCtr.showToast = function (msg) {
-        if (window.wx != undefined) {
-            window.wx.showToast({
-                title: msg,
-                duration: 2,
-                fail: function (res) {
-                    WXCtr_1.showToast(msg);
-                },
-                success: function (res) {
-                    return;
-                }
             });
         }
     };
@@ -497,15 +446,6 @@ var WXCtr = /** @class */ (function () {
     /**
      * 子域消息相关方法
      */
-    /**
-     * 子域消息相关方法
-     */
-    WXCtr.initSharedCanvas = function () {
-        if (window.wx != undefined) {
-            window.sharedCanvas.width = 880;
-            window.sharedCanvas.height = 1000;
-        }
-    };
     //获取自己信息
     WXCtr.getSelfData = function () {
         if (window.wx != undefined) {
@@ -513,6 +453,8 @@ var WXCtr = /** @class */ (function () {
             window.wx.postMessage({
                 messageType: Message_Type.Get_SelfData,
             });
+        }
+        else {
         }
     };
     //获取群数据
@@ -527,8 +469,7 @@ var WXCtr = /** @class */ (function () {
                     if (res.shareTickets != undefined && res.shareTickets.length > 0) {
                         window.wx.postMessage({
                             messageType: Message_Type.Get_GroupData,
-                            SCORE_KEY: "Rank_SCORE",
-                            LOCATION_KEY: "LOACTION",
+                            LIST_KEY: "Rank_Data",
                             shareTicket: res.shareTickets[0]
                         });
                     }
@@ -555,13 +496,21 @@ var WXCtr = /** @class */ (function () {
             });
         }
     };
+    //关闭End好友排行
+    WXCtr.closeFriendEndRanking = function () {
+        if (window.wx != undefined) {
+            console.log("主域发送消息____关闭End好友排行");
+            window.wx.postMessage({
+                messageType: Message_Type.Close_OverRanking,
+            });
+        }
+    };
     //显示完整好友排行
-    WXCtr.showFriendRanking = function (_pageIndex) {
+    WXCtr.showFriendRanking = function () {
         if (window.wx != undefined) {
             console.log("主域发送消息____显示好友排行");
             window.wx.postMessage({
                 messageType: Message_Type.Show_WholeRanking,
-                pageIndex: _pageIndex,
             });
         }
     };
@@ -585,18 +534,26 @@ var WXCtr = /** @class */ (function () {
             });
         }
     };
-    //对比自己的分数和好友的Compare_Score
-    WXCtr.submitScoreToWxComparetFriend = function (score) {
+    //保存图片到本地相册
+    WXCtr.saveImge = function (imgUrl, callback) {
         if (window.wx != undefined) {
-            console.log("主域发送消息____提交分数");
-            window.wx.postMessage({
-                messageType: Message_Type.Compare_Score,
-                LIST_KEY: "Rank_Data",
-                score: score,
+            wx.downloadFile({
+                url: imgUrl,
+                success: function (resp) {
+                    console.log("下载图片成功", resp);
+                    wx.saveImageToPhotosAlbum({
+                        filePath: resp.tempFilePath,
+                        success: function (res) {
+                            console.log("图片保存到本地相册成功", res);
+                            if (callback) {
+                                callback(true);
+                            }
+                        }
+                    });
+                },
             });
         }
     };
-    var WXCtr_1;
     WXCtr.wxLoginSuccess = false;
     WXCtr.onShowCall = null;
     WXCtr.videoAd = null;
@@ -604,11 +561,11 @@ var WXCtr = /** @class */ (function () {
     WXCtr.bannerAd = null;
     WXCtr.bannerId = null;
     WXCtr.authed = false;
-    WXCtr.outvideoAdCallback = null;
     WXCtr = WXCtr_1 = __decorate([
         ccclass
     ], WXCtr);
     return WXCtr;
+    var WXCtr_1;
 }());
 exports.default = WXCtr;
 

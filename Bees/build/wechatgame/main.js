@@ -81,10 +81,6 @@
         }
 
         var onStart = function () {
-            if (false) {
-                BK.Script.loadlib();
-            }
-
             cc.view.resizeWithBrowserSize(true);
 
             if (!true && !false) {
@@ -154,7 +150,11 @@
         // jsList
         var jsList = settings.jsList;
 
-        if (!false) {
+        if (false) {
+            BK.Script.loadlib();
+        }
+        else
+        {
             var bundledScript = settings.debug ? 'src/project.dev.js' : 'src/project.js';
             if (jsList) {
                 jsList = jsList.map(function (x) {
@@ -204,7 +204,6 @@
 
     if (true) {
         require(window._CCSettings.debug ? 'cocos2d-js.js' : 'cocos2d-js-min.js');
-        require('./libs/weapp-adapter/engine/index.js');
         var prevPipe = cc.loader.md5Pipe || cc.loader.assetLoader;
         cc.loader.insertPipeAfter(prevPipe, wxDownloader);
         boot();

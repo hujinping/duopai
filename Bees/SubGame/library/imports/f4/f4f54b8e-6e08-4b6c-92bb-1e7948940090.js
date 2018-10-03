@@ -11,26 +11,49 @@ var Ranking = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.ndContent = null;
         _this.pfCell = null;
+        _this.gradeList = ["王者", "宗师", "大师", "进阶", "入门", "渣渣"];
+        _this.level = 0;
         return _this;
         // update (dt) {}
     }
-    Ranking.prototype.loadRanking = function (data, index) {
-        if (index * 7 >= data.length) {
-            return;
-        }
-        this.ndContent.removeAllChildren();
-        var startIndex = index * 7;
-        var endIndex = (index * 7 + 7) > data.length ? data.length : (index * 7 + 7);
-        for (var i = startIndex; i < endIndex; i++) {
-            var off_y = i % 7 >= 3 ? -35 : 0;
+    // LIFE-CYCLE CALLBACKS:
+    Ranking.prototype.loadRanking = function (data) {
+        for (var i = 0; i < data.length; i++) {
             var cell = cc.instantiate(this.pfCell);
             this.ndContent.addChild(cell);
-            cell.x = 2;
-            cell.y = 672 + (i % 7) * (-132) + off_y;
             var info = data[i];
             var comp = cell.getComponent(RankingCell_1.default);
-            comp.setData(i, info);
+            comp.setData(i, info, true);
         }
+    };
+    Ranking.prototype.loadOverRanking = function (data) {
+        this.level = 0;
+        this.setTitle();
+        for (var i = 0; i < data.length; i++) {
+            var cell = cc.instantiate(this.pfCell);
+            var info = data[i];
+            var comp = cell.getComponent(RankingCell_1.default);
+            var k = comp.setOverData(i, info);
+            if (this.level != k) {
+                if (i == data.length - 1) {
+                    k = 5;
+                }
+                while (true) {
+                    this.level++;
+                    this.setTitle();
+                    if (this.level >= k) {
+                        break;
+                    }
+                }
+            }
+            this.ndContent.addChild(cell);
+        }
+    };
+    Ranking.prototype.setTitle = function () {
+        var cell = cc.instantiate(this.pfCell);
+        this.ndContent.addChild(cell);
+        var comp = cell.getComponent(RankingCell_1.default);
+        comp.setTitle(this.gradeList[this.level]);
     };
     Ranking.prototype.clear = function () {
         this.ndContent.removeAllChildren();

@@ -3,7 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = undefined;
 
 var _util = require('./util');
 
@@ -23,4 +22,3 @@ var Event = function Event(type) {
 };
 
 exports.default = Event;
-module.exports = exports['default'];

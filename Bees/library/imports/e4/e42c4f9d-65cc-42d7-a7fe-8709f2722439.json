@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "eft_3",
+    "texture": "360c8887-6b4f-4068-a35e-7326fb118582",
+    "atlas": "d321c3c6-aaa5-4b1a-b7fa-dad7a18404d7",
+    "rect": [
+      833,
+      722,
+      86,
+      98
+    ],
+    "offset": [
+      0,
+      -1
+    ],
+    "originalSize": [
+      90,
+      100
+    ]
+  }
+}

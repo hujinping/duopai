@@ -60,9 +60,6 @@ var AudioManager = /** @class */ (function () {
             });
         });
     };
-    AudioManager.prototype.getMusicId = function () {
-        return this.musicId;
-    };
     AudioManager.prototype.pauseMusic = function () {
         cc.audioEngine.pause(this.musicId);
     };

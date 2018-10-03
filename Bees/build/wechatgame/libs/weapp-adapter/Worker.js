@@ -11,4 +11,3 @@ exports.default = function (file) {
 };
 
 ;
-module.exports = exports["default"];
