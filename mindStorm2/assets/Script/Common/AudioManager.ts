@@ -25,6 +25,13 @@ export default class AudioManager {
 
     }
 
+
+
+
+
+
+    
+
     //播放背景音乐
     async playMusic(path: string, loop: boolean = true, volume = 1) {
         if (!path) {
