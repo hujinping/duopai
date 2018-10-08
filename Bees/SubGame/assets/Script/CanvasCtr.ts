@@ -23,16 +23,15 @@ export default class CanvasCtr extends cc.Component {
     ndFriend: cc.Node = null;
     @property(Ranking)
     scrRanking: Ranking = null;
-    @property(cc.Node)
-    ndSelf: cc.Node = null;
-
+    // @property(cc.Node)
+    // ndSelf: cc.Node = null;
     @property(cc.Node)
     ndOverRanking: cc.Node = null;
-    @property(Ranking)
-    EndScrRanking: Ranking = null;
+    @property([RankingCell])
+    overCells: RankingCell[] = [];
     @property(cc.Node)
-    ndOverSelf: cc.Node = null;
-
+    ndsurpass: cc.Node = null;
+    // LIFE-CYCLE CALLBACKS:
     private mCanvas: cc.Canvas;
     private mFriendRankData;
     private mGroupData;
@@ -55,7 +54,7 @@ export default class CanvasCtr extends cc.Component {
                 } else if (data.messageType == Message_Type.Compare_Score) {        //比较自己与好友得分
                     this.compareWithScore(data.score);
                 } else if (data.messageType == Message_Type.Show_WholeRanking) {     //显示完整排行榜
-                    this.showFriendRanking();
+                    this.showFriendRanking(data.pageIndex);
                 } else if (data.messageType == Message_Type.Show_OverRanking) {      //显示结束排行榜
                     this.showOverRanking();
                 } else if (data.messageType == Message_Type.Get_SelfData) {          //获取自己信息
@@ -114,11 +113,9 @@ export default class CanvasCtr extends cc.Component {
                         return b.KVDataList[0].value - a.KVDataList[0].value;
                     });
                     this.mFriendRankData = data;
-                    this.mSelfRank = this.getSelfRank();
+                    this.getSelfRank();
                     if (showOver) {
-                        this.showOverRanking();
-                    } else {
-                        this.getSelfRank();
+                        //this.showOverRanking();
                     }
                 },
                 fail: res => {
@@ -152,7 +149,6 @@ export default class CanvasCtr extends cc.Component {
                                 return b.KVDataList[0].value - a.KVDataList[0].value;
                             });
                             this.mGroupData = data;
-                            this.showGroupRanking();
                         },
                         fail: res => {
                             console.log("wx.getFriendCloudStorage fail", res);
@@ -207,52 +203,139 @@ export default class CanvasCtr extends cc.Component {
     }
 
     compareWithScore(selfScore) {
+        if (!this.mFriendRankData) {
+            console.log("没有好友排行榜信息，请先获取好友排行榜信息");
+            return;
+        }
+        console.log("this.mFriendRankData =========", this.mFriendRankData);
+        console.log("this.mSelfRank ============", this.mSelfRank);
+        for (let i = 0; i < this.mFriendRankData.length; i++) {
+            let data = this.mFriendRankData[i];
+            if (data.avatarUrl == this.mSelfData.avatarUrl) {
+                data.KVDataList[0].value = selfScore;
+            }
+        }
 
+        this.mFriendRankData.sort((a, b) => {
+            if (a.KVDataList.length == 0 && b.KVDataList.length == 0) {
+                return 0;
+            }
+            if (a.KVDataList.length == 0) {
+                return 1;
+            }
+            if (b.KVDataList.length == 0) {
+                return -1;
+            }
+            return b.KVDataList[0].value - a.KVDataList[0].value;
+        });
+        this.mSelfRank = this.getSelfRank();
+        this.ndOverRanking.active=false;
+        this.ndFriend.active=false;
+
+        for (let i = 0; i < this.mFriendRankData.length; i++) {
+
+            let data = this.mFriendRankData[i];
+
+            if (i == this.mSelfRank - 1) {
+
+                this.ndsurpass.active = true;
+                this.createImage(data.avatarUrl, this.ndsurpass.getChildByName("image").getComponent(cc.Sprite));
+
+                return;
+            }
+        }
     }
 
-    showFriendRanking() {
-        this.ndOverRanking.active = false;
-        this.EndScrRanking.node.active = false;
+    CloseCompareWithScore() {
+        this.ndsurpass.active = false;
+    }
+
+    createImage(avatarUrl, sprHead: cc.Sprite) {
+        if (window.wx != undefined) {
+            try {
+                let image = wx.createImage();
+                image.onload = () => {
+                    try {
+                        let texture = new cc.Texture2D();
+                        texture.initWithElement(image);
+                        texture.handleLoadedTexture();
+                        sprHead.spriteFrame = new cc.SpriteFrame(texture);
+                    } catch (e) {
+                        cc.log(e);
+                        sprHead.node.active = false;
+                    }
+                };
+                image.src = avatarUrl;
+            } catch (e) {
+                cc.log(e);
+                sprHead.node.active = false;
+            }
+        } else {
+            cc.loader.load({
+                url: avatarUrl,
+                type: 'jpg'
+            }, (err, texture) => {
+                sprHead.spriteFrame = new cc.SpriteFrame(texture);
+            });
+        }
+    }
+
+
+    showFriendRanking(pageIndex) {
+        this.CloseCompareWithScore();
         this.ndFriend.active = true;
+        this.ndOverRanking.active = false;
         this.scrRanking.node.active = true;
         console.log("显示好友排行榜", this.mFriendRankData);
         if (!this.mFriendRankData) {
             console.log("没有好友排行榜信息，请先获取好友排行榜信息");
             return;
         }
-        this.scrRanking.loadRanking(this.mFriendRankData);
-
-        console.log("显示自己信息：", this.mSelfData);
-        if (!this.mSelfRank) {
-            this.mSelfRank = this.getSelfRank();
-        }
-        let selfRanking = this.ndSelf.getComponent(RankingCell);
-        selfRanking.setData(this.mSelfRank, this.mSelfData, false);
+        this.scrRanking.loadRanking(this.mFriendRankData,pageIndex);
     }
 
     closeFriendRanking() {
         this.scrRanking.clear();
+        this.ndFriend.active = false;
+        this.ndOverRanking.active = true;
+        this.CloseCompareWithScore();
     }
 
     showOverRanking() {
+        return;
         if (!this.mFriendRankData) {
             console.log("没有好友排行榜信息，请先获取好友排行榜信息");
             return;
         }
+        if (!this.mSelfRank) {
+            this.mSelfRank = this.getSelfRank();
+        }
         console.log("this.mFriendRankData =========", this.mFriendRankData);
-        this.ndOverRanking.active = true;
-        this.EndScrRanking.node.active = true;
+        console.log("this.mSelfRank ============", this.mSelfRank);
         this.ndFriend.active = false;
-        this.scrRanking.node.active = false;
+        this.ndOverRanking.active = true;
+        this.CloseCompareWithScore();
 
-        let selfRanking = this.ndOverSelf.getComponent(RankingCell);
-        selfRanking.setSelfOverData(this.mSelfData);
-
-        this.EndScrRanking.loadOverRanking(this.mFriendRankData);
+        for (let i = 0; i < this.mFriendRankData.length; i++) {
+            let rankingCell = null;
+            let data = this.mFriendRankData[i];
+            if (i == this.mSelfRank) {
+                rankingCell = this.overCells[1];
+            } else if (i == this.mSelfRank + 1) {
+                rankingCell = this.overCells[2];
+            } else if (i == this.mSelfRank - 1) {
+                rankingCell = this.overCells[0];
+            }
+            if (rankingCell) {
+                rankingCell.node.active = true;
+                rankingCell.setData(i, data);
+            }
+        }
     }
 
     closeOverRanking() {
-        this.EndScrRanking.clear();
+        this.ndOverRanking.active = false;
+        this.CloseCompareWithScore();
     }
 
     getSelfRank() {
@@ -268,21 +351,4 @@ export default class CanvasCtr extends cc.Component {
         }
         return rank;
     }
-
-
-    showGroupRanking() {
-        if (!this.mGroupData) {
-            console.log("没有群好友排行榜信息，请先获取");
-            return;
-        }
-        console.log("this.mGroupData =========", this.mFriendRankData);
-        this.closeOverRanking();
-        this.EndScrRanking.loadOverRanking(this.mGroupData);
-    }
-
-    // start () {
-
-    // }
-
-    // update (dt) {}
 }

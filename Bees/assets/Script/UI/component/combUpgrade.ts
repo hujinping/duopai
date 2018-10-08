@@ -11,7 +11,6 @@ export default class NewClass extends cc.Component {
     _lb_cost=null;
     _level=null;
     _unlockNum=null;
-    _interval=0;
 
     onLoad(){
         this.initNode()
@@ -26,8 +25,11 @@ export default class NewClass extends cc.Component {
     init(level,unlockNum){
         this._level=level;
         this._unlockNum=unlockNum;
-
         this._lb_des.getComponent(cc.Label).string=this._unlockNum+1;
+        if(this._unlockNum>=GameCtr.maxPerCombLevel){
+            this._lb_des.getComponent(cc.Label).string=this._unlockNum;
+        }
+        
         this.showCells();
         this.showSpeed();
         this.showhoneyProduction();
@@ -50,8 +52,8 @@ export default class NewClass extends cc.Component {
         let lb_value=speed.getChildByName("lb_value");
         let lb_add=speed.getChildByName("lb_add");
 
-        lb_value.getComponent(cc.Label).string="100%";
-        lb_add.getComponent(cc.Label).string="+0%";
+        lb_value.getComponent(cc.Label).string=100+this._unlockNum+"%";
+        lb_add.getComponent(cc.Label).string="+"+GameCtr.combConfig[this._level-1].speedMatrix*100+"%";
     }
 
     showhoneyProduction(){
@@ -67,7 +69,8 @@ export default class NewClass extends cc.Component {
         let upgrade=this.node.getChildByName("upgrade");
         this._btn_upgrade=upgrade.getChildByName("btn_upgrade");
         this._lb_cost=this._btn_upgrade.getChildByName("lb_cost");
-        this._lb_cost.getComponent(cc.Label).string="￥"+Util.formatNumber(GameCtr.combConfig[this._level-1].levelUpCost+GameCtr.combConfig[this._level-1].upMatrix*(this._unlockNum));
+        this._lb_cost.getComponent(cc.Label).string="$"+Util.formatNumber(GameCtr.combConfig[this._level-1].levelUpCost+
+            GameCtr.combConfig[this._level-1].upMatrix*(this._unlockNum-1));
         
     }
 
@@ -80,15 +83,25 @@ export default class NewClass extends cc.Component {
                 GameCtr.getInstance().getGame().clearCombUpGrade();
                 AudioManager.getInstance().playSound("audio/btnClose");
             }else if(e.target.getName()=="btn_upgrade"){
-                if(!this._btn_upgrade.getComponent(cc.Button).interactable){return}
-                AudioManager.getInstance().playSound("audio/btn_click");
+                if(this._unlockNum<GameCtr.maxPerCombLevel&&GameCtr.money<GameCtr.combConfig[this._level-1].levelUpCost+GameCtr.combConfig[this._level-1].upMatrix*(this._unlockNum-1)){
+                    GameCtr.getInstance().getGame().showGoldNotEnough();
+                    return;
+                }
+
+                if(!this._btn_upgrade.getComponent(cc.Button).interactable){return;}
+                AudioManager.getInstance().playSound("audio/levelup");
                 let comb=GameCtr.getInstance().getGame().getComb(this._level);
+                
                 comb.getComponent("honeycomb").upgrade();
                 this._unlockNum++;
                 this._lb_des.getComponent(cc.Label).string=this._unlockNum+1;
                 if(this._unlockNum==GameCtr.maxPerCombLevel){
                     this._btn_upgrade.getComponent(cc.Button).interactable=false;
-                    this._lb_cost.getComponent(cc.Label).string="已满级"
+                    let lb_cost=this._btn_upgrade.getChildByName("lb_cost");
+                    let word_fullLevel=this._btn_upgrade.getChildByName("word_levelFull");
+                    lb_cost.active=false;
+                    word_fullLevel.active=true;
+
                     return;
                 }
                 this.showCells();
@@ -96,26 +109,30 @@ export default class NewClass extends cc.Component {
                 this.showhoneyProduction();
                 this.showUpgrade();
                 this.updateBtnState();
+
             }
         })
     }
 
     updateBtnState(){
-        if(GameCtr.money<GameCtr.combConfig[this._level-1].levelUpCost+GameCtr.combConfig[this._level-1].upMatrix*this._unlockNum){
+        if(GameCtr.money<GameCtr.combConfig[this._level-1].levelUpCost+GameCtr.combConfig[this._level-1].upMatrix*(this._unlockNum-1)){
             this._btn_upgrade.getComponent(cc.Button).interactable=false;
         }else{
             this._btn_upgrade.getComponent(cc.Button).interactable=true;
         }
+        if(this._unlockNum>=GameCtr.maxPerCombLevel){
+            this._btn_upgrade.getComponent(cc.Button).interactable=false;
 
+            let lb_cost=this._btn_upgrade.getChildByName("lb_cost");
+            let word_fullLevel=this._btn_upgrade.getChildByName("word_levelFull");
+            lb_cost.active=false;
+            word_fullLevel.active=true;
+        }
     }
 
-    doUpdate(dt){
+    doUpdate(){
         if(this._btn_upgrade.getComponent(cc.Button).interactable || this._unlockNum>=GameCtr.maxPerCombLevel){return}
-        this._interval+=dt;
-        if(this._interval>=0.5){
-            this.updateBtnState();
-            this._interval=0;
-        }
+        this.updateBtnState();
     }
 
 }

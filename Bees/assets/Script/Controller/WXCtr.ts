@@ -4,6 +4,8 @@ import UserManager from "../Common/UserManager";
 import ViewManager from "../Common/ViewManager";
 import HttpCtr from "./HttpCtr";
 import GameCtr from "./GameCtr";
+import GameData from "../Common/GameData";
+import Util from "../Common/Util";
 
 const { ccclass, property } = cc._decorator;
 
@@ -44,9 +46,14 @@ export default class WXCtr {
     static heightRatio;
 
     static authed = false;
+    static outvideoAdCallback = null;
 
     constructor() {
-
+        if (WXCtr.videoAdCallback == null) {
+            WXCtr.videoAdCallback = (res) => {
+                WXCtr.onCloseVideo(res);
+            }
+        }
     }
 
     //获取启动参数
@@ -55,6 +62,7 @@ export default class WXCtr {
 
             WXCtr.launchOption = window.wx.getLaunchOptionsSync();
             console.log("获取启动参数", WXCtr.launchOption);
+           
 
             let fileMgr = wx.getFileSystemManager();
             fileMgr.getSavedFileList({
@@ -109,84 +117,63 @@ export default class WXCtr {
     //创建用户授权按钮
     static createUserInfoBtn() {
         if (window.wx != undefined) {
-            console.log("创建用户授权按钮");
-
-            let model;
+            let screenWidth;
+            let screenHeight;
+            let widthRatio;
+            let heightRatio;
             wx.getSystemInfo({
-                success: (res)=>{
+                success: (res) => {
+                    WXCtr.Height = res.windowHeight;
                     console.log("获取设备信息成功", res);
-                    model = res.model
-                    WXCtr.screenWidth = res.screenWidth;
-                    WXCtr.screenHeight = res.screenHeight;
-                    WXCtr.widthRatio = WXCtr.screenWidth / I6P.w;
-                    WXCtr.heightRatio = WXCtr.screenHeight / I6P.h;
-                    //GameCtr.getPhone(model)
+                    screenWidth = res.screenWidth;
+                    screenHeight = res.screenHeight;
+                    widthRatio = screenWidth / I6P.w;
+                    heightRatio = screenHeight / I6P.h;
                 }
             });
 
             WXCtr.userInfoBtn = wx.createUserInfoButton({
                 type: 'image',
-                image: 'res/raw-assets/resources/textures/authBtn.png',
+                image: 'res/raw-assets/resources/textures/rank/authBtn.png',
                 style: {
-                    left: (WXCtr.screenWidth / 2-80),
-                    top: (WXCtr.screenHeight / 2-40) + (50 * WXCtr.heightRatio),
-                    width: 160 * WXCtr.widthRatio,
-                    height: 40 * WXCtr.heightRatio,
+                    left: (screenWidth / 2-80) ,
+                    top: (screenHeight / 2-40) + (50 * heightRatio),
+                    width: 160 * widthRatio,
+                    height: 40 * heightRatio,
+                }
+            });
+
+            WXCtr.userInfoBtn.hide();
+            WXCtr.userInfoBtn.onTap((res) => {
+                console.log("UserInfoBtn tap", res);
+                if (res.userInfo) {
+                    GameCtr.getInstance().getRanking().showAuthTip(false)
+                    WXCtr.wxOnLogin(res.userInfo,true);
                 }
             });
         }
     }
 
-    static onUserInfoBtnTap(callback) {
-        let call: Function = (res) => {
-            console.log("UserInfoBtn tap", res);
-            if (res.userInfo) {
-                WXCtr.wxGetUsrInfo();
-                if(callback){
-                    callback(true);
-                }
-                WXCtr.userInfoBtn.destroy();
-            } else {
-                //callback(false);
-            }
-        };
-        WXCtr.userInfoBtn.onTap(call);
-    }
 
-    static wxGetUsrInfo() {
-        if (window.wx != undefined) {
-            window.wx.getUserInfo({
-                //openIdList: ['selfOpenId'],
-                lang:"zh_CN",
-                withCredentials: true,
-                success: function (res) {
-                    let info = res.userInfo;
-                    WXCtr.authed = true;
-                    HttpCtr.saveUserInfo(res);
-                    GameCtr.getInstance().saveSelfInfoToLocal(res.userInfo);
-                    GameCtr.getInstance().emitEvent("getSelfInfoSuccess",null);
-                    GameCtr.getInstance().emitEvent("getSelfInfoSuccess1",null);
-                    //console.log("获取自己信息返回值", res);
-                },
-                fail: function (res) {
-                    console.log("获取自己信息失败", res);
-                }
-            })
-        }
-    }
+
+
 
     //登录微信
-    static wxOnLogin() {
+    static wxOnLogin(userInfo = null,showWorldRanking=false) {
         if (window.wx != undefined) {
             //登录微信
+            if (userInfo) {
+                WXCtr.wxLoginSuccess = true;
+            }
+
             window.wx.login({
                 success: function (loginResp) {
                     console.log("微信登录返回值res", loginResp);
-                    HttpCtr.login(loginResp.code);
-
-                    
+                    HttpCtr.login(loginResp.code,showWorldRanking);
+                    WXCtr.getUserInfo();
+                    WXCtr.getSelfData();
                     WXCtr.getShareConfig();
-                    WXCtr.getReviveData();
+                    HttpCtr.getAdConfig();
                 }
             })
         }
@@ -195,7 +182,8 @@ export default class WXCtr {
     static getUserInfo(){
         //获取用户信息
         window.wx.getUserInfo({
-            //openIdList: ['selfOpenId'],
+            openIdList: ['selfOpenId'],
+            withCredentials: true,
             lang:"zh_CN",
             success: function (res) {
                 let info = res.userInfo;
@@ -210,7 +198,7 @@ export default class WXCtr {
                     province: info.province,
                 };
                 GameCtr.getInstance().saveSelfInfoToLocal(res.userInfo);
-                GameCtr.getInstance().emitEvent("getSelfInfoSuccess",null);
+                //GameCtr.getInstance().emitEvent("getSelfInfoSuccess",null);
                 WXCtr.wxLoginSuccess = true;
                 WXCtr.authed = true;
                 HttpCtr.saveUserInfo(res);
@@ -321,103 +309,105 @@ export default class WXCtr {
         }
     }
 
-    //视频广告
-    static setVideoAd(videoId) {
-        if (window.wx != undefined) {
-            WXCtr.videoAd = wx.createRewardedVideoAd({ adUnitId: videoId });
-            WXCtr.videoAd.onLoad(() => {
-                console.log('banner 广告加载成功')
-            });
-            WXCtr.videoAd.load();
-            WXCtr.videoAd.onError(err => {
-                console.log(err)
-            });
-        }
-    }
 
-    static showVideoAd() {
-        if (WXCtr.videoAd) {
-            WXCtr.videoAd.show();
-        }
-    }
 
-    static onCloseVideo(callback) {
-        // 用户点击了【关闭广告】按钮
-        let call: Function = (res) => {
-            if (res && res.isEnded || res === undefined) {
-                // 正常播放结束，可以下发游戏奖励
-                callback(true);
-                HttpCtr.videoCheck(WXCtr.launchOption.query);
+    static restoreVideoAdOnClose(callback: Function = null) {
+        WXCtr.videoAd.onClose(() => {
+            if (callback != null) {
+                WXCtr.videoAd.offClose(callback);
             }
-            else {
-                // 播放中途退出，不下发游戏奖励
-                callback(false);
-            }
-        };
-        WXCtr.videoAd.onClose(call);
-        WXCtr.videoAdCallback = call;
+            WXCtr.videoAd.onClose(WXCtr.videoAdCallback);
+        });
+        WXCtr.setBannerAd(100,300);
     }
 
-    static offCloseVideo() {
-        if (WXCtr.videoAdCallback) {
-            WXCtr.videoAd.offClose(WXCtr.videoAdCallback);
-        }
-    }
+   
 
-    //banner广告
-    static createBannerAd(height = null) {
-        if (window.wx != undefined) {
-            if (WXCtr.bannerAd) {
-                WXCtr.bannerAd.destroy();
-            }
-            let top = 100;
-            if (height) top = height;
-            WXCtr.bannerAd = wx.createBannerAd({
-                adUnitId: WXCtr.bannerId,
-                style: {
-                    left: 0,
-                    top: WXCtr.screenHeight - top * WXCtr.heightRatio,
-                    width: 375 * WXCtr.widthRatio,
-                }
-            });
+    static showBannerAd() {
+        if (cc.isValid(WXCtr.bannerAd) && WXCtr.bannerAd) {
             WXCtr.bannerAd.show();
         }
     }
 
     static hideBannerAd() {
-        if (WXCtr.bannerAd) {
-            WXCtr.bannerAd.destroy();
+        if (cc.isValid(WXCtr.bannerAd) && WXCtr.bannerAd) {
+            WXCtr.bannerAd.hide();
         }
     }
 
-    //分享 revive是否是复活分享
-    static share(type) {
+    //banner广告
+    static setBannerAd(height = null, width = null) {
+        if (window.wx != undefined && wx.createBannerAd) {
+            if (WXCtr.bannerAd && WXCtr.bannerAd.destroy) {
+                WXCtr.bannerAd.destroy();
+            }
+            let top = 140;
+            if (height) top = height;
+            let widthNum = 375;
+            let left = 0;
+            if (width) {
+                widthNum = width;
+                let realWidth = width * WXCtr.widthRatio;
+                realWidth = realWidth < 300 ? 300 : realWidth;
+                left = (WXCtr.screenWidth - realWidth) / 2;
+            }
+            WXCtr.bannerAd = wx.createBannerAd({
+                adUnitId:"adunit-4d43fbf2baf8747c",
+                style: {
+                    left: left,
+                    top: WXCtr.screenHeight - top * WXCtr.heightRatio,
+                    width: widthNum * WXCtr.widthRatio,
+                }
+            });
+            WXCtr.bannerAd.show();
+            WXCtr.bannerAd.onError(() => {
+            })
+        }
+    }
+
+    //分享 
+    static share(data?: {
+        invite?: boolean,                               //邀请好友
+        Challenge?: boolean,                            //挑战 
+        pfTurnable?:boolean,
+        callback?: Function
+    }) {
+        let qureyInfo = "";
+        if (data && data.invite) {
+            qureyInfo = "invite=";
+        }
+        if (data && data.Challenge){
+            qureyInfo = "Challenge=";
+        }
         if (window.wx != undefined) {
             window.wx.shareAppMessage({
                 title: WXCtr.shareTitle,
                 imageUrl: WXCtr.shareImg,
-                query: "",
+                query: qureyInfo + UserManager.user_id,
                 success: (res) => {
-                    //console.log("分享成功回调返回值", res);
-                    if (type=="revive") {
-                        GameCtr.getInstance().emitEvent("shareSuccess",null);
+                    if(GameCtr.setting.share){
                         if (res.shareTickets != undefined && res.shareTickets.length > 0) {
-                            console.log("分享到群成功");
-                            WXCtr.getWxShareInfo(res.shareTickets[0],'revive');
+                            console.log("shareTickets == ", res.shareTickets);
+                            WXCtr.getWxShareInfo(res.shareTickets[0], data.callback);
                         } else {
-                            //GameCtr.getGold("friend");
+                            GameCtr.getInstance().getGame().showToast("请分享到群！");
                         }
-                    }else if("morePower"){
-                        GameCtr.powerValue++;
-                        GameCtr.getInstance().emitEvent("morePowerSuccess",null);
-                        GameCtr.getInstance().emitEvent("morePowerSuccess1",null);
+                    }else{
+                        if(data.callback){
+                            data.callback()
+                        }
                     }
+                   
                 },
-            
+                complete: () => {
+
+                }
             });
         } else {
+
         }
     }
+
     //获取分享转发详细信息
     static getWxShareInfo(shareTicket, callback) {
         if (window.wx != undefined) {
@@ -428,6 +418,21 @@ export default class WXCtr {
                     HttpCtr.shareGroupCheck(resp.encryptedData, resp.iv, callback);
                 },
             });
+        }
+    }
+
+    static showToast(msg){
+        if(window.wx != undefined){
+            window.wx.showToast({
+                title:msg,
+                duration:2,
+                fail:(res)=>{
+                    WXCtr.showToast(msg)
+                },
+                success:(res)=>{
+                    return;
+                }
+            })
         }
     }
 
@@ -495,9 +500,68 @@ export default class WXCtr {
     }
 
 
+    static setVideoAd() {
+        if (window.wx != undefined && wx.createRewardedVideoAd) {
+            WXCtr.videoAd = wx.createRewardedVideoAd({ adUnitId:"adunit-cf448a58c6f5d542"});
+            WXCtr.videoAd.onLoad(() => {
+            });
+            WXCtr.videoAd.load();
+            WXCtr.videoAd.onError(err => {
+                WXCtr.videoAd = null; 
+                console.log(err)
+            }); 
+        }
+    }
+
+    static showVideoAd() {
+        if (WXCtr.videoAd) {
+            WXCtr.videoAd.show();
+            GameCtr.vedioTimes--;
+            console.log("今天剩余观看视频次数为：", GameCtr.vedioTimes);
+            localStorage.setItem("VideoTimes", JSON.stringify({ day: Util.getCurrTimeYYMMDD(), times: GameCtr.vedioTimes }));
+        }
+    }
+
+    
+    static onCloseVideo(callback) {
+        let call: Function = (res) => {
+            if (res && res.isEnded || res === undefined) {
+                // 正常播放结束，可以下发游戏奖励
+                callback(true);
+                HttpCtr.videoCheck(WXCtr.launchOption.query);
+            }
+            else {
+                // 播放中途退出，不下发游戏奖励
+                callback(false);
+            }
+        };
+        WXCtr.videoAd.onClose(call);
+        WXCtr.videoAdCallback = call;
+    }
+
+    static offCloseVideo() {
+        if (WXCtr.videoAdCallback) {
+            WXCtr.videoAd.offClose(WXCtr.videoAdCallback);
+            WXCtr.videoAdCallback = null;
+        }
+    }
+
+
+
     /**
      * 子域消息相关方法
      */
+    /**
+     * 子域消息相关方法
+     */
+
+    static initSharedCanvas() {
+        if (window.wx != undefined) {
+            window.sharedCanvas.width = 880;
+            window.sharedCanvas.height = 1000;
+        }
+    }
+
     //获取自己信息
     static getSelfData() {
         if (window.wx != undefined) {
@@ -505,7 +569,6 @@ export default class WXCtr {
             window.wx.postMessage({
                 messageType: Message_Type.Get_SelfData,
             });
-        } else {
         }
     }
 
@@ -521,7 +584,8 @@ export default class WXCtr {
                     if (res.shareTickets != undefined && res.shareTickets.length > 0) {
                         window.wx.postMessage({
                             messageType: Message_Type.Get_GroupData,
-                            LIST_KEY: "Rank_Data",
+                            SCORE_KEY: "Rank_SCORE",
+                            LOCATION_KEY: "LOACTION",
                             shareTicket: res.shareTickets[0]
                         });
                     }
@@ -530,8 +594,8 @@ export default class WXCtr {
         }
     }
 
-    //获取好友排行榜数据
-    static getFriendRankingData() {
+     //获取好友排行榜数据
+     static getFriendRankingData() {
         if (window.wx != undefined) {
             // 发消息给子域
             window.wx.postMessage({
@@ -540,6 +604,7 @@ export default class WXCtr {
             });
         }
     }
+
 
     //显示结束界面好友排行
     static showOverRanking() {
@@ -551,22 +616,13 @@ export default class WXCtr {
         }
     }
 
-    //关闭End好友排行
-    static closeFriendEndRanking() {
-        if (window.wx != undefined) {
-            console.log("主域发送消息____关闭End好友排行");
-            window.wx.postMessage({
-                messageType: Message_Type.Close_OverRanking,
-            });
-        }
-    }
-
     //显示完整好友排行
-    static showFriendRanking() {
+    static showFriendRanking(_pageIndex) {
         if (window.wx != undefined) {
             console.log("主域发送消息____显示好友排行");
             window.wx.postMessage({
                 messageType: Message_Type.Show_WholeRanking,
+                pageIndex:_pageIndex,
             });
         }
     }
@@ -593,23 +649,14 @@ export default class WXCtr {
         }
     }
 
-    //保存图片到本地相册
-    static saveImge(imgUrl, callback?: Function) {
+    //对比自己的分数和好友的Compare_Score
+    static submitScoreToWxComparetFriend(score) {
         if (window.wx != undefined) {
-            wx.downloadFile({
-                url: imgUrl,
-                success: (resp) => {
-                    console.log("下载图片成功", resp);
-                    wx.saveImageToPhotosAlbum({
-                        filePath: resp.tempFilePath,
-                        success: (res) => {
-                            console.log("图片保存到本地相册成功", res);
-                            if (callback) {
-                                callback(true);
-                            }
-                        }
-                    });
-                },
+            console.log("主域发送消息____提交分数");
+            window.wx.postMessage({
+                messageType: Message_Type.Compare_Score,
+                LIST_KEY: "Rank_Data",
+                score: score,
             });
         }
     }

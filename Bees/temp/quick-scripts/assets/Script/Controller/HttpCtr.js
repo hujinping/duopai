@@ -8,6 +8,7 @@ var UserManager_1 = require("../Common/UserManager");
 var WXCtr_1 = require("./WXCtr");
 var GameCtr_1 = require("./GameCtr");
 var ViewManager_1 = require("../Common/ViewManager");
+var Util_1 = require("../Common/Util");
 /**
  * 所有Http请求统一控制
  */
@@ -17,22 +18,21 @@ var HttpCtr = /** @class */ (function () {
     }
     HttpCtr_1 = HttpCtr;
     //登录游戏
-    HttpCtr.login = function (code) {
-        console.log("log------------HttpCtr-----LoginCode=:", code);
+    HttpCtr.login = function (code, showWorldRanking) {
+        if (showWorldRanking === void 0) { showWorldRanking = false; }
         Http_1.default.send({
             url: Http_1.default.UrlConfig.LOGIN,
             success: function (resp) {
                 if (resp.ret == 1) {
+                    console.log("log-------------http:login--->resp=:", resp);
                     UserManager_1.default.user_id = resp.data.uid;
                     UserManager_1.default.voucher = resp.data.voucher;
-                    HttpCtr_1.getUserInfo();
+                    HttpCtr_1.getUserInfo(null, showWorldRanking);
                     HttpCtr_1.getSettingConfig();
-                    WXCtr_1.default.getUserInfo();
-                    // HttpCtr.chanelCheck(WXCtr.launchOption.query, UserManager.user_id);
-                    // HttpCtr.channelGift(WXCtr.launchOption.query);
-                    // HttpCtr.getShareConfig();
-                    // HttpCtr.getAdConfig();
-                    // HttpCtr.invitedByFriend(WXCtr.launchOption.query);
+                    HttpCtr_1.chanelCheck(WXCtr_1.default.launchOption.query);
+                    if (WXCtr_1.default.launchOption.query) {
+                        HttpCtr_1.invitedByFriend(WXCtr_1.default.launchOption.query);
+                    }
                 }
             },
             data: {
@@ -56,21 +56,24 @@ var HttpCtr = /** @class */ (function () {
         });
     };
     //获取个人信息
-    HttpCtr.getUserInfo = function (callBack) {
+    HttpCtr.getUserInfo = function (callBack, showWorldRanking) {
         if (callBack === void 0) { callBack = null; }
-        console.log("log------uid=:", typeof (UserManager_1.default.user_id));
+        if (showWorldRanking === void 0) { showWorldRanking = false; }
         Http_1.default.send({
             url: Http_1.default.UrlConfig.GET_USERINFO,
             success: function (resp) {
+                console.log("log-------getUserInfo--->resp=:", resp);
                 if (resp.success == Http_1.default.Code.OK) {
                     UserManager_1.default.user = resp.user;
-                    window.localStorage.setItem("money", resp.user.money);
-                    console.log("log------------UserManager.user=:", resp);
-                    GameCtr_1.default.chickenCount = resp.user.Sum;
-                    GameCtr_1.default.joinGameCount = resp.user.SumLog;
-                    GameCtr_1.default.money = resp.user.money;
+                    GameCtr_1.default.realMoney = resp.user.cash;
+                    console.log("log--------GameCtr.realMoney=:", GameCtr_1.default.realMoney);
                     if (callBack) {
                         callBack(resp.user);
+                    }
+                    if (showWorldRanking) {
+                        console.log("log---------排行授权  刷新排行");
+                        GameCtr_1.default.getInstance().getRanking().showWorldRanking();
+                        GameCtr_1.default.getInstance().getRanking().initSelfInfo();
                     }
                 }
             },
@@ -82,7 +85,7 @@ var HttpCtr = /** @class */ (function () {
     };
     //保存自己的信息（头像，昵称等）到服务器
     HttpCtr.saveUserInfo = function (data) {
-        console.log("log---------------saveUserInfo-----  data=:", data);
+        console.log("log---------------saveUserInfo-----  data=:", UserManager_1.default.user_id, data);
         Http_1.default.send({
             url: Http_1.default.UrlConfig.SET_USER_DATA,
             data: {
@@ -97,11 +100,11 @@ var HttpCtr = /** @class */ (function () {
         });
     };
     //渠道验证
-    HttpCtr.chanelCheck = function (query, userId) {
+    HttpCtr.chanelCheck = function (query) {
         Http_1.default.send({
             url: Http_1.default.UrlConfig.CHANEL_RECORD,
             data: {
-                user_id: userId,
+                //uid: ,
                 channel_id: query.channel_id,
                 cuid: query.cuid,
                 cvoucher: query.cvoucher,
@@ -117,8 +120,28 @@ var HttpCtr = /** @class */ (function () {
         Http_1.default.send({
             url: Http_1.default.UrlConfig.GET_SETTING,
             success: function (resp) {
-                //console.log("获取游戏配置=：", resp);
+                console.log("获取游戏配置=：", resp);
                 GameCtr_1.default.isAudited = resp.ok;
+                //GameCtr.isAudited =false;
+                console.log("获取游戏配置 GameCtr.isAudited=：", GameCtr_1.default.isAudited);
+                GameCtr_1.default.setting = resp;
+                GameCtr_1.default.advTime = resp.advTime;
+                GameCtr_1.default.advVedioTime = resp.advVideoTime;
+                GameCtr_1.default.isGetSetting = true;
+                GameCtr_1.default.getInstance().getLoding().refreshMoreNewGame();
+                var vedioInfo = localStorage.getItem("VideoTimes");
+                if (!vedioInfo) {
+                    GameCtr_1.default.vedioTimes = GameCtr_1.default.setting.advSum;
+                }
+                else {
+                    var obj = JSON.parse(vedioInfo);
+                    if (obj.day != Util_1.default.getCurrTimeYYMMDD()) {
+                        GameCtr_1.default.vedioTimes = GameCtr_1.default.setting.advSum;
+                    }
+                    else {
+                        GameCtr_1.default.vedioTimes = obj.times;
+                    }
+                }
             }
         });
     };
@@ -141,7 +164,8 @@ var HttpCtr = /** @class */ (function () {
         Http_1.default.send({
             url: Http_1.default.UrlConfig.SHARE_GROUP,
             data: {
-                user_id: UserManager_1.default.user_id,
+                uid: UserManager_1.default.user_id,
+                voucher: UserManager_1.default.voucher,
                 encrypted_data: encryptedData,
                 iv: iv
             },
@@ -152,7 +176,7 @@ var HttpCtr = /** @class */ (function () {
                     }
                 }
                 else if (resp.ret == 0) {
-                    ViewManager_1.default.toast(resp.msg);
+                    GameCtr_1.default.getInstance().getGame().showToast(resp.msg);
                 }
             }
         });
@@ -163,15 +187,15 @@ var HttpCtr = /** @class */ (function () {
             url: Http_1.default.UrlConfig.ADConfig,
             success: function (res) {
                 console.log("获取广告配置", res);
-                if (res.data.videoid) {
-                    WXCtr_1.default.setVideoAd(res.data.videoid);
-                }
+                WXCtr_1.default.setVideoAd();
                 if (res.data.advid) {
                     WXCtr_1.default.bannerId = res.data.advid;
+                    WXCtr_1.default.setBannerAd(100, 300);
                 }
             },
             data: {
-                user_id: UserManager_1.default.user_id
+                uid: UserManager_1.default.user_id,
+                voucher: UserManager_1.default.voucher
             }
         });
     };
@@ -179,11 +203,13 @@ var HttpCtr = /** @class */ (function () {
     HttpCtr.invitedByFriend = function (query) {
         Http_1.default.send({
             url: Http_1.default.UrlConfig.INVITED_BY_FRIEND,
-            success: function () { },
+            success: function (res) {
+                console.log("log--------------invitedByFriend=:", res);
+            },
             data: {
-                user_id: UserManager_1.default.user_id,
+                uid: UserManager_1.default.user_id,
                 voucher: UserManager_1.default.voucher,
-                friend_user_id: query.invite
+                touid: query.invite
             }
         });
     };
@@ -191,25 +217,31 @@ var HttpCtr = /** @class */ (function () {
     HttpCtr.getInviteResult = function (callback) {
         if (callback === void 0) { callback = null; }
         Http_1.default.send({
-            url: Http_1.default.UrlConfig.INVITE_RESULT,
+            url: Http_1.default.UrlConfig.SEEK_LOG,
             success: function (res) {
-            },
-            data: {
-                user_id: UserManager_1.default.user_id,
-            }
-        });
-    };
-    //获取等多游戏导航信息
-    HttpCtr.getNevigatorData = function () {
-        Http_1.default.send({
-            url: Http_1.default.UrlConfig.GET_NAVIGATOR,
-            success: function (res) {
-                if (res.code == Http_1.default.Code.OK) {
-                    GameCtr_1.default.navigatorData = res.data;
+                console.log('log-----------邀请好友结果-=:', res);
+                if (callback) {
+                    callback(res.data);
                 }
             },
             data: {
-                string: "more_games",
+                uid: UserManager_1.default.user_id,
+                voucher: UserManager_1.default.voucher,
+            }
+        });
+    };
+    //渠道验证
+    HttpCtr.chanelCheck1 = function (query) {
+        console.log("log----------渠道验证--------query=", query);
+        Http_1.default.send({
+            url: Http_1.default.UrlConfig.CHANEL_RECORD,
+            data: {
+                uid: UserManager_1.default.user_id,
+                voucher: UserManager_1.default.voucher,
+                channel_id: query.channel_id,
+            },
+            success: function (resp) {
+                console.log("渠道验证成功", resp);
             }
         });
     };
@@ -219,55 +251,18 @@ var HttpCtr = /** @class */ (function () {
             //根据自己实际需求处理
         }
     };
-    // //获取我的战绩
-    // static getSelfArchieve(callback = null) {
-    //     Http.send({
-    //         url: Http.UrlConfig.SELF_ARCHIEVE,
-    //         success: (res)=>{
-    //             if(res.code == Http.Code.OK){
-    //                 if(callback) callback(res);
-    //             }
-    //         },
-    //         data: {
-    //             user_id: UserManager.user_id,
-    //         }
-    //     });
-    // }
-    // //获取今日最强数据
-    // static getTodayList(callback = null) {
-    //     Http.send({
-    //         url: Http.UrlConfig.TODAY_LIST,
-    //         success: (res)=>{
-    //             if(res.code == Http.Code.OK){
-    //                 if(callback) callback(res);
-    //             }
-    //         },
-    //     });
-    // }
-    //获取历史最强数据
-    // static getHistoryList(callback = null) {
-    //     Http.send({
-    //         url: Http.UrlConfig.HISTORY_LIST,
-    //         success: (res)=>{
-    //             if(res.code == Http.Code.OK){
-    //                 if(callback) callback(res);
-    //             }
-    //         }
-    //     });
-    // }
     //获取签到列表
     HttpCtr.getLoginAwardList = function (callback) {
         if (callback === void 0) { callback = null; }
         Http_1.default.send({
             url: Http_1.default.UrlConfig.GET_TODAY,
             success: function (res) {
-                if (res.code == Http_1.default.Code.OK) {
-                    if (callback)
-                        callback(res);
+                if (callback) {
+                    callback(res);
                 }
             },
             data: {
-                user_id: UserManager_1.default.user_id,
+                uid: UserManager_1.default.user_id,
                 voucher: UserManager_1.default.voucher
             }
         });
@@ -277,16 +272,16 @@ var HttpCtr = /** @class */ (function () {
         Http_1.default.send({
             url: Http_1.default.UrlConfig.DO_TODAY,
             success: function (res) {
-                if (res.code == Http_1.default.Code.OK) {
-                    callback(true);
+                console.log("log-------DO_TODAY-res=:", res);
+                if (res.m) {
+                    callback(res);
                 }
                 else {
-                    ViewManager_1.default.toast(res.msg);
-                    callback(false);
+                    GameCtr_1.default.getInstance().getGame().showToast(res.msg);
                 }
             },
             data: {
-                user_id: UserManager_1.default.user_id,
+                uid: UserManager_1.default.user_id,
                 voucher: UserManager_1.default.voucher
             }
         });
@@ -309,99 +304,141 @@ var HttpCtr = /** @class */ (function () {
             }
         });
     };
-    //开始游戏时获取匹配机器人
-    HttpCtr.getGameStartInfo = function (callback) {
-        Http_1.default.send({
-            url: Http_1.default.UrlConfig.GET_GAME_START,
-            success: function (res) {
-                //console.log("log------------getGameStartInfo---res=:",res);
-                if (res.ret == 1) {
-                    callback(res.data);
-                }
-                else {
-                    ViewManager_1.default.toast(res.msg);
-                    //callback(false);
-                }
-            },
-            data: {
-                uid: UserManager_1.default.user_id,
-                voucher: UserManager_1.default.voucher
-            }
-        });
-    };
-    //开始游戏时获取匹配机器人
-    HttpCtr.GameStart = function (callback) {
-        Http_1.default.send({
-            url: Http_1.default.UrlConfig.GAME_START,
-            success: function (res) {
-                console.log("log------------GAME_START---res=:", res);
-                if (res.ret == 1) {
-                    GameCtr_1.default.joinGameCount++;
-                }
-                else {
-                    ViewManager_1.default.toast(res.msg);
-                }
-            },
-            data: {
-                uid: UserManager_1.default.user_id,
-                voucher: UserManager_1.default.voucher
-            }
-        });
-    };
-    HttpCtr.getTitle = function (callback) {
-        Http_1.default.send({
-            url: Http_1.default.UrlConfig.GET_TITLE,
-            success: function (res) {
-                console.log('log---------getTitle---res=:', res);
-                if (res.ret == 1) {
-                    GameCtr_1.default.questionAnswer = res.info.ok;
-                    callback(res.info.title);
-                }
-                else {
-                    ViewManager_1.default.toast(res.msg);
-                    //callback(false);
-                }
-            },
-            data: {
-                uid: UserManager_1.default.user_id,
-                voucher: UserManager_1.default.voucher
-            }
-        });
-    };
-    HttpCtr.getGameWin = function (callback) {
-        Http_1.default.send({
-            url: Http_1.default.UrlConfig.GAME_WIN,
-            success: function (res) {
-                if (res.ret == 1) {
-                    GameCtr_1.default.chickenCount++;
-                }
-                else {
-                    ViewManager_1.default.toast(res.msg);
-                    //callback(false);
-                }
-            },
-            data: {
-                uid: UserManager_1.default.user_id,
-                voucher: UserManager_1.default.voucher
-            }
-        });
-    };
-    HttpCtr.setMoney = function (_money) {
+    HttpCtr.setGold = function (_gold) {
         Http_1.default.send({
             url: Http_1.default.UrlConfig.SET_GOLD_DATA,
             success: function (res) {
                 if (res.ret == 1) {
-                    console.log("log-----------金币上报成功--------------");
+                    console.log("log-----------金币上报成功--------------_gold=:", _gold);
                 }
                 else {
                     ViewManager_1.default.toast(res.msg);
-                    console.log("log-----------金币上报失败--------------");
                 }
             },
             data: {
                 uid: UserManager_1.default.user_id,
                 voucher: UserManager_1.default.voucher,
-                money: _money
+                gold: _gold
+            }
+        });
+    };
+    HttpCtr.setUserDataState = function (idx, value) {
+        var sendData = {
+            uid: UserManager_1.default.user_id,
+            voucher: UserManager_1.default.voucher
+        };
+        var key = "data_" + idx;
+        sendData[key] = value;
+        console.log("log---------sendData=:", sendData);
+        Http_1.default.send({
+            url: Http_1.default.UrlConfig.SET_GOLD_DATA,
+            success: function (res) {
+                if (res.ret == 1) {
+                    console.log("log------上报领取邀请奖励成功");
+                }
+                else {
+                    ViewManager_1.default.toast(res.msg);
+                }
+            },
+            data: sendData
+        });
+    };
+    HttpCtr.openRed = function (clickID, callFunc) {
+        Http_1.default.send({
+            url: Http_1.default.UrlConfig.OPEN_RED,
+            success: function (res) {
+                if (res.m) {
+                    callFunc(res.m);
+                }
+                else {
+                    GameCtr_1.default.getInstance().getGame().showToast(res.msg);
+                }
+            },
+            data: {
+                uid: UserManager_1.default.user_id,
+                voucher: UserManager_1.default.voucher,
+                clickid: clickID
+            }
+        });
+    };
+    HttpCtr.doExchange = function (phoneNumber) {
+        Http_1.default.send({
+            url: Http_1.default.UrlConfig.DO_EXCHANGE,
+            success: function (res) {
+                if (res.ret != 1) {
+                    GameCtr_1.default.getInstance().getGame().showToast(res.msg);
+                }
+                else {
+                    GameCtr_1.default.realMoney -= 1000;
+                    GameCtr_1.default.getInstance().getGame().showToast("兑换成功");
+                    GameCtr_1.default.getInstance().getGame().setRealMoney(0);
+                    var exchange1 = cc.find("Canvas").getChildByName("exchange1");
+                    if (exchange1) {
+                        exchange1.getComponent("exchange1").setRealyMoney();
+                        var exchange2 = exchange1.getChildByName("exchange2");
+                        if (exchange2) {
+                            exchange2.getComponent("exchange2").setRealMoney();
+                        }
+                    }
+                }
+            },
+            data: {
+                uid: UserManager_1.default.user_id,
+                voucher: UserManager_1.default.voucher,
+                rewardid: 1,
+                exchangeUser: phoneNumber,
+            }
+        });
+    };
+    HttpCtr.openClick = function (_clickid, _appid) {
+        if (_appid === void 0) { _appid = null; }
+        if (_appid || GameCtr_1.default.setting.onclick) {
+            //console.log("log--------------点击统计------clilkid appid=:",_clickid,_appid);
+            Http_1.default.send({
+                url: Http_1.default.UrlConfig.OPEN_CLICK,
+                success: function (res) {
+                    if (res.ret != 1) {
+                        GameCtr_1.default.getInstance().getGame().showToast(res.msg);
+                    }
+                },
+                data: {
+                    uid: UserManager_1.default.user_id,
+                    voucher: UserManager_1.default.voucher,
+                    clickid: _clickid,
+                    appid: _appid
+                }
+            });
+        }
+    };
+    HttpCtr.getCash = function (callback) {
+        Http_1.default.send({
+            url: Http_1.default.UrlConfig.GET_CASH,
+            success: function (res) {
+                if (res.m) {
+                    callback(res);
+                }
+                else {
+                    GameCtr_1.default.getInstance().getGame().showToast(res.msg);
+                }
+            },
+            data: {
+                uid: UserManager_1.default.user_id,
+                voucher: UserManager_1.default.voucher,
+            }
+        });
+    };
+    HttpCtr.pushMsg = function (callback) {
+        Http_1.default.send({
+            url: Http_1.default.UrlConfig.PUSH_MSG,
+            success: function (res) {
+                console.log("log---------pushMsg -->res=:", res);
+                if (res.ret == 1) {
+                    callback(res.data);
+                }
+            },
+            data: {
+                uid: UserManager_1.default.user_id,
+                voucher: UserManager_1.default.voucher,
             }
         });
     };

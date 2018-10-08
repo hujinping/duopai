@@ -5,12 +5,15 @@ import WXCtr from "./WXCtr";
 import Game from "../UI/game/Game";
 import Manufacture from "../UI/game/manufacture";
 import Level from "../UI/game/level";
-
+import RankingView from "../UI/ranking/RankingView";
 import HttpCtr from "./HttpCtr";
 import Http from "../Common/Http";
+import Loading from "../UI/loading/loading";
 //import Collide from "../View/game/Collide";
 
 const { ccclass, property } = cc._decorator;
+
+
 
 @ccclass
 export default class GameCtr {
@@ -18,8 +21,9 @@ export default class GameCtr {
     private mGame: Game;
     private mManufacture: Manufacture;
     private mLevel: Level;
+    private mRanking:RankingView;
     private eventTarget=null;
-    
+    private mLoading: Loading;
     public static selfInfo=null;
     public static isAudited= false;                     //已审核
     public static reviveTimes = 0;                      //第几次复活
@@ -32,28 +36,66 @@ export default class GameCtr {
     public static challengeSwitch = false;              //挑战开关(有人发起挑战时为true)
     public static reviveData=null;      
     public static maxPerCombLevel=30;                   //最大蜂巢等级
+    public static maxCombsCount=30;                     //蜂巢最大数量
+    public static maxPlayerLevel=145;                   //人物最大等级
+    public static maxManufactureLevel=300;              //生产线等级
 
-    public static money=null;                        //玩家已经挣到的钱
-    public static honeyValue=0;                      //蜂蜜值
+    public static money=0;                              //玩家已经挣到的钱(只是还剩的钱，不包括生产线等级 和蜂巢 )
+    public static levelMoney=0;
+    public static rich=0;                               //玩家总财富
+    public static honeyValue=0;                         //蜂蜜值
     public static level=null;
     public static ManufactureLevel=null;
     public static comblevel=null;
     public static combsUnlock=null;
-    public static levelMoney=0;
-    
     public static levelConfig=null;
     public static manufactureConfig=null;
     public static combConfig=null;
+    public static pfTurnTableConfig=null;
     public static otherConfig=null;
+    public static setting=null;
+    public static upper_boundary=null;
+    public static lower_boundary=null;
+    public static newGameData=null;
+    public static guide=null;
+    public static tipHandTag=1500;
+    public static realMoney=null;
+    public static vedioTimes=6;
+    public static honeyPool=null;
+    public static jarPool=null;
+    public static bubbleMoneyPool=null;
+    public static isGetSetting=false;
+    public static advTime=120;
+    public static advVedioTime=60;
 
+    public static clickType={
+        speedUp:1,                   //加速分享
+        invite:2,                      //邀请分享
+        more:3,                        //更多游戏
+        ufo:4,                         //ufo
+        attention:5,                   //关注
+        shop:6,                        //shop
+        rank:7,                        //排行
+        buy:8,                         //快速购买
+        goldNotEnoughShare:9,          //金币不足
+        offLineShare:10,                //离线分享
+        offLineVedio:11,                //离线看广告
+        pfTurntable:12,                 //转盘分享
+    }
 
     constructor() {
         GameCtr.ins = this;
+        WXCtr.getSystemInfo()
         WXCtr.getLaunchOptionsSync();
+        WXCtr.createUserInfoBtn();
         WXCtr.getAuthSetting();
         WXCtr.showShareMenu();
         WXCtr.wxOnLogin();
-        WXCtr.getSelfData();
+        
+
+        GameCtr.honeyPool=new cc.NodePool();
+        GameCtr.jarPool=new cc.NodePool();
+        GameCtr.bubbleMoneyPool=new cc.NodePool();
     }
 
 
@@ -91,6 +133,14 @@ export default class GameCtr {
         this.eventTarget.off(event);
     }
 
+    setLoading(loading:Loading){
+        this.mLoading = loading;
+    }
+
+    getLoding(){
+        return this.mLoading;
+    }
+
     //设置game实例(游戏)
     setGame(game: Game) {
         this.mGame = game;
@@ -104,25 +154,108 @@ export default class GameCtr {
         this.mLevel = level;
     }
 
+    setRanking(ranking: RankingView){
+        this.mRanking = ranking;
+    }
+
+    getRanking(){
+        return this.mRanking;
+    }
+
     setCombsUnlock(){
         window.localStorage.setItem("combsUnlock",JSON.stringify(GameCtr.combsUnlock));
     }
 
     getCombsUnlock(){
-        return  JSON.parse(window.localStorage.getItem("combsUnlock"));
+        return  window.localStorage.getItem("combsUnlock");
     }
 
     setPlayerLevel(){
         window.localStorage.setItem("level",GameCtr.level);
     }
 
+    getPlayerLevel(){
+        return Number(window.localStorage.getItem("level"))
+    }
+
     setManufactureLevel(){
         window.localStorage.setItem("ManufactureLevel",GameCtr.ManufactureLevel);
     }
 
-    setCombLevel(){
-        window.localStorage.setItem("comblevel",GameCtr.comblevel)
+    getManufactureLevel(){
+        return Number(window.localStorage.getItem("ManufactureLevel"));
     }
+
+    setCombLevel(){
+        window.localStorage.setItem("comblevel",GameCtr.comblevel);
+    }
+
+    getCombLevel(){
+        return Number(window.localStorage.getItem("comblevel"))
+    }
+
+    setTimestamp(){
+        window.localStorage.setItem("timestamp",Date.now().toString());
+    }
+
+    setPlayTimes(){
+        let playTimes=window.localStorage.getItem("playTimes")
+        if(!playTimes){
+            window.localStorage.setItem("playTimes",1+"")
+        }else{
+            window.localStorage.setItem("playTimes",Number(playTimes)+1+"")
+        }
+    }
+
+    getPlayTimes(){
+        return window.localStorage.getItem("playTimes");
+    }
+
+    getTimestamp(){
+        return Number(window.localStorage.getItem("timestamp"));
+    }
+
+
+    setMoney(){
+        window.localStorage.setItem("money",GameCtr.money+"");
+    }
+
+    getMoney(){
+        return Number(window.localStorage.getItem("money"))
+    }
+
+    setRich(){
+        window.localStorage.setItem("rich",GameCtr.rich+"");
+    }
+
+    getRich(){
+        return Number(window.localStorage.getItem("rich"));
+    }
+
+    setLevelMoney(){
+        window.localStorage.setItem("levelMoney",GameCtr.levelMoney+"");
+    }
+
+    getLevelMoney(){
+        return Number(window.localStorage.getItem("levelMoney"));
+    }
+
+    setHoneyValue(){
+        window.localStorage.setItem("honeyValue",GameCtr.honeyValue+"");
+    }
+
+    getHoneyValue(){
+        return Number(window.localStorage.getItem("honeyValue"));
+    }
+
+    setGuide(){
+        window.localStorage.setItem("guide",JSON.stringify(GameCtr.guide))
+    }
+
+    getGuide(){
+        return JSON.parse(window.localStorage.getItem("guide"));
+    }
+
 
     getGame(){
         return this.mGame;
@@ -139,7 +272,7 @@ export default class GameCtr {
     //场景切换
     static gotoScene(sceneName) {
         cc.director.loadScene(sceneName);
-        AudioManager.getInstance().stopAll();
+        //AudioManager.getInstance().stopAll();
     }
 
     //显示结束界面
@@ -164,7 +297,16 @@ export default class GameCtr {
         }
     }
 
-    
+    //根据图片路径设置sprite的spriteFrame
+    static loadImg(spr, imgUrl) {
+        cc.loader.load({
+            url: imgUrl,
+            type: 'png'
+        }, (err, texture) => {
+            spr.spriteFrame = new cc.SpriteFrame(texture);
+        });
+    }
+
     //开始游戏
     static startGame() {
         GameCtr.score = 0;
@@ -199,7 +341,7 @@ export default class GameCtr {
     //游戏结束
     static gameOver() {
         if (GameCtr.ins) {
-            WXCtr.submitScoreToWx(GameCtr.score);
+            //WXCtr.submitScoreToWx(GameCtr.score);
             //HttpCtr.sendScore();
             // if(GameCtr.surplusReviveTimes > 0) {
             //     GameCtr.showRevive();
@@ -225,6 +367,43 @@ export default class GameCtr {
         let selfInfo=window.localStorage.getItem("selfInfo");
         if(!selfInfo){return};
         return JSON.parse(selfInfo);
+    }
+
+     //获取广告配置
+     static getSliderConfig(slideType) {
+        Http.send({
+            url: Http.UrlConfig.GET_ALL_SLIDES,
+            success: (resp) => {
+                console.log("getSlider数据", resp);
+                if (slideType == "index") {
+                    // GameCtr.otherData=resp.data;
+                    // GameCtr.ins.mStart.showSlide(resp.data);
+                } else if (slideType == "settlement") {
+                    //GameCtr.ins.mEnd.showSlider(resp.data);
+                }else if (slideType == "nav") {
+                    GameCtr.newGameData=resp.data;
+                }
+            },
+            data: {
+                slide_type: slideType
+            }
+        });
+    }
+
+
+    static showLoading(showMask = true) {
+        if (window.wx != undefined) {
+            wx.showLoading({
+                title: "疯狂加载中",
+                mask: showMask
+            });
+        }
+    }
+
+    static hideLoading() {
+        if (window.wx != undefined) {
+            wx.hideLoading();
+        }
     }
 
     //分享到群检测
@@ -257,4 +436,50 @@ export default class GameCtr {
             }
         });
     }
+
+        //登录游戏
+        static login(code, info, showWorldRanking = false) {
+            Http.send({
+                url: Http.UrlConfig.LOGIN,
+                success: (resp) => {
+                    if (resp.code == Http.Code.OK) {
+                        UserManager.user_id = resp.data.user_id;
+                        // if (showWorldRanking) {
+                        //     GameCtr.getInstance().getRanking().showWorldRanking();
+                        //     console.log("log-------------showWorldRanking-----------");
+                        //     GameCtr.getInstance().getRanking().initSelfInfo();
+                        // }
+                        // Http.send({
+                        //     url: Http.UrlConfig.SAVE_INFO,
+                        //     data:
+                        //     {
+                        //         avatar_url: info.avatarUrl,
+                        //         city: info.city,
+                        //         country: info.country,
+                        //         gender: info.gender,
+                        //         language: info.language,
+                        //         nick_name: info.nickName,
+                        //         user_id: UserManager.user_id,
+                        //         province: info.province,
+                        //     },
+                        //     success: () => {
+                        //         GameCtr.getShareSwitch();               //登录成功，获取分享开关
+                        //         GameCtr.getRandomUser();
+                        //         GameCtr.getGameOverShareSwitch();
+                        //         console.log("渠道验证成功111", WXCtr.launchOption.query);
+                        //         GameCtr.chanelCheck(WXCtr.launchOption.query.channel_id, UserManager.user_id);
+                        //         GameCtr.seekJion(WXCtr.launchOption.query.Send_user_id, WXCtr.launchOption.query.isInvite);
+                        //         GameCtr.getToolInfo();
+                        //         
+                        //         GameCtr.getUserInfoCtr();
+                        //     }
+                        // });
+                    }
+                },
+                data: {
+                    code: code
+                }
+            });
+    
+        }
 }

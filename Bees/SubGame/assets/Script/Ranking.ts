@@ -11,51 +11,21 @@ export default class Ranking extends cc.Component {
     @property(cc.Prefab)
     pfCell: cc.Prefab = null;
 
-    private gradeList = ["王者", "宗师", "大师", "进阶", "入门", "渣渣"];
-    private level = 0;
-
-
-    // LIFE-CYCLE CALLBACKS:
-
-    loadRanking(data) {
-        for (let i = 0; i < data.length; i++) {
+    loadRanking(data,index) {
+        if(index*7>=data.length){return;}
+        this.ndContent.removeAllChildren();
+        let startIndex=index*7;
+        let endIndex=(index*7+7)>data.length?data.length:(index*7+7);
+        for (let i = startIndex; i <endIndex; i++) {
+            let off_y=i%7>=3?-35:0;
             let cell = cc.instantiate(this.pfCell);
             this.ndContent.addChild(cell);
+            cell.x=2;
+            cell.y=672+(i%7)*(-132)+off_y;
             let info = data[i];
             let comp = cell.getComponent(RankingCell);
-            comp.setData(i, info, true);
+            comp.setData(i, info);
         }
-    }
-
-    loadOverRanking(data) {
-        this.level = 0;
-        this.setTitle();
-        for (let i = 0; i < data.length; i++) {
-            let cell = cc.instantiate(this.pfCell);
-            let info = data[i];
-            let comp = cell.getComponent(RankingCell);
-            let k = comp.setOverData(i, info);
-            if (this.level != k) {
-                if (i == data.length - 1) {
-                    k = 5;
-                }
-                while (true) {
-                    this.level++;
-                    this.setTitle();
-                    if (this.level >= k) {
-                        break;
-                    }
-                }
-            }
-            this.ndContent.addChild(cell);
-        }
-    }
-
-    setTitle() {
-        let cell = cc.instantiate(this.pfCell);
-        this.ndContent.addChild(cell);
-        let comp = cell.getComponent(RankingCell);
-        comp.setTitle(this.gradeList[this.level]);
     }
 
     clear() {

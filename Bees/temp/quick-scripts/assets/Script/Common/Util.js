@@ -119,14 +119,38 @@ var Util = /** @class */ (function () {
     };
     //数值格式化
     Util.formatNumber = function (number) {
-        if (number > 1000000000) { //十亿
-            return (number / 1000000000).toFixed(1) + "B";
+        if (number > Math.pow(10, 33)) {
+            return (number / Math.pow(10, 33)).toFixed(1) + "gg";
         }
-        else if (number > 1000000) { //百万
-            return (number / 1000000).toFixed(1) + "M";
+        if (number > Math.pow(10, 30)) {
+            return (number / Math.pow(10, 30)).toFixed(1) + "ff";
         }
-        else if (number > 1000) { //千
-            return (number / 1000).toFixed(1) + "K";
+        else if (number > Math.pow(10, 27)) {
+            return (number / Math.pow(10, 27)).toFixed(1) + "ee";
+        }
+        else if (number > Math.pow(10, 24)) {
+            return (number / Math.pow(10, 24)).toFixed(1) + "dd";
+        }
+        else if (number > Math.pow(10, 21)) {
+            return (number / Math.pow(10, 21)).toFixed(1) + "cc";
+        }
+        else if (number > Math.pow(10, 18)) {
+            return (number / Math.pow(10, 18)).toFixed(1) + "bb";
+        }
+        else if (number > Math.pow(10, 15)) {
+            return (number / Math.pow(10, 15)).toFixed(1) + "aa";
+        }
+        else if (number > Math.pow(10, 12)) {
+            return (number / Math.pow(10, 12)).toFixed(1) + "T";
+        }
+        else if (number > Math.pow(10, 9)) { //十亿
+            return (number / Math.pow(10, 9)).toFixed(1) + "B";
+        }
+        else if (number > Math.pow(10, 6)) { //百万
+            return (number / Math.pow(10, 6)).toFixed(1) + "M";
+        }
+        else if (number > Math.pow(10, 3)) { //千
+            return (number / Math.pow(10, 3)).toFixed(1) + "K";
         }
         return number;
     };

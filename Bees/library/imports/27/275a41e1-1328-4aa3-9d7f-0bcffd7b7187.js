@@ -7,22 +7,22 @@ var _a = cc._decorator, ccclass = _a.ccclass, property = _a.property;
 var AudioManager_1 = require("../../Common/AudioManager");
 var GameCtr_1 = require("../../Controller/GameCtr");
 var Util_1 = require("../../Common/Util");
+var WXCtr_1 = require("../../Controller/WXCtr");
+var HttpCtr_1 = require("../../Controller/HttpCtr");
+var UserManager_1 = require("../../Common/UserManager");
 var NewClass = /** @class */ (function (_super) {
     __extends(NewClass, _super);
     function NewClass() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.jar_black = null;
-        _this.jar_yellow = null;
+        _this.jar = null;
         _this.manufactureUpgrade = null;
         _this.bubbleMoney = null;
+        _this.getRedPackage = null;
         _this._lb_honey = null;
-        _this._lb_upSpeedTime = null;
         _this._lb_doubleTime = null;
         _this._btn_upgrade = null;
-        _this._btn_upSpeed = null;
         _this._btn_doubleIncome = null;
         _this._icon_arrow = null;
-        _this._timeCount = -1;
         _this._timeCount1 = -1;
         _this._speed = 1;
         _this._isWorking = false;
@@ -33,23 +33,28 @@ var NewClass = /** @class */ (function (_super) {
         _this._plug = null;
         _this._pulleyList = [];
         _this._jarNode = null;
-        _this._doubleTime = 0;
-        _this._speedTime = 0;
+        _this._doubleTime = -1;
+        _this._isActioning = false;
+        _this._initialRedJarTime = null;
+        _this._workTimes = 0;
+        _this._canDouble = true;
         return _this;
     }
     NewClass.prototype.onLoad = function () {
+        this.doCaculateHoneyJar();
         GameCtr_1.default.getInstance().setManufacture(this);
         this.initNode();
+        if (GameCtr_1.default.honeyValue > 0) {
+            this.doWork();
+        }
     };
     NewClass.prototype.initNode = function () {
         this._lb_honey = this.node.getChildByName("lb_honey");
-        this._lb_upSpeedTime = this.node.getChildByName("lb_upSpeedTime");
         this._lb_doubleTime = this.node.getChildByName("lb_doubleTime");
         this._btn_upgrade = this.node.getChildByName("btn_upgrade");
-        this._btn_upSpeed = this.node.getChildByName("btn_speedUp");
+        this._icon_arrow = this._btn_upgrade.getChildByName("arrow");
         this._btn_doubleIncome = this.node.getChildByName("btn_boubleIncome");
         this._mask = this.node.getChildByName("mask");
-        this._icon_arrow = this.node.getChildByName("icon_arrow");
         this._upLine = this.node.getChildByName("upline");
         this._downLine = this.node.getChildByName("downline");
         this._plug = this.node.getChildByName("plug");
@@ -60,106 +65,204 @@ var NewClass = /** @class */ (function (_super) {
             this._pulleyList.push(pulley);
         }
         this._plug.setLocalZOrder(1);
-        this._lb_upSpeedTime.active = false;
         this._lb_doubleTime.active = false;
-        this._btn_doubleIncome.getComponent(cc.Button).interactable = false;
-        this._btn_upSpeed.active = false;
-        // this._icon_arrow.active=false;
+        //this._btn_doubleIncome.getComponent(cc.Button).interactable=false;
+        this.resetLineAction();
         this.initBtnEvent(this._btn_upgrade);
         this.initBtnEvent(this._mask);
-        this.initBtnEvent(this._btn_upSpeed);
         this.initBtnEvent(this._btn_doubleIncome);
         this.showBtn();
+        this.initJars();
+        this._btn_doubleIncome.active = true;
+    };
+    NewClass.prototype.initJars = function () {
+        for (var i = 0; i < 8; i++) {
+            GameCtr_1.default.jarPool.put(cc.instantiate(this.jar));
+        }
+    };
+    NewClass.prototype.doCaculateHoneyJar = function () {
+        if (!GameCtr_1.default.isAudited) {
+            return;
+        }
+        this._workTimes = 0;
+        var key = "data_" + 1;
+        if (UserManager_1.default.user[key] > 0) {
+            this._initialRedJarTime = null;
+        }
+        else {
+            this._initialRedJarTime = 6 + Math.floor(Math.random() * 6);
+            HttpCtr_1.default.setUserDataState(1, 1);
+        }
+        if (GameCtr_1.default.comblevel <= 25) {
+            if (GameCtr_1.default.comblevel % 5 == 0) {
+                var key_1 = "data_" + (Math.floor(GameCtr_1.default.comblevel / 5) + 1);
+                if (UserManager_1.default.user[key_1] > 0) {
+                    this._initialRedJarTime = null;
+                }
+                else {
+                    this._initialRedJarTime = 6 + Math.floor(Math.random() * 6);
+                    HttpCtr_1.default.setUserDataState((Math.floor(GameCtr_1.default.comblevel / 5) + 1), 1);
+                }
+            }
+        }
+    };
+    NewClass.prototype.resetLineAction = function () {
+        var _this = this;
+        this._upLine.stopAllActions();
+        this._downLine.stopAllActions();
+        for (var i = 0; i < this._pulleyList.length; i++) {
+            this._pulleyList[i].stopAllActions();
+        }
+        this._upLine.runAction(cc.repeatForever(cc.sequence(cc.moveBy(GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].transferTime / (this._speed * GameCtr_1.default.globalSpeedRate), cc.p(1080, 0)), cc.callFunc(function (e) {
+            _this._upLine.x = 0;
+        }))));
+        this._downLine.runAction(cc.repeatForever(cc.sequence(cc.moveBy(GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].transferTime / (this._speed * GameCtr_1.default.globalSpeedRate), cc.p(-1080, 0)), cc.callFunc(function (e) {
+            _this._downLine.x = 0;
+        }))));
+        for (var i = 0; i < this._pulleyList.length; i++) {
+            this._pulleyList[i].runAction(cc.repeatForever(cc.rotateBy(0.3 / (this._speed * GameCtr_1.default.globalSpeedRate), 15)));
+        }
+        for (var i = 0; i < this._jarNode.children.length; i++) {
+            if (this._jarNode.children[i].getComponent("jar").isTransfering) {
+                this._jarNode.children[i].stopAllActions();
+                this._jarNode.children[i].runAction(cc.moveBy(GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].transferTime / (this._speed * GameCtr_1.default.globalSpeedRate), cc.p(1080, 0)));
+            }
+        }
     };
     NewClass.prototype.setHoneyValue = function () {
-        this._lb_honey.getComponent(cc.Label).string = Util_1.default.formatNumber(GameCtr_1.default.honeyValue);
+        this._lb_honey.getComponent(cc.Label).string = Util_1.default.formatNumber(Math.floor(GameCtr_1.default.honeyValue));
+        //新手引导1
+        if (!cc.find("Canvas").getChildByTag(GameCtr_1.default.tipHandTag + 1) && !GameCtr_1.default.getInstance().getGame().isGuideStepOver(1)) {
+            GameCtr_1.default.getInstance().getGame().showGuideStep1();
+        }
     };
     NewClass.prototype.doWork = function () {
         var _this = this;
-        if (GameCtr_1.default.honeyValue - GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].perBonus < 0) {
+        if (GameCtr_1.default.honeyValue <= 0) {
             this._isWorking = false;
             return;
         }
         this._isWorking = true;
-        var jar = cc.instantiate(this.jar_black);
+        this._workTimes++;
+        var jar = null;
+        if (GameCtr_1.default.jarPool.size() > 0) {
+            jar = GameCtr_1.default.jarPool.get();
+        }
+        else {
+            jar = cc.instantiate(this.jar);
+            GameCtr_1.default.jarPool.put(jar);
+        }
+        if (GameCtr_1.default.honeyValue > GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].perBonus) {
+            jar.getComponent("jar").setFull();
+            GameCtr_1.default.honeyValue -= Math.ceil(GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].perBonus);
+            jar.getComponent("jar").honey = Math.ceil(GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].perBonus);
+        }
+        else {
+            jar.getComponent("jar").setNotFull();
+            jar.getComponent("jar").honey = Math.ceil(GameCtr_1.default.honeyValue);
+            GameCtr_1.default.honeyValue -= Math.ceil(GameCtr_1.default.honeyValue);
+        }
+        jar.getComponent("jar").money = 0;
+        if (this._workTimes == this._initialRedJarTime) {
+            jar.getComponent("jar").setMoney();
+            GameCtr_1.default.honeyValue += jar.getComponent("jar").honey;
+            jar.getComponent("jar").money = 1;
+        }
+        jar.getComponent("jar").isTransfering = false;
+        this.setHoneyValue();
         this._speed = this._speedUpTime > 0 ? GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].speed : 1;
         jar.parent = this._jarNode;
         jar.x = -203;
         jar.y = 545;
         this._plug.runAction(cc.sequence(cc.scaleTo(0.2 / this._speed * GameCtr_1.default.globalSpeedRate, 0.8), cc.scaleTo(0.1 / this._speed * GameCtr_1.default.globalSpeedRate, 1.0), cc.delayTime((GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].productTime - (0.2 / this._speed * GameCtr_1.default.globalSpeedRate) - (0.1 / this._speed * GameCtr_1.default.globalSpeedRate)) / this._speed * GameCtr_1.default.globalSpeedRate)));
-        jar.runAction(cc.sequence(cc.delayTime(0.3), cc.moveTo(0.2, cc.p(-203, 365)), cc.delayTime(GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].transferTime / (this._speed * GameCtr_1.default.globalSpeedRate)), cc.callFunc(function () {
-            jar.removeFromParent();
-            GameCtr_1.default.money += GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].perBonus * GameCtr_1.default.incomeRate;
-            GameCtr_1.default.levelMoney += GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].perBonus * GameCtr_1.default.incomeRate;
-            GameCtr_1.default.getInstance().getLevel().setMoney();
-            GameCtr_1.default.getInstance().getLevel().updateLevelProgress();
-            GameCtr_1.default.getInstance().emitEvent("moneyUpdate", null);
-            _this.showBtn();
-            _this.showBubbleMoney(GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].perBonus * GameCtr_1.default.incomeRate);
+        jar.runAction(cc.sequence(cc.delayTime(0.3), cc.moveTo(0.2, cc.p(-203, 365)), cc.callFunc(function () {
+            jar.getComponent("jar").isTransfering = true;
+            jar.runAction(cc.moveBy(GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].transferTime / (_this._speed * GameCtr_1.default.globalSpeedRate), cc.p(1080, 0)));
         })));
-        GameCtr_1.default.honeyValue -= GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].perBonus;
-        this.setHoneyValue();
         this.scheduleOnce(this.doWork.bind(this), GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].productTime / (this._speed * GameCtr_1.default.globalSpeedRate));
     };
     NewClass.prototype.showBubbleMoney = function (money) {
-        var bubbleMoney = cc.instantiate(this.bubbleMoney);
+        var bubbleMoney = null;
+        if (GameCtr_1.default.bubbleMoneyPool.size() > 0) {
+            bubbleMoney = GameCtr_1.default.bubbleMoneyPool.get();
+        }
+        else {
+            bubbleMoney = cc.instantiate(this.bubbleMoney);
+            GameCtr_1.default.bubbleMoneyPool.put(bubbleMoney);
+        }
         bubbleMoney.parent = this.node;
+        bubbleMoney.active = true;
         bubbleMoney.x = 450;
+        bubbleMoney.y = 300;
         bubbleMoney.getComponent("bubbleMoney").setMoney(money);
-        AudioManager_1.default.getInstance().playSound("audio/gold");
+        AudioManager_1.default.getInstance().playSound("audio/get_money");
+        bubbleMoney.runAction(cc.sequence(cc.moveBy(0.3, cc.p(0, 80)), cc.delayTime(0.2), cc.callFunc(function () {
+            bubbleMoney.active = false;
+            GameCtr_1.default.bubbleMoneyPool.put(bubbleMoney);
+        })));
     };
     NewClass.prototype.initBtnEvent = function (btn) {
         var _this = this;
-        var move_x = 0;
-        btn.on(cc.Node.EventType.TOUCH_START, function (e) {
-            if (e.target.getName() != "mask") {
-                return;
-            }
-            move_x = -1;
-        });
-        btn.on(cc.Node.EventType.TOUCH_MOVE, function (e) {
-            if (e.target.getName() != "mask") {
-                return;
-            }
-            move_x = e.touch._point.x - e.touch._prevPoint.x;
-            if (Math.abs(move_x) >= 5) {
-                return;
-            }
-        });
         btn.on(cc.Node.EventType.TOUCH_END, function (e) {
             if (e.target.getName() == "btn_upgrade") {
                 // if(GameCtr.money<GameCtr.manufactureConfig[GameCtr.ManufactureLevel].cost){return;}
                 if (cc.find("Canvas").getChildByName("manufactureUpgrade")) {
                     return;
                 }
+                if (!GameCtr_1.default.getInstance().getGame().isGuideStepOver(3)) {
+                    GameCtr_1.default.getInstance().getGame().completeGuideStep(_this.node, 3);
+                }
                 var manufactureUpgrade = cc.instantiate(_this.manufactureUpgrade);
                 manufactureUpgrade.parent = cc.find("Canvas");
+                manufactureUpgrade.setLocalZOrder(1);
                 manufactureUpgrade.y = -1218;
                 manufactureUpgrade.runAction(cc.moveBy(0.4, cc.p(0, 1218)).easing(cc.easeElasticOut(3.0)));
                 GameCtr_1.default.getInstance().getGame().setMaskVisit(true);
                 GameCtr_1.default.getInstance().getGame().setManufactureUpgrade(manufactureUpgrade);
-                AudioManager_1.default.getInstance().playSound("audio/btn_click");
-            }
-            else if (e.target.getName() == "btn_speedUp") {
-                GameCtr_1.default.globalSpeedRate = 2;
-                _this._speedTime = 0;
-                _this.startSpeedUpTimer(GameCtr_1.default.otherConfig.speedUpPersist);
-                _this._btn_upSpeed.active = false;
-                AudioManager_1.default.getInstance().playMusic("audio/speeUp");
+                AudioManager_1.default.getInstance().playSound("audio/open_panel");
             }
             else if (e.target.getName() == "btn_boubleIncome") {
                 if (!_this._btn_doubleIncome.getComponent(cc.Button).interactable) {
                     return;
                 }
-                _this._doubleTime = 0;
-                _this._btn_doubleIncome.getComponent(cc.Button).interactable = false;
-                GameCtr_1.default.incomeRate = 2;
-                _this.startDoubleTimer(GameCtr_1.default.otherConfig.doublePersist);
+                if (GameCtr_1.default.incomeRate > 1) {
+                    GameCtr_1.default.getInstance().getGame().showToast("双倍收益中...");
+                    return;
+                }
+                var callFunc_1 = function () {
+                    _this._doubleTime = 0;
+                    _this._btn_doubleIncome.getComponent(cc.Button).interactable = false;
+                    _this._btn_doubleIncome.stopAllActions();
+                    GameCtr_1.default.incomeRate = 2;
+                    _this._canDouble = false;
+                    _this.startDoubleTimer(GameCtr_1.default.otherConfig.doublePersist);
+                };
+                if (GameCtr_1.default.vedioTimes <= 0) {
+                    if (!GameCtr_1.default.isAudited) {
+                        GameCtr_1.default.getInstance().getGame().showToast("今日视频已看完");
+                        return;
+                    }
+                    WXCtr_1.default.share({ callback: callFunc_1 });
+                }
+                else {
+                    WXCtr_1.default.offCloseVideo();
+                    WXCtr_1.default.showVideoAd();
+                    WXCtr_1.default.onCloseVideo(function (res) {
+                        if (res) {
+                            callFunc_1();
+                        }
+                        else {
+                            GameCtr_1.default.getInstance().getGame().showToast("视频未看完，无法领取奖励");
+                        }
+                    });
+                }
             }
             else if (e.target.getName() == "mask") {
-                if (Math.abs(move_x) >= 5) {
-                    _this._speedUpTime = Date.now();
-                    _this._speed = _this._speedUpTime > 0 ? GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].speed : 1;
+                _this._speedUpTime = Date.now();
+                _this._speed = _this._speedUpTime > 0 ? GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].speed : 1;
+                _this.resetLineAction();
+                if (!GameCtr_1.default.getInstance().getGame().isGuideStepOver(1)) {
+                    GameCtr_1.default.getInstance().getGame().completeGuideStep(cc.find("Canvas"), 1);
                 }
             }
         });
@@ -169,45 +272,55 @@ var NewClass = /** @class */ (function (_super) {
         GameCtr_1.default.ManufactureLevel += 1;
         this.showBtn();
         GameCtr_1.default.getInstance().setManufactureLevel();
+        GameCtr_1.default.getInstance().getLevel().setMoney();
     };
     NewClass.prototype.showBtn = function () {
+        if (this.isMaxLevel()) {
+            this.enableBtn(false);
+            var word_levelUp = this._btn_upgrade.getChildByName("word_levelUp");
+            var word_fullFill = this._btn_upgrade.getChildByName("word_fullLevel");
+            word_levelUp.active = false;
+            word_fullFill.active = true;
+            return;
+        }
         if (GameCtr_1.default.money >= GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].cost) {
             this.enableBtn(true);
+            //新手引导3
+            if (!this.node.getChildByTag(GameCtr_1.default.tipHandTag + 3) && !GameCtr_1.default.getInstance().getGame().isGuideStepOver(3)) {
+                GameCtr_1.default.getInstance().getGame().showGuideStep3();
+            }
         }
         else {
             this.enableBtn(false);
+            if (!GameCtr_1.default.getInstance().getGame().isGuideStepOver(3)) {
+                GameCtr_1.default.getInstance().getGame().closeGuideStep(this.node, 3);
+            }
         }
     };
     NewClass.prototype.enableBtn = function (isEffectable) {
         this._btn_upgrade.getComponent(cc.Button).interactable = isEffectable;
-    };
-    NewClass.prototype.startSpeedUpTimer = function (_timeCount) {
-        this._timeCount = _timeCount;
-        this._lb_upSpeedTime.active = true;
-        this.countDown();
+        this._icon_arrow.active = isEffectable;
+        if (this._icon_arrow.active && !this._isActioning) {
+            this._isActioning = true;
+            this._btn_upgrade.runAction(cc.repeatForever(cc.sequence(cc.scaleTo(0.3, 1.1), cc.scaleTo(0.3, 1.0))));
+        }
+        else {
+            this._btn_upgrade.stopAllActions();
+            this._isActioning = false;
+        }
     };
     NewClass.prototype.startDoubleTimer = function (_timeCount) {
         this._timeCount1 = _timeCount;
         this._lb_doubleTime.active = true;
         this.countDown1();
     };
-    NewClass.prototype.countDown = function () {
-        if (this._timeCount < 0) {
-            GameCtr_1.default.globalSpeedRate = 1;
-            this._lb_upSpeedTime.active = false;
-            AudioManager_1.default.getInstance().playMusic("audio/bgMusic");
-            return;
-        }
-        var minStr = Math.floor(this._timeCount / 60) < 10 ? "0" + Math.floor(this._timeCount / 60) : "" + Math.floor(this._timeCount / 60);
-        var secStr = this._timeCount % 60 < 10 ? "0" + this._timeCount % 60 : "" + this._timeCount % 60;
-        this._lb_upSpeedTime.getComponent(cc.Label).string = minStr + ":" + secStr;
-        this._timeCount -= 1;
-        this.scheduleOnce(this.countDown.bind(this), 1);
-    };
     NewClass.prototype.countDown1 = function () {
         if (this._timeCount1 < 0) {
             GameCtr_1.default.incomeRate = 1;
             this._lb_doubleTime.active = false;
+            if (this._canDouble) {
+                this._btn_doubleIncome.getComponent(cc.Button).interactable = true;
+            }
             return;
         }
         var minStr = Math.floor(this._timeCount1 / 60) < 10 ? "0" + Math.floor(this._timeCount1 / 60) : "" + Math.floor(this._timeCount1 / 60);
@@ -216,28 +329,41 @@ var NewClass = /** @class */ (function (_super) {
         this._timeCount1 -= 1;
         this.scheduleOnce(this.countDown1.bind(this), 1);
     };
+    NewClass.prototype.isMaxLevel = function () {
+        return GameCtr_1.default.ManufactureLevel == GameCtr_1.default.maxManufactureLevel;
+    };
+    NewClass.prototype.getPackage = function (data) {
+        if (cc.find("Canvas").getChildByName("getRedPackage")) {
+            return;
+        }
+        var getPackage = cc.instantiate(this.getRedPackage);
+        getPackage.parent = cc.find("Canvas");
+        getPackage.setLocalZOrder(1);
+        getPackage.getComponent("getRedPackage").setValue(data.m);
+        getPackage.getComponent("getRedPackage").setSurplusMoney();
+        getPackage.getComponent("getRedPackage").shouldShare(data.m);
+    };
+    NewClass.prototype.disableDoubleIncome = function () {
+        this._btn_doubleIncome.getComponent(cc.Button).interactable = false;
+    };
     NewClass.prototype.update = function (dt) {
         if (!this._upLine) {
             return;
         }
         if (this._speedUpTime > 0) {
-            if ((Date.now() - this._speedUpTime) / 1000 >= 1.0) {
+            if ((Date.now() - this._speedUpTime) / 1000 >= 2.0) {
                 this._speedUpTime = -1;
                 this._speed = 1;
+                this.resetLineAction();
             }
         }
         if (this._doubleTime >= 0) {
             this._doubleTime += dt;
             if (this._doubleTime >= GameCtr_1.default.otherConfig.doubleInterval) {
                 this._btn_doubleIncome.getComponent(cc.Button).interactable = true;
+                this._canDouble = true;
+                this._btn_doubleIncome.runAction(cc.repeatForever(cc.sequence(cc.scaleTo(0.4, 1.6), cc.scaleTo(0.4, 1.5))));
                 this._doubleTime = -1;
-            }
-        }
-        if (this._speedTime >= 0) {
-            this._speedTime += dt;
-            if (this._speedTime >= GameCtr_1.default.otherConfig.speedUpInterval) {
-                this._btn_upSpeed.active = true;
-                this._speedTime = -1;
             }
         }
         if (!this._isWorking && GameCtr_1.default.honeyValue > 0) {
@@ -245,34 +371,41 @@ var NewClass = /** @class */ (function (_super) {
             this.scheduleOnce(this.doWork.bind(this), 1);
             this._isWorking = true;
         }
-        this._upLine.x += 1080 / (GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].transferTime * 60 / (this._speed * GameCtr_1.default.globalSpeedRate));
-        this._downLine.x -= 1080 / (GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].transferTime * 60 / (this._speed * GameCtr_1.default.globalSpeedRate));
-        if (this._upLine.x >= 1080) {
-            this._upLine.x = 0;
-        }
-        if (this._downLine.x <= -1080)
-            this._downLine.x = 0;
-        for (var i = 0; i < this._pulleyList.length; i++) {
-            this._pulleyList[i].rotation += 360 / (GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].transferTime * 60 / (this._speed * GameCtr_1.default.globalSpeedRate));
-        }
         for (var i = 0; i < this._jarNode.children.length; i++) {
-            if (Math.abs(this._jarNode.children[i].y - 365) < 0.5) {
-                this._jarNode.children[i].x += 1080 / (GameCtr_1.default.manufactureConfig[GameCtr_1.default.ManufactureLevel - 1].transferTime * 60 / (this._speed * GameCtr_1.default.globalSpeedRate));
+            if (this._jarNode.children[i].x >= 570) {
+                GameCtr_1.default.money += this._jarNode.children[i].getComponent("jar").honey * GameCtr_1.default.incomeRate;
+                GameCtr_1.default.rich += this._jarNode.children[i].getComponent("jar").honey * GameCtr_1.default.incomeRate;
+                GameCtr_1.default.levelMoney += this._jarNode.children[i].getComponent("jar").honey * GameCtr_1.default.incomeRate;
+                GameCtr_1.default.getInstance().getLevel().setMoney();
+                GameCtr_1.default.getInstance().getLevel().updateLevelProgress();
+                GameCtr_1.default.getInstance().getLevel().showBtnUpGrade();
+                this.showBtn();
+                if (this._jarNode.children[i].getComponent("jar").money > 0) {
+                    HttpCtr_1.default.getCash(this.getPackage.bind(this));
+                }
+                this.showBubbleMoney(this._jarNode.children[i].getComponent("jar").honey * GameCtr_1.default.incomeRate);
+                this._jarNode.children[i].isTransfering = false;
+                this._jarNode.children[i].stopAllActions();
+                GameCtr_1.default.jarPool.put(this._jarNode.children[i]);
             }
         }
+        if (this._upLine.x >= 1080)
+            this._upLine.x = 0;
+        if (this._downLine.x <= -1080)
+            this._downLine.x = 0;
     };
     __decorate([
         property(cc.Prefab)
-    ], NewClass.prototype, "jar_black", void 0);
-    __decorate([
-        property(cc.Prefab)
-    ], NewClass.prototype, "jar_yellow", void 0);
+    ], NewClass.prototype, "jar", void 0);
     __decorate([
         property(cc.Prefab)
     ], NewClass.prototype, "manufactureUpgrade", void 0);
     __decorate([
         property(cc.Prefab)
     ], NewClass.prototype, "bubbleMoney", void 0);
+    __decorate([
+        property(cc.Prefab)
+    ], NewClass.prototype, "getRedPackage", void 0);
     NewClass = __decorate([
         ccclass
     ], NewClass);

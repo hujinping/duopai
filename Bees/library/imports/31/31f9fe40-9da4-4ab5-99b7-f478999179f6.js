@@ -15,9 +15,39 @@ var RankingCell = /** @class */ (function (_super) {
         _this.sprHead = null;
         _this.lbRank = null;
         _this.lbName = null;
+        _this.lbCity = null;
         _this.lbScore = null;
         _this.medalFrames = [];
         return _this;
+        // createImage(avatarUrl) {
+        //     if (window.wx != undefined) {
+        //         try {
+        //             let image = wx.createImage();
+        //             image.onload = () => {
+        //                 try {
+        //                     let texture = new cc.Texture2D();
+        //                     texture.initWithElement(image);
+        //                     texture.handleLoadedTexture();
+        //                     this.sprHead.spriteFrame = new cc.SpriteFrame(texture);
+        //                 } catch (e) {
+        //                     cc.log(e);
+        //                     this.sprHead.node.active = false;
+        //                 }
+        //             };
+        //             image.src = avatarUrl;
+        //         } catch (e) {
+        //             cc.log(e);
+        //             this.sprHead.node.active = false;
+        //         }
+        //     } else {
+        //         cc.loader.load({
+        //             url: avatarUrl,
+        //             type: 'jpg'
+        //         }, (err, texture) => {
+        //             this.sprHead.spriteFrame = new cc.SpriteFrame(texture);
+        //         });
+        //     }
+        // }
         // start () {
         // }
         // update (dt) {}
@@ -26,21 +56,27 @@ var RankingCell = /** @class */ (function (_super) {
     // onLoad () {}
     RankingCell.prototype.setData = function (rank, data) {
         // this.setBgColor(rank);
+        var name = data.nick ? data.nick : data.nickname;
+        var icon = data.Icon ? data.Icon : data.avatarUrl;
+        var city = data.City ? data.City : data.KVDataList[0].value;
+        var value = data.value ? data.value : data.KVDataList[1].value;
+        this.lbCity.string = city;
+        this.lbName.string = Util_1.default.cutstr(name, 10);
+        this.lbScore.string = Util_1.default.formatNumber(value) + "";
         this.setMedal(rank);
-        this.createImage(data.Icon);
-        this.lbName.string = Util_1.default.cutstr(data.nick, 10);
-        this.lbScore.string = data.value + "";
+        this.loadImg(this.sprHead, icon);
+        // this.createImage(icon);
     };
     RankingCell.prototype.setMedal = function (idx) {
-        if (idx < 3) {
+        if (idx <= 3) {
             this.sprMedal.node.active = true;
-            this.sprMedal.spriteFrame = this.medalFrames[idx];
+            this.sprMedal.spriteFrame = this.medalFrames[idx - 1];
             this.lbRank.node.active = true;
-            this.lbRank.string = idx + 1;
+            this.lbRank.string = "";
         }
         else {
             this.lbRank.node.active = true;
-            this.lbRank.string = idx + 1;
+            this.lbRank.string = idx;
             this.sprMedal.node.active = false;
         }
     };
@@ -49,38 +85,16 @@ var RankingCell = /** @class */ (function (_super) {
         idx = idx % 2;
         this.sprBg.node.color = (idx == 0) ? cc.hexToColor("#1966EE") : cc.hexToColor("#5990F1");
     };
-    RankingCell.prototype.createImage = function (avatarUrl) {
-        var _this = this;
-        if (window.wx != undefined) {
-            try {
-                var image_1 = wx.createImage();
-                image_1.onload = function () {
-                    try {
-                        var texture = new cc.Texture2D();
-                        texture.initWithElement(image_1);
-                        texture.handleLoadedTexture();
-                        _this.sprHead.spriteFrame = new cc.SpriteFrame(texture);
-                    }
-                    catch (e) {
-                        cc.log(e);
-                        _this.sprHead.node.active = false;
-                    }
-                };
-                image_1.src = avatarUrl;
-            }
-            catch (e) {
-                cc.log(e);
-                this.sprHead.node.active = false;
-            }
+    RankingCell.prototype.loadImg = function (spr, imgUrl) {
+        if (!imgUrl || imgUrl == "") {
+            return;
         }
-        else {
-            cc.loader.load({
-                url: avatarUrl,
-                type: 'jpg'
-            }, function (err, texture) {
-                _this.sprHead.spriteFrame = new cc.SpriteFrame(texture);
-            });
-        }
+        cc.loader.load({
+            url: imgUrl,
+            type: 'jpg'
+        }, function (err, texture) {
+            spr.spriteFrame = new cc.SpriteFrame(texture);
+        });
     };
     __decorate([
         property(cc.Sprite)
@@ -97,6 +111,9 @@ var RankingCell = /** @class */ (function (_super) {
     __decorate([
         property(cc.Label)
     ], RankingCell.prototype, "lbName", void 0);
+    __decorate([
+        property(cc.Label)
+    ], RankingCell.prototype, "lbCity", void 0);
     __decorate([
         property(cc.Label)
     ], RankingCell.prototype, "lbScore", void 0);

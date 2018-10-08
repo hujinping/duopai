@@ -7,18 +7,24 @@ export default class NewClass extends cc.Component {
     _level=null;
     _unlockNum=null;
     _lb_level=null;
+    _lb_unlockTip=null;
     _btn_upgrade=null;
     _word_unlock=null;
     _word_levelUp=null;
     _word_levelFull=null;
+    _icon_Arrow=null;
     _combsUnlock=null;
     _totalComb=null;
     _beeNode=null;
-    _canUnlock=false;
+    _unlock=false;
     _speedUpTime=-1;
     _combPosArr=[];
     _interval=0;
     _speed=1
+    _hadRandom=false;
+    _isWorking=true;
+    _isActioning=false;
+
 
     @property(cc.Prefab)
     bee:cc.Prefab=null;
@@ -32,10 +38,16 @@ export default class NewClass extends cc.Component {
     @property(cc.Prefab)
     bubbleHoney:cc.Prefab=null;
 
+    @property(cc.Prefab)
+    unlockCombTip:cc.Prefab=null;
+
+    @property(cc.Prefab)
+    flyBees:cc.Prefab[]=[];
+
     onLoad(){
         this.initData();
         this.initNode();
-        this._combsUnlock=GameCtr.getInstance().getCombsUnlock();
+        this._combsUnlock=JSON.parse(GameCtr.getInstance().getCombsUnlock());
     }
 
     initData(){
@@ -53,29 +65,66 @@ export default class NewClass extends cc.Component {
     initNode(){
         this._beeNode=this.node.getChildByName("beeNode");
         this._lb_level=this.node.getChildByName("lb_level");
+        this._lb_unlockTip=this.node.getChildByName("lb_unlockTip");
         this._totalComb=this.node.getChildByName("totalComb");
         this._btn_upgrade=this.node.getChildByName("btn_upgrade");
+        this._icon_Arrow=this._btn_upgrade.getChildByName("arrow");
         this._word_unlock=this._btn_upgrade.getChildByName("word_unlock");
         this._word_levelUp=this._btn_upgrade.getChildByName("word_LeveUP");
         this._word_levelFull=this._btn_upgrade.getChildByName("word_levelFull");
 
+        this._lb_unlockTip.active=false;
+        this.showUnlockBtn(false);
         this._beeNode.setLocalZOrder(2);
     }
 
-    setLevel(level,unlockNum){
-        this._level=level;
-        this._unlockNum=unlockNum;
-        this._lb_level.getComponent(cc.Label).string=level+'';
 
-        for(let i=0;i<unlockNum;i++){
-            this.unlockComb(i)
-            this.createBee(i,true);
-        }
-        this.updateBtnState();
+
+    initEvent(){
+        GameCtr.getInstance().addListener("moneyUpdate"+this._level,this.onMoneyUpdate.bind(this));
     }
 
-    setCanUnlock(canUnlock){
-        this._canUnlock=canUnlock;
+    initBtnState(){
+        console.log("log-----------------initBtnState this._level=:",this._level);
+        let preComb=GameCtr.getInstance().getGame().getComb(this._level-1);
+        if( preComb && !preComb.getComponent("honeycomb").getUnlock()){return} //如果上一级蜂巢未解锁，这级蜂巢就不能解锁
+
+        if(this._unlockNum==0 && !this._unlock){// 此蜂巢还未解锁
+            if(GameCtr.level>=GameCtr.combConfig[this._level-1].needLevel){//此蜂巢满足解锁条件
+                this.showUnlockBtn(true);
+            }else{//此蜂巢不满足解锁条件
+                this.showUnlockBtn(false);
+            }
+        }
+    }
+
+    setLevel(level,unlockNum,unlock){
+        this._level=level;
+        this._unlock=unlock;
+        this._unlockNum=unlockNum;
+        this._lb_level.getComponent(cc.Label).string=level+'';
+        this._lb_unlockTip.getComponent(cc.Label).string="玩家等级"+GameCtr.combConfig[this._level-1].needLevel+"级解锁";
+        for(let i=0;i<unlockNum;i++){
+            this.unlockComb(i)
+            this.createBee(i);
+        }
+        this.initBtnState();
+        this.updateBtnState();
+        this.initEvent();
+        if(unlockNum>0){
+            this.setUnlock(true);
+            
+        }
+    }
+
+    setUnlock(unlock){
+        this._unlock=unlock;
+        console.log("log--------this._unlock this._level=:",this._unlock,this._level)
+    }
+
+    getUnlock(){
+        console.log("log-----getUnlock  this._unlock this._level=:",this._unlock,this._level);
+        return this._unlock;
     }
     
     initBtn(){
@@ -86,34 +135,61 @@ export default class NewClass extends cc.Component {
     initBtnEvent(btn){
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
             if(e.target.getName()=="btn_upgrade"){
-                if(cc.find("Canvas").getChildByName("combUpgrade")){return;}
-                let combUpgrade=cc.instantiate(this.combUpgrade);
-                combUpgrade.parent=cc.find("Canvas");
-                combUpgrade.getComponent("combUpgrade").init(this._level,this._unlockNum);
-                combUpgrade.y=-1218;
-                combUpgrade.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0)));
-                GameCtr.getInstance().getGame().setMaskVisit(true);
-                GameCtr.getInstance().getGame().setCombUpgrade(combUpgrade);
-                AudioManager.getInstance().playSound("audio/btn_click");
+                if(this._unlockNum==0 && !this._unlock){//解锁蜂巢
+                    this.onUnlockComb();
+                }else{//升级蜂巢
+                    this.onUpgradeComb();
+                    if(!GameCtr.getInstance().getGame().isGuideStepOver(2)){
+                        GameCtr.getInstance().getGame().completeGuideStep(this.node,2);
+                    }
+                }
+                AudioManager.getInstance().playSound("audio/open_panel");
             }else if(e.target.getName()=="totalComb"){
                 this._speedUpTime=Date.now();
             }
         })
     }
 
+    onUnlockComb(){
+        if(cc.find("Canvas").getChildByName("unlockCombTip")){return;}
+        let unlockCombTip=cc.instantiate(this.unlockCombTip);
+        unlockCombTip.parent=cc.find("Canvas");
+        unlockCombTip.y=-1218;
+        unlockCombTip.setLocalZOrder(1);
+        unlockCombTip.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0)));
+        unlockCombTip.getComponent("unlockCombTip").init(this._level);
+        GameCtr.getInstance().getGame().setMaskVisit(true);
+        this._unlock=true;
+        GameCtr.combsUnlock.push({level:this._unlockNum,unlock:this._unlock});
+        GameCtr.getInstance().setCombsUnlock();
+    }
+
+    
+
+    onUpgradeComb(){
+        if(cc.find("Canvas").getChildByName("combUpgrade")){return;}
+        let combUpgrade=cc.instantiate(this.combUpgrade);
+        combUpgrade.parent=cc.find("Canvas");
+        combUpgrade.setLocalZOrder(1);
+        combUpgrade.getComponent("combUpgrade").init(this._level,this._unlockNum);
+        combUpgrade.y=-1218;
+        combUpgrade.runAction(cc.moveBy(0.4,cc.p(0,1218)).easing(cc.easeElasticOut(3.0)));
+        GameCtr.getInstance().getGame().setMaskVisit(true);
+        GameCtr.getInstance().getGame().setCombUpgrade(combUpgrade);
+    }
+
     upgrade(){
-        if(this._unlockNum==0){
-            GameCtr.combsUnlock[this._level-1]=0;
-        }
+        console.log("log---------GameCtr.combsUnlock this._level=:",GameCtr.combsUnlock,this._level);
         this.unlockComb(this._unlockNum)
-        this.createBee(this._unlockNum,false)
-        GameCtr.money-=GameCtr.combConfig[this._level-1].levelUpCost+GameCtr.combConfig[this._level-1].upMatrix*this._unlockNum
+        this.createBee(this._unlockNum)
+        GameCtr.money-=GameCtr.combConfig[this._level-1].levelUpCost+GameCtr.combConfig[this._level-1].upMatrix*(this._unlockNum-1)
         GameCtr.getInstance().getLevel().setMoney();
         this._unlockNum++;
-        GameCtr.combsUnlock[this._level-1]++;
+
+        GameCtr.combsUnlock[this._level-1].level++;
         GameCtr.getInstance().setCombsUnlock();
         this.updateBtnState();
-        this._combsUnlock=GameCtr.getInstance().getCombsUnlock();
+        this._combsUnlock=JSON.parse(GameCtr.getInstance().getCombsUnlock());
     }
 
     unlockComb(index){
@@ -124,71 +200,58 @@ export default class NewClass extends cc.Component {
         comb.y=this._combPosArr[index].y;
     }
 
-    createBee(index,needDelay){
-        let delayTime=needDelay?Math.random()*1.5:0;
+    createBee(index){
         this.node.runAction(cc.sequence(
-            cc.delayTime(delayTime),
+            cc.delayTime(Math.random()*3),
             cc.callFunc(()=>{
-                let bee=cc.instantiate(this.bee);
-                bee.parent=this._beeNode;
-                bee.setLocalZOrder(1);
-        
-                bee.x=1000+this._combPosArr[index].x;
-                bee.y=this._combPosArr[index].y;
-                bee.getComponent("bee").init(this._level,this._combPosArr[index]);
+                let flyBee=cc.instantiate(this.flyBees[this._level-1]);
+                flyBee.parent=this._beeNode;
+                flyBee.tag=index;
+                flyBee.setLocalZOrder(1);
+                flyBee.x= this._combPosArr[index].x+292;
+                flyBee.y= this._combPosArr[index].y+39;
+                let sp_skeleton=flyBee.getComponent(sp.Skeleton);
+                sp_skeleton.setEventListener((e)=>{
+                    this.doBubbleHoney();
+                })
             })
         ))
     }
 
-    showBtn(){
-        if(this._unlockNum==0){
-            this.showUnlockBtn(this._canUnlock);
-        }else if(this._unlockNum>=GameCtr.maxPerCombLevel){
-           this.showFullFillBtn(); 
-        }else{
-            this._word_levelFull.active=false;
-            this._word_unlock.active=false;
-            this._word_levelUp.active=true;
-            this._combsUnlock=GameCtr.getInstance().getCombsUnlock();
-
-            if(GameCtr.money>=(GameCtr.combConfig[this._level-1].levelUpCost+
-                GameCtr.combConfig[this._level-1].upMatrix*(this._combsUnlock[this._level-1])))
-            {
-                this._btn_upgrade.getComponent(cc.Button).interactable=true;
-            }else{
-                this._btn_upgrade.getComponent(cc.Button).interactable=false;
-            }
-        }
-    }
-
     showFullFillBtn(){
+        this._btn_upgrade.active=true;
+        this._lb_unlockTip.active=false;
         this._word_unlock.active=false;
         this._word_levelUp.active=false;
         this._word_levelFull.active=true;
-        this._btn_upgrade.getComponent(cc.Button).interactable=false;
+        this.enabledBtn(false);
     }
 
     showUnlockBtn(isEffectable){
         this._btn_upgrade.active=isEffectable;
+        this._lb_unlockTip.active=!isEffectable;
         this._word_unlock.active=true;
         this._word_levelUp.active=false;
         this._word_levelFull.active=false;
-        this._btn_upgrade.getComponent(cc.Button).interactable=isEffectable;
+        this.enabledBtn(isEffectable);
+        //this._btn_upgrade.getComponent(cc.Button).interactable=isEffectable;
     }
 
-
-
     doBubbleHoney(){
-        let bubbleHoney=cc.instantiate(this.bubbleHoney);
-        bubbleHoney.parent=this.node.parent;
-        bubbleHoney.x=-500+(Math.random()-0.5)*20;
-        bubbleHoney.y=this.node.y-50;
-        bubbleHoney.runAction(cc.sequence(
-            cc.moveTo(0.4*this._level,cc.p(bubbleHoney.x,0)),
-            cc.callFunc(()=>{
-                bubbleHoney.destroy();
-            })
-        ))
+        let bubbleHoney=null;
+        if(GameCtr.honeyPool.size() > 0){
+            bubbleHoney=GameCtr.honeyPool.get();
+            bubbleHoney.parent=this.node.parent;
+            bubbleHoney.x=-500+(Math.random()-0.5)*60;
+            bubbleHoney.y=this.node.y-50;
+            bubbleHoney.runAction(cc.sequence(
+                cc.moveTo(0.4*this._level,cc.p(bubbleHoney.x,0)),
+                cc.callFunc(()=>{
+                    GameCtr.honeyPool.put(bubbleHoney);
+                    this.updateHoneyValue();
+                })
+            ))
+        }
     }
 
     isSpeedUp(){
@@ -197,25 +260,30 @@ export default class NewClass extends cc.Component {
 
     updateHoneyValue(){
         GameCtr.honeyValue+=GameCtr.combConfig[this._level-1].initialIncome+
-                             (this._combsUnlock[this._level-1])*GameCtr.combConfig[this._level-1].incomeMatrix;
-        GameCtr.getInstance().getManufacture().setHoneyValue();
-        //console.log("log--------------GameCtr.honeyValue=:",GameCtr.honeyValue);
+                             this._combsUnlock[this._level-1].level*GameCtr.combConfig[this._level-1].incomeMatrix;
+        //GameCtr.getInstance().getManufacture().setHoneyValue();
+        GameCtr.getInstance().setHoneyValue();
     }
 
     updateBtnState(){
-        if(this._unlockNum==0){// 此蜂巢还未解锁
-            if(GameCtr.level>=GameCtr.combConfig[this._level-1].needLevel){//此蜂巢满足解锁条件
-                this.showUnlockBtn(true);
-            }else{//此蜂巢不满足解锁条件
-                this.showUnlockBtn(false);
-            }
+        if(this._unlockNum==0 && !this._unlock){// 此蜂巢还未解锁
+
         }else if(this._unlockNum<GameCtr.maxPerCombLevel){ //此蜂巢已经解锁,但未满级
+            this._btn_upgrade.active=true;
             this._word_unlock.active=false;
+            this._lb_unlockTip.active=false;
             this._word_levelUp.active=true;
-            if(GameCtr.money>=GameCtr.combConfig[this._level-1].levelUpCost+GameCtr.combConfig[this._level-1].upMatrix*this._unlockNum){
-                this._btn_upgrade.getComponent(cc.Button).interactable=true;
+            if(GameCtr.money>=GameCtr.combConfig[this._level-1].levelUpCost+GameCtr.combConfig[this._level-1].upMatrix*(this._unlockNum-1)){
+                this.enabledBtn(true);
+                //新手引导2
+                if(!this.node.getChildByTag(GameCtr.tipHandTag+2) &&! GameCtr.getInstance().getGame().isGuideStepOver(2)){
+                    GameCtr.getInstance().getGame().showGuideStep2();
+                }
             }else{
-                this._btn_upgrade.getComponent(cc.Button).interactable=false;
+                this.enabledBtn(false);
+                if(!GameCtr.getInstance().getGame().isGuideStepOver(2)){
+                    GameCtr.getInstance().getGame().closeGuideStep(this.node,2);
+                }
             }
         }else{//蜂巢满级
             this.showFullFillBtn();
@@ -223,54 +291,47 @@ export default class NewClass extends cc.Component {
         
     }
 
+    enabledBtn(isEffectable){
+        this._btn_upgrade.getComponent(cc.Button).interactable=isEffectable;
+        this._icon_Arrow.active=isEffectable;
 
-    doWork(dt){
-        this._interval+=dt;
-        if(this._speedUpTime>0){
-            if((Date.now()-this._speedUpTime)/1000>=1.0){
-                this._speedUpTime=-1;
-            }
+        if(this._icon_Arrow.active&&!this._isActioning){
+            this._isActioning=true;
+            this._btn_upgrade.runAction(cc.repeatForever(cc.sequence(
+                cc.scaleTo(0.3,1.1),
+                cc.scaleTo(0.3,1.0)
+            )))
+        }else{
+            this._btn_upgrade.stopAllActions();
+            this._isActioning=false;
         }
+    }
 
-        if(this._interval>=0.1){
-            this.updateBtnState();
-            this._speed=this._speedUpTime>0?
-            GameCtr.combConfig[GameCtr.comblevel-1].baseSpeed*(1-GameCtr.combConfig[GameCtr.comblevel-1].speedMatrix):
-            GameCtr.combConfig[GameCtr.comblevel-1].baseSpeed;
+    stopWork(){
+        this._beeNode.removeAllChildren();
+        this._isWorking=false;
+    }
 
-            for(let i =0;i<this._beeNode.children.length;i++){
-                if(this._beeNode.children[i].getComponent("bee").step==1){ // 飞向采蜜区
-                    this._beeNode.children[i].x-=1000/(this._speed*60/GameCtr.globalSpeedRate)*6;
-                    if(Math.floor(this._beeNode.children[i].x-this._beeNode.children[i].getComponent("bee").jobPos.x)<5){
-                        this.doBubbleHoney();
-                        this.updateHoneyValue();
-                        this._beeNode.children[i].x=this._beeNode.children[i].getComponent("bee").jobPos.x;
-                        this._beeNode.children[i].getComponent("bee").playHoneyEft();
-                        this._beeNode.children[i].getComponent("bee").step++;
-                    }
-                }
-                if(this._beeNode.children[i].getComponent("bee").step==2){//采蜜
-                    if(this._beeNode.children[i].rotation<-45){
-                        this._beeNode.children[i].rotation-=45*60/(90/GameCtr.globalSpeedRate*(1-GameCtr.combConfig[GameCtr.comblevel-1].speedMatrix));
-                    }else{
-                        this._beeNode.children[i].rotation-=135*60/(90/GameCtr.globalSpeedRate*(1-GameCtr.combConfig[GameCtr.comblevel-1].speedMatrix));
-                    }
-                    if(Math.abs(this._beeNode.children[i].rotation+270)<135*60/(90/GameCtr.globalSpeedRate*(1-GameCtr.combConfig[GameCtr.comblevel-1].speedMatrix))){
-                        this._beeNode.children[i].rotation=-270;
-                        this._beeNode.children[i].getComponent("bee").step++;
-                    }
-                }
-
-                if(this._beeNode.children[i].getComponent("bee").step==3){//离开采蜜区
-                    this._beeNode.children[i].x+=1000/(this._speed*60/GameCtr.globalSpeedRate)*6;
-                    if(Math.abs(this._beeNode.children[i].x-this._beeNode.children[i].getComponent("bee").jobPos.x-1000)<=1000/(this._speed*60/GameCtr.globalSpeedRate)*6){
-                        this._beeNode.children[i].rotation=-90;
-                        this._beeNode.children[i].x=this._beeNode.children[i].getComponent("bee").jobPos.x+1000;
-                        this._beeNode.children[i].getComponent("bee").step=1;
-                    }
-                }
+    startWork(dt){
+        if(!this._isWorking){
+            for (let i=0;i<this._unlockNum;i++){
+                if(this._beeNode.getChildByTag(i)){return}
+                this.createBee(i);
             }
-            this._interval=0
+            this._isWorking=true;
+        }
+    }
+
+
+    onMoneyUpdate(){
+        this.updateBtnState();
+    }
+
+
+    setSpeedRate(rate){
+        for(let i=0;i<this._beeNode.children.length;i++){
+            let sp_skeleton=this._beeNode.children[i].getComponent(sp.Skeleton);
+            sp_skeleton.timeScale=rate;
         }
     }
 }
