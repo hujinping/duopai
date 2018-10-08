@@ -392,8 +392,10 @@ var HttpCtr = /** @class */ (function () {
     };
     HttpCtr.openClick = function (_clickid, _appid) {
         if (_appid === void 0) { _appid = null; }
+        if (!GameCtr_1.default.setting) {
+            return;
+        }
         if (_appid || GameCtr_1.default.setting.onclick) {
-            //console.log("log--------------点击统计------clilkid appid=:",_clickid,_appid);
             Http_1.default.send({
                 url: Http_1.default.UrlConfig.OPEN_CLICK,
                 success: function (res) {

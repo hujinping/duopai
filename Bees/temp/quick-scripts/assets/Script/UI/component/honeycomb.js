@@ -73,7 +73,6 @@ var NewClass = /** @class */ (function (_super) {
         GameCtr_1.default.getInstance().addListener("moneyUpdate" + this._level, this.onMoneyUpdate.bind(this));
     };
     NewClass.prototype.initBtnState = function () {
-        console.log("log-----------------initBtnState this._level=:", this._level);
         var preComb = GameCtr_1.default.getInstance().getGame().getComb(this._level - 1);
         if (preComb && !preComb.getComponent("honeycomb").getUnlock()) {
             return;
@@ -106,10 +105,8 @@ var NewClass = /** @class */ (function (_super) {
     };
     NewClass.prototype.setUnlock = function (unlock) {
         this._unlock = unlock;
-        console.log("log--------this._unlock this._level=:", this._unlock, this._level);
     };
     NewClass.prototype.getUnlock = function () {
-        console.log("log-----getUnlock  this._unlock this._level=:", this._unlock, this._level);
         return this._unlock;
     };
     NewClass.prototype.initBtn = function () {
@@ -235,7 +232,6 @@ var NewClass = /** @class */ (function (_super) {
     NewClass.prototype.updateHoneyValue = function () {
         GameCtr_1.default.honeyValue += GameCtr_1.default.combConfig[this._level - 1].initialIncome +
             this._combsUnlock[this._level - 1].level * GameCtr_1.default.combConfig[this._level - 1].incomeMatrix;
-        //GameCtr.getInstance().getManufacture().setHoneyValue();
         GameCtr_1.default.getInstance().setHoneyValue();
     };
     NewClass.prototype.updateBtnState = function () {

@@ -85,7 +85,6 @@ export default class NewClass extends cc.Component {
     }
 
     initBtnState(){
-        console.log("log-----------------initBtnState this._level=:",this._level);
         let preComb=GameCtr.getInstance().getGame().getComb(this._level-1);
         if( preComb && !preComb.getComponent("honeycomb").getUnlock()){return} //如果上一级蜂巢未解锁，这级蜂巢就不能解锁
 
@@ -119,11 +118,9 @@ export default class NewClass extends cc.Component {
 
     setUnlock(unlock){
         this._unlock=unlock;
-        console.log("log--------this._unlock this._level=:",this._unlock,this._level)
     }
 
     getUnlock(){
-        console.log("log-----getUnlock  this._unlock this._level=:",this._unlock,this._level);
         return this._unlock;
     }
     
@@ -261,7 +258,6 @@ export default class NewClass extends cc.Component {
     updateHoneyValue(){
         GameCtr.honeyValue+=GameCtr.combConfig[this._level-1].initialIncome+
                              this._combsUnlock[this._level-1].level*GameCtr.combConfig[this._level-1].incomeMatrix;
-        //GameCtr.getInstance().getManufacture().setHoneyValue();
         GameCtr.getInstance().setHoneyValue();
     }
 

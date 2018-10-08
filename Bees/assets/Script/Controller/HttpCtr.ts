@@ -4,8 +4,6 @@ import WXCtr from "./WXCtr";
 import GameCtr from "./GameCtr";
 import ViewManager from "../Common/ViewManager";
 import Util from "../Common/Util";
-import Canvas from "../../../SubGame/build/SubGame/libs/weapp-adapter/Canvas";
-
 /**
  * 所有Http请求统一控制
  */
@@ -409,8 +407,8 @@ export default class HttpCtr {
     }
 
     static openClick(_clickid,_appid=null){
+        if(!GameCtr.setting){return}
         if(_appid || GameCtr.setting.onclick){
-            //console.log("log--------------点击统计------clilkid appid=:",_clickid,_appid);
             Http.send({
                 url: Http.UrlConfig.OPEN_CLICK,
                 success: (res) => {
@@ -427,7 +425,6 @@ export default class HttpCtr {
             });     
         }
     }
-
 
     static getCash(callback){
         Http.send({

@@ -1,10 +1,8 @@
 //微信全局方法
 import Http from "../Common/Http";
 import UserManager from "../Common/UserManager";
-import ViewManager from "../Common/ViewManager";
 import HttpCtr from "./HttpCtr";
 import GameCtr from "./GameCtr";
-import GameData from "../Common/GameData";
 import Util from "../Common/Util";
 
 const { ccclass, property } = cc._decorator;

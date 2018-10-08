@@ -1,56 +1,467 @@
-2018-10-08T03:43:30.253Z - normal: Load ~/.CocosCreator/settings.json
-2018-10-08T03:43:30.258Z - normal: checking language setting...
-2018-10-08T03:43:30.258Z - normal: Language: zh
-2018-10-08T03:43:31.922Z - success: protocol editor-framework registered
-2018-10-08T03:43:31.922Z - success: protocol app registered
-2018-10-08T03:43:31.922Z - success: protocol theme registered
-2018-10-08T03:43:31.922Z - success: protocol packages registered
-2018-10-08T03:43:31.922Z - success: protocol unpack registerred
-2018-10-08T03:43:31.922Z - success: protocol disable-commonjs registerred
-2018-10-08T03:43:32.282Z - normal: connected!
-2018-10-08T03:43:32.286Z - normal: Check project F:\developGame\duopai\Bees
-2018-10-08T03:43:32.290Z - normal: Initializing Cocos2d
-2018-10-08T03:43:32.564Z - normal: Initializing Asset Database
-2018-10-08T03:43:32.593Z - success: protocol uuid registerred
-2018-10-08T03:43:32.593Z - success: protocol db registerred
-2018-10-08T03:43:32.593Z - success: protocol thumbnail registerred
-2018-10-08T03:43:32.593Z - normal: Loading editor/builtin packages
-2018-10-08T03:43:32.609Z - success: anysdk loaded
-2018-10-08T03:43:32.708Z - success: assets loaded
-2018-10-08T03:43:32.710Z - success: builder loaded
-2018-10-08T03:43:32.711Z - success: cocos-analytics loaded
-2018-10-08T03:43:32.713Z - success: console loaded
-2018-10-08T03:43:32.749Z - success: fb-instant-games loaded
-2018-10-08T03:43:32.751Z - success: hierarchy loaded
-2018-10-08T03:43:32.753Z - success: inspector loaded
-2018-10-08T03:43:32.754Z - success: keystore loaded
-2018-10-08T03:43:32.756Z - success: node-library loaded
-2018-10-08T03:43:32.757Z - success: package-asset loaded
-2018-10-08T03:43:32.758Z - success: preferences loaded
-2018-10-08T03:43:32.759Z - success: project-exporter loaded
-2018-10-08T03:43:32.778Z - success: project-importer loaded
-2018-10-08T03:43:32.779Z - success: project-settings loaded
-2018-10-08T03:43:32.780Z - success: ui-kit loaded
-2018-10-08T03:43:32.781Z - success: ui-grid loaded
-2018-10-08T03:43:32.784Z - success: scene loaded
-2018-10-08T03:43:32.784Z - success: sprite-editor loaded
-2018-10-08T03:43:32.786Z - success: store loaded
-2018-10-08T03:43:32.789Z - success: timeline loaded
-2018-10-08T03:43:32.789Z - normal: Loading builtin packages
-2018-10-08T03:43:32.791Z - success: asset-db-debugger loaded
-2018-10-08T03:43:32.791Z - success: code-editor loaded
-2018-10-08T03:43:32.792Z - success: color-picker loaded
-2018-10-08T03:43:32.793Z - success: package-manager loaded
-2018-10-08T03:43:32.796Z - success: sdkbox loaded
-2018-10-08T03:43:32.798Z - success: tester loaded
-2018-10-08T03:43:32.799Z - success: ui-kit-preview-extra loaded
-2018-10-08T03:43:32.800Z - success: ui-kit-preview loaded
-2018-10-08T03:43:32.801Z - success: ui-tree loaded
-2018-10-08T03:43:33.770Z - normal: Initializing project F:\developGame\duopai\Bees
-2018-10-08T03:43:33.772Z - normal: Loading packages
-2018-10-08T03:43:33.826Z - success: unpack-textureatlas loaded
-2018-10-08T03:43:33.826Z - normal: Watching packages
-2018-10-08T03:43:33.839Z - normal: Run Application
-2018-10-08T03:43:34.972Z - success: preview server running at http://localhost:7457
-2018-10-08T03:43:39.297Z - normal: 1.9.1
-2018-10-08T05:39:05.501Z - info: shutdown preview server
+2018-10-08T07:21:03.717Z - normal: Load ~/.CocosCreator/settings.json
+2018-10-08T07:21:03.720Z - normal: checking language setting...
+2018-10-08T07:21:03.721Z - normal: Language: zh
+2018-10-08T07:21:05.443Z - success: protocol editor-framework registered
+2018-10-08T07:21:05.443Z - success: protocol app registered
+2018-10-08T07:21:05.444Z - success: protocol theme registered
+2018-10-08T07:21:05.444Z - success: protocol packages registered
+2018-10-08T07:21:05.444Z - success: protocol unpack registerred
+2018-10-08T07:21:05.444Z - success: protocol disable-commonjs registerred
+2018-10-08T07:21:05.697Z - normal: connected!
+2018-10-08T07:21:05.714Z - normal: Check project F:\developGame\duopai\Bees
+2018-10-08T07:21:05.718Z - normal: Initializing Cocos2d
+2018-10-08T07:21:05.921Z - normal: Initializing Asset Database
+2018-10-08T07:21:05.951Z - success: protocol uuid registerred
+2018-10-08T07:21:05.952Z - success: protocol db registerred
+2018-10-08T07:21:05.952Z - success: protocol thumbnail registerred
+2018-10-08T07:21:05.952Z - normal: Loading editor/builtin packages
+2018-10-08T07:21:05.968Z - success: anysdk loaded
+2018-10-08T07:21:06.068Z - success: assets loaded
+2018-10-08T07:21:06.070Z - success: builder loaded
+2018-10-08T07:21:06.071Z - success: cocos-analytics loaded
+2018-10-08T07:21:06.074Z - success: console loaded
+2018-10-08T07:21:06.110Z - success: fb-instant-games loaded
+2018-10-08T07:21:06.113Z - success: hierarchy loaded
+2018-10-08T07:21:06.115Z - success: inspector loaded
+2018-10-08T07:21:06.116Z - success: keystore loaded
+2018-10-08T07:21:06.123Z - success: node-library loaded
+2018-10-08T07:21:06.124Z - success: package-asset loaded
+2018-10-08T07:21:06.126Z - success: preferences loaded
+2018-10-08T07:21:06.127Z - success: project-exporter loaded
+2018-10-08T07:21:06.140Z - success: project-importer loaded
+2018-10-08T07:21:06.141Z - success: project-settings loaded
+2018-10-08T07:21:06.143Z - success: ui-kit loaded
+2018-10-08T07:21:06.144Z - success: ui-grid loaded
+2018-10-08T07:21:06.147Z - success: scene loaded
+2018-10-08T07:21:06.148Z - success: sprite-editor loaded
+2018-10-08T07:21:06.150Z - success: store loaded
+2018-10-08T07:21:06.153Z - success: timeline loaded
+2018-10-08T07:21:06.153Z - normal: Loading builtin packages
+2018-10-08T07:21:06.155Z - success: asset-db-debugger loaded
+2018-10-08T07:21:06.156Z - success: code-editor loaded
+2018-10-08T07:21:06.157Z - success: color-picker loaded
+2018-10-08T07:21:06.158Z - success: package-manager loaded
+2018-10-08T07:21:06.162Z - success: sdkbox loaded
+2018-10-08T07:21:06.164Z - success: tester loaded
+2018-10-08T07:21:06.165Z - success: ui-kit-preview-extra loaded
+2018-10-08T07:21:06.166Z - success: ui-kit-preview loaded
+2018-10-08T07:21:06.167Z - success: ui-tree loaded
+2018-10-08T07:21:07.158Z - normal: Initializing project F:\developGame\duopai\Bees
+2018-10-08T07:21:07.160Z - normal: Loading packages
+2018-10-08T07:21:07.215Z - success: unpack-textureatlas loaded
+2018-10-08T07:21:07.216Z - normal: Watching packages
+2018-10-08T07:21:07.229Z - normal: Run Application
+2018-10-08T07:21:08.619Z - success: preview server running at http://localhost:7456
+2018-10-08T07:21:13.154Z - normal: 1.9.1
+2018-10-08T07:21:27.834Z - normal: Start building with options : {
+  "androidStudio": true,
+  "apiLevel": "",
+  "appABIs": [],
+  "appKey": "",
+  "appSecret": "",
+  "buildPath": "F:\\developGame\\duopai\\Bees\\build",
+  "debug": false,
+  "dest": "F:\\developGame\\duopai\\Bees\\build\\wechatgame",
+  "encryptJs": true,
+  "excludeScenes": [],
+  "excludedModules": [
+    "LabelOutline",
+    "TiledMap",
+    "ScrollBar",
+    "PageView",
+    "PageViewIndicator",
+    "Slider",
+    "VideoPlayer",
+    "WebView",
+    "RichText",
+    "MotionStreak",
+    "Collider",
+    "Graphics",
+    "DragonBones",
+    "Physics",
+    "StudioComponent",
+    "RenderTexture",
+    "Chipmunk",
+    "Camera",
+    "Intersection",
+    "Native NetWork"
+  ],
+  "fb-instant-games": {},
+  "includeAnySDK": false,
+  "includeEruda": false,
+  "includeSDKBox": false,
+  "inlineSpriteFrames": true,
+  "inlineSpriteFrames_native": true,
+  "jailbreakPlatform": false,
+  "md5Cache": false,
+  "mergeStartScene": false,
+  "oauthLoginServer": "",
+  "optimizeHotUpdate": false,
+  "orientation": {
+    "landscapeLeft": true,
+    "landscapeRight": true,
+    "portrait": false,
+    "upsideDown": false
+  },
+  "packageName": "org.cocos2d.helloworld",
+  "platform": "wechatgame",
+  "previewHeight": "720",
+  "previewWidth": "1280",
+  "privateKey": "",
+  "qqplay": {
+    "REMOTE_SERVER_ROOT": "",
+    "orientation": "portrait"
+  },
+  "renderMode": "0",
+  "scenes": [
+    "8b5893b3-be1e-4090-a758-f92e65d0657b",
+    "bb5b00a5-8f96-459e-81b4-6d04a7d42443"
+  ],
+  "sourceMaps": false,
+  "startScene": "8b5893b3-be1e-4090-a758-f92e65d0657b",
+  "template": "link",
+  "title": "bees",
+  "useDebugKeystore": true,
+  "vsVersion": "auto",
+  "webOrientation": "auto",
+  "wechatgame": {
+    "REMOTE_SERVER_ROOT": "",
+    "appid": "wx560a332bda795d99",
+    "isSubdomain": false,
+    "orientation": "portrait",
+    "subContext": "SubGame"
+  },
+  "xxteaKey": "eae37e1b-3e2d-4c",
+  "zipCompressJs": true,
+  "project": "F:\\developGame\\duopai\\Bees",
+  "projectName": "bees",
+  "debugBuildWorker": false
+}
+2018-10-08T07:21:27.836Z - normal: Building F:\developGame\duopai\Bees
+2018-10-08T07:21:27.836Z - normal: Destination F:\developGame\duopai\Bees\build\wechatgame
+2018-10-08T07:21:28.092Z - normal: Delete F:\developGame\duopai\Bees\build\wechatgame\**\*
+2018-10-08T07:21:56.681Z - normal: Compiled project javascript file successfully
+2018-10-08T07:21:56.682Z - normal: Start building assets
+2018-10-08T07:21:56.683Z - normal: Start spawn build-worker
+2018-10-08T07:21:57.288Z - normal: Finish spawn build-worker
+2018-10-08T07:21:57.289Z - normal: Start init build-worker
+2018-10-08T07:21:59.147Z - normal: 1.9.1
+2018-10-08T07:21:59.274Z - normal: Finish init build-worker
+2018-10-08T07:21:59.274Z - normal: Start build-assets in worker
+2018-10-08T07:21:59.563Z - warn: Can not find particle texture in F:\developGame\duopai\Bees\assets\resources\spine\GUAJIJINBI.png, plist: F:\developGame\duopai\Bees\assets\resources\spine\GUAJIJINBI.plist
+2018-10-08T07:22:01.583Z - normal: Finish build-assets in worker
+2018-10-08T07:22:01.590Z - normal: Finish building assets
+2018-10-08T07:22:01.708Z - normal: Start building raw assets
+2018-10-08T07:22:01.709Z - normal: Start building plugin scripts
+2018-10-08T07:22:01.949Z - normal: Finish building raw assets
+2018-10-08T07:22:01.952Z - normal: Generating main.js from C:\CocosCreator\resources\static\build-templates\shares\main.js
+2018-10-08T07:22:02.023Z - normal: Built to "F:\developGame\duopai\Bees\build\wechatgame" successfully
+2018-10-08T07:38:16.854Z - normal: Start building with options : {
+  "androidStudio": true,
+  "apiLevel": "",
+  "appABIs": [],
+  "appKey": "",
+  "appSecret": "",
+  "buildPath": "F:\\developGame\\duopai\\Bees\\build",
+  "debug": false,
+  "dest": "F:\\developGame\\duopai\\Bees\\build\\wechatgame",
+  "encryptJs": true,
+  "excludeScenes": [],
+  "excludedModules": [
+    "LabelOutline",
+    "TiledMap",
+    "ScrollBar",
+    "PageView",
+    "PageViewIndicator",
+    "Slider",
+    "VideoPlayer",
+    "WebView",
+    "RichText",
+    "MotionStreak",
+    "Collider",
+    "Graphics",
+    "DragonBones",
+    "Physics",
+    "StudioComponent",
+    "RenderTexture",
+    "Chipmunk",
+    "Camera",
+    "Intersection",
+    "Native NetWork"
+  ],
+  "fb-instant-games": {},
+  "includeAnySDK": false,
+  "includeEruda": false,
+  "includeSDKBox": false,
+  "inlineSpriteFrames": true,
+  "inlineSpriteFrames_native": true,
+  "jailbreakPlatform": false,
+  "md5Cache": false,
+  "mergeStartScene": false,
+  "oauthLoginServer": "",
+  "optimizeHotUpdate": false,
+  "orientation": {
+    "landscapeLeft": true,
+    "landscapeRight": true,
+    "portrait": false,
+    "upsideDown": false
+  },
+  "packageName": "org.cocos2d.helloworld",
+  "platform": "wechatgame",
+  "previewHeight": "720",
+  "previewWidth": "1280",
+  "privateKey": "",
+  "qqplay": {
+    "REMOTE_SERVER_ROOT": "",
+    "orientation": "portrait"
+  },
+  "renderMode": "0",
+  "scenes": [
+    "8b5893b3-be1e-4090-a758-f92e65d0657b",
+    "bb5b00a5-8f96-459e-81b4-6d04a7d42443"
+  ],
+  "sourceMaps": false,
+  "startScene": "8b5893b3-be1e-4090-a758-f92e65d0657b",
+  "template": "link",
+  "title": "bees",
+  "useDebugKeystore": true,
+  "vsVersion": "auto",
+  "webOrientation": "auto",
+  "wechatgame": {
+    "REMOTE_SERVER_ROOT": "",
+    "appid": "wx560a332bda795d99",
+    "isSubdomain": false,
+    "orientation": "portrait",
+    "subContext": "SubGame"
+  },
+  "xxteaKey": "eae37e1b-3e2d-4c",
+  "zipCompressJs": true,
+  "project": "F:\\developGame\\duopai\\Bees",
+  "projectName": "bees",
+  "debugBuildWorker": false
+}
+2018-10-08T07:38:16.870Z - normal: Building F:\developGame\duopai\Bees
+2018-10-08T07:38:16.870Z - normal: Destination F:\developGame\duopai\Bees\build\wechatgame
+2018-10-08T07:38:16.872Z - normal: Delete F:\developGame\duopai\Bees\build\wechatgame\**\*
+2018-10-08T07:38:21.815Z - normal: Compiled project javascript file successfully
+2018-10-08T07:38:21.815Z - normal: Start building assets
+2018-10-08T07:38:21.815Z - normal: Start spawn build-worker
+2018-10-08T07:38:22.510Z - normal: Finish spawn build-worker
+2018-10-08T07:38:22.510Z - normal: Start init build-worker
+2018-10-08T07:38:24.341Z - normal: 1.9.1
+2018-10-08T07:38:24.469Z - normal: Finish init build-worker
+2018-10-08T07:38:24.469Z - normal: Start build-assets in worker
+2018-10-08T07:38:24.740Z - warn: Can not find particle texture in F:\developGame\duopai\Bees\assets\resources\spine\GUAJIJINBI.png, plist: F:\developGame\duopai\Bees\assets\resources\spine\GUAJIJINBI.plist
+2018-10-08T07:38:26.419Z - normal: Finish build-assets in worker
+2018-10-08T07:38:26.425Z - normal: Finish building assets
+2018-10-08T07:38:26.503Z - normal: Start building raw assets
+2018-10-08T07:38:26.504Z - normal: Start building plugin scripts
+2018-10-08T07:38:26.739Z - normal: Finish building raw assets
+2018-10-08T07:38:26.742Z - normal: Generating main.js from C:\CocosCreator\resources\static\build-templates\shares\main.js
+2018-10-08T07:38:26.832Z - normal: Built to "F:\developGame\duopai\Bees\build\wechatgame" successfully
+2018-10-08T07:44:00.342Z - normal: Start building with options : {
+  "androidStudio": true,
+  "apiLevel": "",
+  "appABIs": [],
+  "appKey": "",
+  "appSecret": "",
+  "buildPath": "F:\\developGame\\duopai\\Bees\\build",
+  "debug": false,
+  "dest": "F:\\developGame\\duopai\\Bees\\build\\wechatgame",
+  "encryptJs": true,
+  "excludeScenes": [],
+  "excludedModules": [
+    "LabelOutline",
+    "TiledMap",
+    "ScrollBar",
+    "PageView",
+    "PageViewIndicator",
+    "Slider",
+    "VideoPlayer",
+    "WebView",
+    "RichText",
+    "MotionStreak",
+    "Collider",
+    "Graphics",
+    "DragonBones",
+    "Physics",
+    "StudioComponent",
+    "RenderTexture",
+    "Chipmunk",
+    "Camera",
+    "Intersection",
+    "Native NetWork"
+  ],
+  "fb-instant-games": {},
+  "includeAnySDK": false,
+  "includeEruda": false,
+  "includeSDKBox": false,
+  "inlineSpriteFrames": true,
+  "inlineSpriteFrames_native": true,
+  "jailbreakPlatform": false,
+  "md5Cache": false,
+  "mergeStartScene": false,
+  "oauthLoginServer": "",
+  "optimizeHotUpdate": false,
+  "orientation": {
+    "landscapeLeft": true,
+    "landscapeRight": true,
+    "portrait": false,
+    "upsideDown": false
+  },
+  "packageName": "org.cocos2d.helloworld",
+  "platform": "wechatgame",
+  "previewHeight": "720",
+  "previewWidth": "1280",
+  "privateKey": "",
+  "qqplay": {
+    "REMOTE_SERVER_ROOT": "",
+    "orientation": "portrait"
+  },
+  "renderMode": "0",
+  "scenes": [
+    "8b5893b3-be1e-4090-a758-f92e65d0657b",
+    "bb5b00a5-8f96-459e-81b4-6d04a7d42443"
+  ],
+  "sourceMaps": false,
+  "startScene": "8b5893b3-be1e-4090-a758-f92e65d0657b",
+  "template": "link",
+  "title": "bees",
+  "useDebugKeystore": true,
+  "vsVersion": "auto",
+  "webOrientation": "auto",
+  "wechatgame": {
+    "REMOTE_SERVER_ROOT": "",
+    "appid": "wx560a332bda795d99",
+    "isSubdomain": false,
+    "orientation": "portrait",
+    "subContext": "SubGame"
+  },
+  "xxteaKey": "eae37e1b-3e2d-4c",
+  "zipCompressJs": true,
+  "project": "F:\\developGame\\duopai\\Bees",
+  "projectName": "bees",
+  "debugBuildWorker": false
+}
+2018-10-08T07:44:00.370Z - normal: Building F:\developGame\duopai\Bees
+2018-10-08T07:44:00.370Z - normal: Destination F:\developGame\duopai\Bees\build\wechatgame
+2018-10-08T07:44:00.372Z - normal: Delete F:\developGame\duopai\Bees\build\wechatgame\**\*
+2018-10-08T07:44:05.015Z - normal: Compiled project javascript file successfully
+2018-10-08T07:44:05.015Z - normal: Start building assets
+2018-10-08T07:44:05.015Z - normal: Start spawn build-worker
+2018-10-08T07:44:05.618Z - normal: Finish spawn build-worker
+2018-10-08T07:44:05.618Z - normal: Start init build-worker
+2018-10-08T07:44:07.468Z - normal: 1.9.1
+2018-10-08T07:44:07.589Z - normal: Finish init build-worker
+2018-10-08T07:44:07.590Z - normal: Start build-assets in worker
+2018-10-08T07:44:07.844Z - warn: Can not find particle texture in F:\developGame\duopai\Bees\assets\resources\spine\GUAJIJINBI.png, plist: F:\developGame\duopai\Bees\assets\resources\spine\GUAJIJINBI.plist
+2018-10-08T07:44:09.146Z - normal: Finish build-assets in worker
+2018-10-08T07:44:09.150Z - normal: Finish building assets
+2018-10-08T07:44:09.219Z - normal: Start building raw assets
+2018-10-08T07:44:09.220Z - normal: Start building plugin scripts
+2018-10-08T07:44:09.356Z - normal: Finish building raw assets
+2018-10-08T07:44:09.360Z - normal: Generating main.js from C:\CocosCreator\resources\static\build-templates\shares\main.js
+2018-10-08T07:44:09.436Z - normal: Built to "F:\developGame\duopai\Bees\build\wechatgame" successfully
+2018-10-08T07:45:15.700Z - normal: Start building with options : {
+  "androidStudio": true,
+  "apiLevel": "",
+  "appABIs": [],
+  "appKey": "",
+  "appSecret": "",
+  "buildPath": "F:\\developGame\\duopai\\Bees\\build",
+  "debug": false,
+  "dest": "F:\\developGame\\duopai\\Bees\\build\\wechatgame",
+  "encryptJs": true,
+  "excludeScenes": [],
+  "excludedModules": [
+    "LabelOutline",
+    "TiledMap",
+    "ScrollBar",
+    "PageView",
+    "PageViewIndicator",
+    "Slider",
+    "VideoPlayer",
+    "WebView",
+    "RichText",
+    "MotionStreak",
+    "Collider",
+    "Graphics",
+    "DragonBones",
+    "Physics",
+    "StudioComponent",
+    "RenderTexture",
+    "Chipmunk",
+    "Camera",
+    "Intersection",
+    "Native NetWork"
+  ],
+  "fb-instant-games": {},
+  "includeAnySDK": false,
+  "includeEruda": false,
+  "includeSDKBox": false,
+  "inlineSpriteFrames": true,
+  "inlineSpriteFrames_native": true,
+  "jailbreakPlatform": false,
+  "md5Cache": false,
+  "mergeStartScene": false,
+  "oauthLoginServer": "",
+  "optimizeHotUpdate": false,
+  "orientation": {
+    "landscapeLeft": true,
+    "landscapeRight": true,
+    "portrait": false,
+    "upsideDown": false
+  },
+  "packageName": "org.cocos2d.helloworld",
+  "platform": "wechatgame",
+  "previewHeight": "720",
+  "previewWidth": "1280",
+  "privateKey": "",
+  "qqplay": {
+    "REMOTE_SERVER_ROOT": "",
+    "orientation": "portrait"
+  },
+  "renderMode": "0",
+  "scenes": [
+    "8b5893b3-be1e-4090-a758-f92e65d0657b",
+    "bb5b00a5-8f96-459e-81b4-6d04a7d42443"
+  ],
+  "sourceMaps": false,
+  "startScene": "8b5893b3-be1e-4090-a758-f92e65d0657b",
+  "template": "link",
+  "title": "bees",
+  "useDebugKeystore": true,
+  "vsVersion": "auto",
+  "webOrientation": "auto",
+  "wechatgame": {
+    "REMOTE_SERVER_ROOT": "",
+    "appid": "wx560a332bda795d99",
+    "isSubdomain": false,
+    "orientation": "portrait",
+    "subContext": "SubGame"
+  },
+  "xxteaKey": "eae37e1b-3e2d-4c",
+  "zipCompressJs": true,
+  "project": "F:\\developGame\\duopai\\Bees",
+  "projectName": "bees",
+  "debugBuildWorker": false
+}
+2018-10-08T07:45:15.722Z - normal: Building F:\developGame\duopai\Bees
+2018-10-08T07:45:15.722Z - normal: Destination F:\developGame\duopai\Bees\build\wechatgame
+2018-10-08T07:45:15.724Z - normal: Delete F:\developGame\duopai\Bees\build\wechatgame\**\*
+2018-10-08T07:45:20.637Z - normal: Compiled project javascript file successfully
+2018-10-08T07:45:20.637Z - normal: Start building assets
+2018-10-08T07:45:20.638Z - normal: Start spawn build-worker
+2018-10-08T07:45:21.289Z - normal: Finish spawn build-worker
+2018-10-08T07:45:21.289Z - normal: Start init build-worker
+2018-10-08T07:45:23.101Z - normal: 1.9.1
+2018-10-08T07:45:23.221Z - normal: Finish init build-worker
+2018-10-08T07:45:23.221Z - normal: Start build-assets in worker
+2018-10-08T07:45:23.486Z - warn: Can not find particle texture in F:\developGame\duopai\Bees\assets\resources\spine\GUAJIJINBI.png, plist: F:\developGame\duopai\Bees\assets\resources\spine\GUAJIJINBI.plist
+2018-10-08T07:45:25.177Z - normal: Finish build-assets in worker
+2018-10-08T07:45:25.181Z - normal: Finish building assets
+2018-10-08T07:45:25.245Z - normal: Start building raw assets
+2018-10-08T07:45:25.245Z - normal: Start building plugin scripts
+2018-10-08T07:45:25.380Z - normal: Finish building raw assets
+2018-10-08T07:45:25.382Z - normal: Generating main.js from C:\CocosCreator\resources\static\build-templates\shares\main.js
+2018-10-08T07:45:25.456Z - normal: Built to "F:\developGame\duopai\Bees\build\wechatgame" successfully

@@ -230,7 +230,6 @@ var Game = /** @class */ (function (_super) {
                     WXCtr_1.default.offCloseVideo();
                     WXCtr_1.default.showVideoAd();
                     WXCtr_1.default.onCloseVideo(function (res) {
-                        console.log("log------------dianji------res=:", res);
                         if (res) {
                             callFunc_1();
                         }

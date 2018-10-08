@@ -291,7 +291,6 @@ export default class Game extends cc.Component {
                     WXCtr.offCloseVideo();
                     WXCtr.showVideoAd();
                     WXCtr.onCloseVideo((res) => {
-                        console.log("log------------dianji------res=:",res);
                         if (res) {
                             callFunc();
                         }else{

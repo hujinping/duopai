@@ -31,25 +31,10 @@ var RankingView = /** @class */ (function (_super) {
         _this.lb_name = null;
         _this.lb_location = null;
         _this.worldListData = [];
-        _this.friendListData = null;
-        _this.tex = null;
         _this.isGetWorldList = false;
-        _this.isGetFriendList = false;
         _this.curPageIndex = 0;
-        _this.interval = 0;
         _this.isShowFrenidRank = false;
         return _this;
-        // 刷新子域的纹理
-        //  _updateSubDomainCanvas() {
-        //     if (window.sharedCanvas != undefined && this.tex != null && this.ndRanking.active && this.sprFreindRankScroll.node.active) {
-        //         this.tex.initWithElement(window.sharedCanvas);
-        //         this.tex.handleLoadedTexture();
-        //         this.sprFreindRankScroll.spriteFrame = new cc.SpriteFrame(this.tex);
-        //     }
-        // }
-        // update() {
-        //     this._updateSubDomainCanvas();
-        // }
     }
     RankingView.prototype.onLoad = function () {
         GameCtr_1.default.getInstance().setRanking(this);
@@ -88,7 +73,6 @@ var RankingView = /** @class */ (function (_super) {
     RankingView.prototype.back = function () {
         AudioManager_1.default.getInstance().playSound("audio/btnClose");
         this.showAuthTip(false);
-        this.isGetFriendList = false;
         this.node.parent.destroy();
     };
     //显示世界排行
@@ -106,6 +90,9 @@ var RankingView = /** @class */ (function (_super) {
         }
         if (!this.isGetWorldList) {
             this.getWorldRankingData();
+        }
+        else {
+            this.showRanklist(this.ndWorldScr, this.worldListData, this.curPageIndex);
         }
     };
     RankingView.prototype.onBtnPageUp = function () {
@@ -220,10 +207,7 @@ var RankingView = /** @class */ (function (_super) {
         this.sprFreindRankScroll.node.active = true;
         this.ndWorldScr.active = false;
         this.showAuthTip(false);
-        if (!this.isGetFriendList) {
-            this.isGetFriendList = true;
-            WXCtr_1.default.showFriendRanking(this.curPageIndex);
-        }
+        WXCtr_1.default.showFriendRanking(this.curPageIndex);
         if (!this.isShowFrenidRank) {
             window.sharedCanvas.width = 1080;
             window.sharedCanvas.height = 1920;
