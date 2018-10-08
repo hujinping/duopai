@@ -62,7 +62,6 @@ export default class NewClass extends cc.Component {
     requestFriendList(){
         HttpCtr.getInviteResult((friendList)=>{
             for(let i=0;i<friendList.length;i++){
-               
                 if(friendList[i].uid){
                     console.log("邀请玩家-----uid=:",friendList[i].uid);
                     this._friendNode.children[i].getComponent("inviteFriendItem").setName(friendList[i].nick);

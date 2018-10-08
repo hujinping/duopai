@@ -1,55 +1,56 @@
-2018-10-08T01:53:29.908Z - normal: Load ~/.CocosCreator/settings.json
-2018-10-08T01:53:29.908Z - normal: checking language setting...
-2018-10-08T01:53:29.908Z - normal: Language: zh
-2018-10-08T01:53:31.750Z - success: protocol editor-framework registered
-2018-10-08T01:53:31.750Z - success: protocol app registered
-2018-10-08T01:53:31.750Z - success: protocol theme registered
-2018-10-08T01:53:31.750Z - success: protocol packages registered
-2018-10-08T01:53:31.750Z - success: protocol unpack registerred
-2018-10-08T01:53:31.750Z - success: protocol disable-commonjs registerred
-2018-10-08T01:53:32.015Z - normal: connected!
-2018-10-08T01:53:32.015Z - normal: Check project F:\developGame\duopai\Bees
-2018-10-08T01:53:32.015Z - normal: Initializing Cocos2d
-2018-10-08T01:53:32.249Z - normal: Initializing Asset Database
-2018-10-08T01:53:32.280Z - success: protocol uuid registerred
-2018-10-08T01:53:32.280Z - success: protocol db registerred
-2018-10-08T01:53:32.280Z - success: protocol thumbnail registerred
-2018-10-08T01:53:32.280Z - normal: Loading editor/builtin packages
-2018-10-08T01:53:32.311Z - success: anysdk loaded
-2018-10-08T01:53:32.420Z - success: assets loaded
-2018-10-08T01:53:32.420Z - success: builder loaded
-2018-10-08T01:53:32.420Z - success: cocos-analytics loaded
-2018-10-08T01:53:32.420Z - success: console loaded
-2018-10-08T01:53:32.452Z - success: fb-instant-games loaded
-2018-10-08T01:53:32.452Z - success: hierarchy loaded
-2018-10-08T01:53:32.452Z - success: inspector loaded
-2018-10-08T01:53:32.467Z - success: keystore loaded
-2018-10-08T01:53:32.467Z - success: node-library loaded
-2018-10-08T01:53:32.467Z - success: package-asset loaded
-2018-10-08T01:53:32.467Z - success: preferences loaded
-2018-10-08T01:53:32.467Z - success: project-exporter loaded
-2018-10-08T01:53:32.483Z - success: project-importer loaded
-2018-10-08T01:53:32.483Z - success: project-settings loaded
-2018-10-08T01:53:32.483Z - success: ui-kit loaded
-2018-10-08T01:53:32.483Z - success: ui-grid loaded
-2018-10-08T01:53:32.483Z - success: scene loaded
-2018-10-08T01:53:32.498Z - success: sprite-editor loaded
-2018-10-08T01:53:32.498Z - success: store loaded
-2018-10-08T01:53:32.498Z - success: timeline loaded
-2018-10-08T01:53:32.498Z - normal: Loading builtin packages
-2018-10-08T01:53:32.498Z - success: asset-db-debugger loaded
-2018-10-08T01:53:32.498Z - success: code-editor loaded
-2018-10-08T01:53:32.498Z - success: color-picker loaded
-2018-10-08T01:53:32.498Z - success: package-manager loaded
-2018-10-08T01:53:32.498Z - success: sdkbox loaded
-2018-10-08T01:53:32.514Z - success: tester loaded
-2018-10-08T01:53:32.514Z - success: ui-kit-preview-extra loaded
-2018-10-08T01:53:32.514Z - success: ui-kit-preview loaded
-2018-10-08T01:53:32.514Z - success: ui-tree loaded
-2018-10-08T01:53:33.512Z - normal: Initializing project F:\developGame\duopai\Bees
-2018-10-08T01:53:33.528Z - normal: Loading packages
-2018-10-08T01:53:33.731Z - success: unpack-textureatlas loaded
-2018-10-08T01:53:33.731Z - normal: Watching packages
-2018-10-08T01:53:33.746Z - normal: Run Application
-2018-10-08T01:53:34.661Z - success: preview server running at http://localhost:7456
-2018-10-08T01:53:38.939Z - normal: 1.9.1
+2018-10-08T03:43:30.253Z - normal: Load ~/.CocosCreator/settings.json
+2018-10-08T03:43:30.258Z - normal: checking language setting...
+2018-10-08T03:43:30.258Z - normal: Language: zh
+2018-10-08T03:43:31.922Z - success: protocol editor-framework registered
+2018-10-08T03:43:31.922Z - success: protocol app registered
+2018-10-08T03:43:31.922Z - success: protocol theme registered
+2018-10-08T03:43:31.922Z - success: protocol packages registered
+2018-10-08T03:43:31.922Z - success: protocol unpack registerred
+2018-10-08T03:43:31.922Z - success: protocol disable-commonjs registerred
+2018-10-08T03:43:32.282Z - normal: connected!
+2018-10-08T03:43:32.286Z - normal: Check project F:\developGame\duopai\Bees
+2018-10-08T03:43:32.290Z - normal: Initializing Cocos2d
+2018-10-08T03:43:32.564Z - normal: Initializing Asset Database
+2018-10-08T03:43:32.593Z - success: protocol uuid registerred
+2018-10-08T03:43:32.593Z - success: protocol db registerred
+2018-10-08T03:43:32.593Z - success: protocol thumbnail registerred
+2018-10-08T03:43:32.593Z - normal: Loading editor/builtin packages
+2018-10-08T03:43:32.609Z - success: anysdk loaded
+2018-10-08T03:43:32.708Z - success: assets loaded
+2018-10-08T03:43:32.710Z - success: builder loaded
+2018-10-08T03:43:32.711Z - success: cocos-analytics loaded
+2018-10-08T03:43:32.713Z - success: console loaded
+2018-10-08T03:43:32.749Z - success: fb-instant-games loaded
+2018-10-08T03:43:32.751Z - success: hierarchy loaded
+2018-10-08T03:43:32.753Z - success: inspector loaded
+2018-10-08T03:43:32.754Z - success: keystore loaded
+2018-10-08T03:43:32.756Z - success: node-library loaded
+2018-10-08T03:43:32.757Z - success: package-asset loaded
+2018-10-08T03:43:32.758Z - success: preferences loaded
+2018-10-08T03:43:32.759Z - success: project-exporter loaded
+2018-10-08T03:43:32.778Z - success: project-importer loaded
+2018-10-08T03:43:32.779Z - success: project-settings loaded
+2018-10-08T03:43:32.780Z - success: ui-kit loaded
+2018-10-08T03:43:32.781Z - success: ui-grid loaded
+2018-10-08T03:43:32.784Z - success: scene loaded
+2018-10-08T03:43:32.784Z - success: sprite-editor loaded
+2018-10-08T03:43:32.786Z - success: store loaded
+2018-10-08T03:43:32.789Z - success: timeline loaded
+2018-10-08T03:43:32.789Z - normal: Loading builtin packages
+2018-10-08T03:43:32.791Z - success: asset-db-debugger loaded
+2018-10-08T03:43:32.791Z - success: code-editor loaded
+2018-10-08T03:43:32.792Z - success: color-picker loaded
+2018-10-08T03:43:32.793Z - success: package-manager loaded
+2018-10-08T03:43:32.796Z - success: sdkbox loaded
+2018-10-08T03:43:32.798Z - success: tester loaded
+2018-10-08T03:43:32.799Z - success: ui-kit-preview-extra loaded
+2018-10-08T03:43:32.800Z - success: ui-kit-preview loaded
+2018-10-08T03:43:32.801Z - success: ui-tree loaded
+2018-10-08T03:43:33.770Z - normal: Initializing project F:\developGame\duopai\Bees
+2018-10-08T03:43:33.772Z - normal: Loading packages
+2018-10-08T03:43:33.826Z - success: unpack-textureatlas loaded
+2018-10-08T03:43:33.826Z - normal: Watching packages
+2018-10-08T03:43:33.839Z - normal: Run Application
+2018-10-08T03:43:34.972Z - success: preview server running at http://localhost:7457
+2018-10-08T03:43:39.297Z - normal: 1.9.1
+2018-10-08T05:39:05.501Z - info: shutdown preview server

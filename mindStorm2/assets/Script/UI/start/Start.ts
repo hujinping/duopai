@@ -43,6 +43,13 @@ export default class Start extends cc.Component {
     @property(cc.Prefab)
     signIn: cc.Prefab = null; 
 
+    @property(cc.Prefab)
+    invite: cc.Prefab = null; 
+
+
+    @property(cc.Prefab)
+    roleSelete: cc.Prefab = null; 
+    
     private totalRankNode=null;
     private sliderData = null;
     private roleListEventMask=null;
@@ -149,7 +156,8 @@ export default class Start extends cc.Component {
             }else if(btnName=="arrow_right"){
                 this.updateRoleCardPos(Direction.LEFT);
             }else if(btnName=="btn_invite"){
-                console.log("log--------btn_invite  click");
+                this.createInviteNode();
+                //console.log("log--------btn_invite  click");
             }else if(btnName=="btn_signIn"){
                 this.createSignInNode();
             }else if(btnName=="btn_gameEntrance1"){
@@ -157,7 +165,7 @@ export default class Start extends cc.Component {
             }else if(btnName=="btn_gameEntrance2"){
                 console.log("log--------btn_gameEntrance2  click");
             }else if(btnName=="roleFrame"){
-                console.log("log--------roleFrame  click");
+                this.createRoleSeleteNode();
             }
 
         }.bind(this))
@@ -229,6 +237,19 @@ export default class Start extends cc.Component {
         if(this.node.getChildByName("signIn")){return;}
         let signIn =cc.instantiate(this.signIn);
         signIn.parent=this.node;
+    }
+
+    createInviteNode(){
+        if(this.node.getChildByName("invite")){return;}
+        let invite =cc.instantiate(this.invite);
+        invite.parent=this.node;
+    }
+
+
+    createRoleSeleteNode(){
+        if(this.node.getChildByName("roleSelete")){return;}
+        let roleSelete = cc.instantiate(this.roleSelete);
+        roleSelete.parent=this.node;
     }
 
 

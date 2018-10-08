@@ -369,7 +369,6 @@ export default class WXCtr {
     static share(data?: {
         invite?: boolean,                               //邀请好友
         Challenge?: boolean,                            //挑战 
-        pfTurnable?:boolean,
         callback?: Function
     }) {
         let qureyInfo = "";
@@ -400,7 +399,6 @@ export default class WXCtr {
                    
                 },
                 complete: () => {
-
                 }
             });
         } else {
