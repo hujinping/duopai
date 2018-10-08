@@ -40,6 +40,7 @@ var Game = /** @class */ (function (_super) {
         _this._otherNode = null;
         _this._carouselNode = null;
         _this._carouselIndex = 0;
+        _this._vedioCD = -1;
         _this._interval3 = 0;
         _this._pfTurnableTime = 0;
         _this._manufactureUpgrade = null;
@@ -209,6 +210,7 @@ var Game = /** @class */ (function (_super) {
                     _this.showToast("正在加速中...");
                     return;
                 }
+                HttpCtr_1.default.openClick(GameCtr_1.default.clickType.speedUp);
                 var callFunc_1 = function () {
                     GameCtr_1.default.globalSpeedRate = 2;
                     GameCtr_1.default.getInstance().getManufacture().resetLineAction();
@@ -227,6 +229,10 @@ var Game = /** @class */ (function (_super) {
                     WXCtr_1.default.share({ callback: callFunc_1 });
                 }
                 else {
+                    if (_this._vedioCD > 0) {
+                        WXCtr_1.default.share({ callback: callFunc_1 });
+                        return;
+                    }
                     WXCtr_1.default.offCloseVideo();
                     WXCtr_1.default.showVideoAd();
                     WXCtr_1.default.onCloseVideo(function (res) {
@@ -238,7 +244,6 @@ var Game = /** @class */ (function (_super) {
                         }
                     });
                 }
-                HttpCtr_1.default.openClick(GameCtr_1.default.clickType.speedUp);
             }
             else if (e.target.getName() == "btn_rank") {
                 _this._bonusFrame.active = false;
@@ -423,6 +428,17 @@ var Game = /** @class */ (function (_super) {
     Game.prototype.stopUpSpeedAction = function () {
         this._btn_upSpeed.getComponent(cc.Button).interactable = false;
         this._btn_upSpeed.stopAllActions();
+    };
+    Game.prototype.setVedioCD = function () {
+        if (GameCtr_1.default.setting) {
+            this._vedioCD = GameCtr_1.default.setting.advVideoTime;
+        }
+        else {
+            this._vedioCD = 60;
+        }
+    };
+    Game.prototype.getVedioCD = function () {
+        return this._vedioCD;
     };
     Game.prototype.showGoldNotEnough = function () {
         if (!GameCtr_1.default.isAudited) {
@@ -686,6 +702,9 @@ var Game = /** @class */ (function (_super) {
         if (this._interval3 >= 0.1) {
             GameCtr_1.default.getInstance().getLevel().updateMoney();
             this._interval3 = 0;
+        }
+        if (this._vedioCD >= 0) {
+            this._vedioCD -= dt;
         }
     };
     __decorate([

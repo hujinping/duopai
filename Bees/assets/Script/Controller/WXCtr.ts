@@ -308,19 +308,6 @@ export default class WXCtr {
     }
 
 
-
-    static restoreVideoAdOnClose(callback: Function = null) {
-        WXCtr.videoAd.onClose(() => {
-            if (callback != null) {
-                WXCtr.videoAd.offClose(callback);
-            }
-            WXCtr.videoAd.onClose(WXCtr.videoAdCallback);
-        });
-        WXCtr.setBannerAd(100,300);
-    }
-
-   
-
     static showBannerAd() {
         if (cc.isValid(WXCtr.bannerAd) && WXCtr.bannerAd) {
             WXCtr.bannerAd.show();
@@ -515,6 +502,7 @@ export default class WXCtr {
             GameCtr.vedioTimes--;
             console.log("今天剩余观看视频次数为：", GameCtr.vedioTimes);
             localStorage.setItem("VideoTimes", JSON.stringify({ day: Util.getCurrTimeYYMMDD(), times: GameCtr.vedioTimes }));
+            GameCtr.getInstance().getGame().setVedioCD()
         }
     }
 
@@ -531,13 +519,17 @@ export default class WXCtr {
                 callback(false);
             }
         };
-        WXCtr.videoAd.onClose(call);
+        if(WXCtr.videoAd){
+            WXCtr.videoAd.onClose(call);
+        }
         WXCtr.videoAdCallback = call;
     }
 
     static offCloseVideo() {
         if (WXCtr.videoAdCallback) {
-            WXCtr.videoAd.offClose(WXCtr.videoAdCallback);
+            if(WXCtr.videoAd){
+                WXCtr.videoAd.offClose(WXCtr.videoAdCallback);
+            }
             WXCtr.videoAdCallback = null;
         }
     }

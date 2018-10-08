@@ -5,8 +5,8 @@
       "main": true,
       "url": "app://editor/index.html",
       "windowType": "dockable",
-      "x": 831,
-      "y": 0,
+      "x": 458,
+      "y": 4,
       "width": 1205,
       "height": 1023,
       "layout": {
@@ -20,7 +20,7 @@
                 ],
                 "height": 454,
                 "type": "panel",
-                "width": 253
+                "width": 204
               },
               {
                 "active": 0,
@@ -29,12 +29,12 @@
                 ],
                 "height": 439,
                 "type": "panel",
-                "width": 253
+                "width": 204
               }
             ],
             "height": 896,
             "type": "dock-v",
-            "width": 253
+            "width": 204
           },
           {
             "children": [
@@ -47,7 +47,7 @@
                     ],
                     "height": 439,
                     "type": "panel",
-                    "width": 666
+                    "width": 462
                   },
                   {
                     "active": 0,
@@ -56,12 +56,12 @@
                     ],
                     "height": 439,
                     "type": "panel",
-                    "width": 253
+                    "width": 204
                   }
                 ],
                 "height": 439,
                 "type": "dock-h",
-                "width": 922
+                "width": 669
               },
               {
                 "active": 0,
@@ -71,12 +71,12 @@
                 ],
                 "height": 454,
                 "type": "panel",
-                "width": 922
+                "width": 669
               }
             ],
             "height": 896,
             "type": "dock-v",
-            "width": 922
+            "width": 669
           },
           {
             "active": 0,
@@ -85,7 +85,7 @@
             ],
             "height": 896,
             "type": "panel",
-            "width": 377
+            "width": 304
           }
         ],
         "type": "dock-h"
@@ -100,13 +100,12 @@
         "timeline"
       ]
     },
-    "window-1538983282226": {},
-    "worker": {}
+    "window-1538990579545": {}
   },
   "panels": {
     "builder": {
-      "x": 755,
-      "y": 25,
+      "x": 1216,
+      "y": 17,
       "width": 516,
       "height": 738
     }

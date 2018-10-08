@@ -245,6 +245,10 @@ var NewClass = /** @class */ (function (_super) {
                     WXCtr_1.default.share({ callback: callFunc_1 });
                 }
                 else {
+                    if (GameCtr_1.default.getInstance().getGame().getVedioCD() > 0) {
+                        WXCtr_1.default.share({ callback: callFunc_1 });
+                        return;
+                    }
                     WXCtr_1.default.offCloseVideo();
                     WXCtr_1.default.showVideoAd();
                     WXCtr_1.default.onCloseVideo(function (res) {

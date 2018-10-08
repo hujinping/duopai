@@ -265,16 +265,6 @@ var WXCtr = /** @class */ (function () {
             });
         }
     };
-    WXCtr.restoreVideoAdOnClose = function (callback) {
-        if (callback === void 0) { callback = null; }
-        WXCtr_1.videoAd.onClose(function () {
-            if (callback != null) {
-                WXCtr_1.videoAd.offClose(callback);
-            }
-            WXCtr_1.videoAd.onClose(WXCtr_1.videoAdCallback);
-        });
-        WXCtr_1.setBannerAd(100, 300);
-    };
     WXCtr.showBannerAd = function () {
         if (cc.isValid(WXCtr_1.bannerAd) && WXCtr_1.bannerAd) {
             WXCtr_1.bannerAd.show();
@@ -456,6 +446,7 @@ var WXCtr = /** @class */ (function () {
             GameCtr_1.default.vedioTimes--;
             console.log("今天剩余观看视频次数为：", GameCtr_1.default.vedioTimes);
             localStorage.setItem("VideoTimes", JSON.stringify({ day: Util_1.default.getCurrTimeYYMMDD(), times: GameCtr_1.default.vedioTimes }));
+            GameCtr_1.default.getInstance().getGame().setVedioCD();
         }
     };
     WXCtr.onCloseVideo = function (callback) {
@@ -470,12 +461,16 @@ var WXCtr = /** @class */ (function () {
                 callback(false);
             }
         };
-        WXCtr_1.videoAd.onClose(call);
+        if (WXCtr_1.videoAd) {
+            WXCtr_1.videoAd.onClose(call);
+        }
         WXCtr_1.videoAdCallback = call;
     };
     WXCtr.offCloseVideo = function () {
         if (WXCtr_1.videoAdCallback) {
-            WXCtr_1.videoAd.offClose(WXCtr_1.videoAdCallback);
+            if (WXCtr_1.videoAd) {
+                WXCtr_1.videoAd.offClose(WXCtr_1.videoAdCallback);
+            }
             WXCtr_1.videoAdCallback = null;
         }
     };

@@ -1595,8 +1595,8 @@
     "relativePath": "Scene"
   },
   "bb5b00a5-8f96-459e-81b4-6d04a7d42443": {
-    "asset": 1538984637838,
-    "meta": 1538984637845,
+    "asset": 1538990531945,
+    "meta": 1538990531953,
     "relativePath": "Scene\\Game.fire"
   },
   "9b775747-d125-485e-85b7-8e3d7d7a3f8a": {
@@ -1764,11 +1764,6 @@
     "meta": 1538961757490,
     "relativePath": "Script\\UI\\component\\notice.ts"
   },
-  "f03c5278-7d83-4f8b-8055-eacea6bef940": {
-    "asset": 1538300417455,
-    "meta": 1538961757505,
-    "relativePath": "Script\\UI\\component\\offlineIncome.ts"
-  },
   "9f080aba-cc8c-46b1-94ab-5f879a9a8e1e": {
     "asset": 1538300417455,
     "meta": 1538961757521,
@@ -1834,13 +1829,8 @@
     "meta": 1538300417461,
     "relativePath": "Script\\UI\\loading"
   },
-  "275a41e1-1328-4aa3-9d7f-0bcffd7b7187": {
-    "asset": 1538300417461,
-    "meta": 1538961757817,
-    "relativePath": "Script\\UI\\game\\manufacture.ts"
-  },
   "8a8d8822-dfe4-486d-9593-e36f22dd906c": {
-    "asset": 1538961739385,
+    "asset": 1538985121620,
     "meta": 1538300417462,
     "relativePath": "Script\\UI\\ranking"
   },
@@ -2074,24 +2064,34 @@
     "meta": 1538984291290,
     "relativePath": "Script\\Controller\\HttpCtr.ts"
   },
-  "e659b699-68c5-43cc-a0c8-e56be4bb0b14": {
-    "asset": 1538983937536,
-    "meta": 1538984291596,
-    "relativePath": "Script\\Controller\\WXCtr.ts"
-  },
-  "f1f06571-35cd-458b-b3c0-503919c9bff6": {
-    "asset": 1538983854961,
-    "meta": 1538984291758,
-    "relativePath": "Script\\UI\\game\\Game.ts"
-  },
-  "ccb46d14-417b-47b9-b233-7a78e00d26b4": {
-    "asset": 1538984633093,
-    "meta": 1538984634366,
-    "relativePath": "Script\\UI\\ranking\\RankingView.ts"
-  },
   "41620d55-dbd5-4c9f-9059-02d0651a26a3": {
     "asset": 1538985075459,
     "meta": 1538985084771,
     "relativePath": "Script\\UI\\component\\honeycomb.ts"
+  },
+  "ccb46d14-417b-47b9-b233-7a78e00d26b4": {
+    "asset": 1538985121620,
+    "meta": 1538985201658,
+    "relativePath": "Script\\UI\\ranking\\RankingView.ts"
+  },
+  "e659b699-68c5-43cc-a0c8-e56be4bb0b14": {
+    "asset": 1538988665159,
+    "meta": 1538988940443,
+    "relativePath": "Script\\Controller\\WXCtr.ts"
+  },
+  "f03c5278-7d83-4f8b-8055-eacea6bef940": {
+    "asset": 1538988890655,
+    "meta": 1538988940569,
+    "relativePath": "Script\\UI\\component\\offlineIncome.ts"
+  },
+  "275a41e1-1328-4aa3-9d7f-0bcffd7b7187": {
+    "asset": 1538988936299,
+    "meta": 1538988940847,
+    "relativePath": "Script\\UI\\game\\manufacture.ts"
+  },
+  "f1f06571-35cd-458b-b3c0-503919c9bff6": {
+    "asset": 1538989353103,
+    "meta": 1538989358601,
+    "relativePath": "Script\\UI\\game\\Game.ts"
   }
 }

@@ -40,7 +40,7 @@ export default class Game extends cc.Component {
     _carouselNode=null;
     _carouselIndex=0;
 
-    
+    _vedioCD=-1;
     _interval3=0;
     _pfTurnableTime=0;
     _manufactureUpgrade=null;
@@ -269,7 +269,7 @@ export default class Game extends cc.Component {
                     this.showToast("正在加速中...");
                     return;
                 }
-
+                HttpCtr.openClick(GameCtr.clickType.speedUp);
                 let callFunc=()=>{
                     GameCtr.globalSpeedRate=2;
                     GameCtr.getInstance().getManufacture().resetLineAction();
@@ -285,9 +285,13 @@ export default class Game extends cc.Component {
                         GameCtr.getInstance().getGame().showToast("今日视频已看完");
                         return;
                     }
-
                     WXCtr.share({callback:callFunc});
                 }else{
+                    if(this._vedioCD>0){
+                        WXCtr.share({callback:callFunc});
+                        return;
+                    }
+
                     WXCtr.offCloseVideo();
                     WXCtr.showVideoAd();
                     WXCtr.onCloseVideo((res) => {
@@ -297,9 +301,8 @@ export default class Game extends cc.Component {
                             this.showToast("视频未看完，无法领取奖励");
                         }
                     });
-
                 }
-                HttpCtr.openClick(GameCtr.clickType.speedUp);
+               
             }else if(e.target.getName()=="btn_rank"){
                 this._bonusFrame.active=false;
                 if(cc.find("Canvas").getChildByName("ranking")){return}
@@ -492,6 +495,18 @@ export default class Game extends cc.Component {
     stopUpSpeedAction(){
         this._btn_upSpeed.getComponent(cc.Button).interactable=false;
         this._btn_upSpeed.stopAllActions();
+    }
+
+    setVedioCD(){
+        if(GameCtr.setting){
+            this._vedioCD=GameCtr.setting.advVideoTime;
+        }else{
+            this._vedioCD=60;
+        } 
+    }
+
+    getVedioCD(){
+        return this._vedioCD;
     }
 
     showGoldNotEnough(){
@@ -793,6 +808,10 @@ export default class Game extends cc.Component {
         if(this._interval3>=0.1){
             GameCtr.getInstance().getLevel().updateMoney();
             this._interval3=0;
+        }
+
+        if(this._vedioCD>=0){
+            this._vedioCD-=dt;
         }
     }
 

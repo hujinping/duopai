@@ -39,6 +39,7 @@ export default class NewClass extends cc.Component {
     initBtn(btn){
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
             if(e.target.getName()=="btn_get"){
+                HttpCtr.openClick(GameCtr.clickType.offLineShare);
                 let callFunc=()=>{
                     GameCtr.getInstance().getGame().setMaskVisit(false);
                     GameCtr.money+=Math.floor(2*this._offlineIncome);
@@ -53,11 +54,13 @@ export default class NewClass extends cc.Component {
                         this.node.destroy();
                         return;
                     }
-
                     WXCtr.share({callback:callFunc});
-                    HttpCtr.openClick(GameCtr.clickType.offLineShare);
                 }else{
-                    
+                    HttpCtr.openClick(GameCtr.clickType.offLineVedio); 
+                    if(GameCtr.getInstance().getGame().getVedioCD()>0){
+                        WXCtr.share({callback:callFunc});
+                        return;
+                    }
                     WXCtr.offCloseVideo();
                     WXCtr.showVideoAd();
                     WXCtr.onCloseVideo((res) => {
@@ -67,7 +70,7 @@ export default class NewClass extends cc.Component {
                             GameCtr.getInstance().getGame().showToast("视频未看完，无法领取奖励");
                         }
                     });
-                    HttpCtr.openClick(GameCtr.clickType.offLineVedio); 
+                   
                 }
                 
             }else if(e.target.getName()=="btn_close"){
