@@ -151,8 +151,6 @@ export default class Game extends cc.Component {
         
         this._otherNode=this.node.getChildByName("otherNode");
         this._mask=this._otherNode.getChildByName("mask");
-        // this._noticeNode=this._otherNode.getChildByName("noticeNode");
-        // this._lb_notice=this._noticeNode.getChildByName("mask").getChildByName("lb_notice");
         this._bonusFrame=this._otherNode.getChildByName("bonusFrame");
         this._btn_pfTurntable=this._bonusFrame.getChildByName("btn_pfTurntable");
         this._btn_sevenLogin=this._bonusFrame.getChildByName("btn_sevenLogin");
@@ -209,8 +207,6 @@ export default class Game extends cc.Component {
         this.initBtnEvent(this._btn_rank);
         this.initBtnEvent(this._btn_exchange);
         this.initBtnEvent(this._btn_more);
-
-        console.log("log-------GameCtr.isAudited=:",GameCtr.isAudited);
         this._btn_sevenLogin.active=GameCtr.isAudited;
         this._btn_pfTurntable.active=GameCtr.isAudited;
         this._btn_invite.active=GameCtr.isAudited;
@@ -371,7 +367,6 @@ export default class Game extends cc.Component {
 
     initCombContentEvent(){
         this._honeycombContent.on(cc.Node.EventType.TOUCH_START,(e)=>{
-            //console.log("log----------------touch_start");
         });
 
         this._honeycombContent.on(cc.Node.EventType.TOUCH_MOVE,(e)=>{
@@ -393,11 +388,9 @@ export default class Game extends cc.Component {
         });
 
         this._honeycombContent.on(cc.Node.EventType.TOUCH_END,(e)=>{
-            //console.log("log----------------touch_end");
         });
 
         this._honeycombContent.on(cc.Node.EventType.TOUCH_CANCEL,(e)=>{
-            //console.log("log----------------touch_cancle");
         });
     }
 

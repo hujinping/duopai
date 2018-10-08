@@ -2029,11 +2029,6 @@
     "meta": 1538961757693,
     "relativePath": "Script\\UI\\component\\unlockCombTip.ts"
   },
-  "f1f06571-35cd-458b-b3c0-503919c9bff6": {
-    "asset": 1538300417460,
-    "meta": 1538961757739,
-    "relativePath": "Script\\UI\\game\\Game.ts"
-  },
   "6103fc7c-f4bd-43ac-99ec-8ecdead33df9": {
     "asset": 1538300417460,
     "meta": 1538961757786,
@@ -2093,5 +2088,10 @@
     "asset": 1538300417464,
     "meta": 1538961757927,
     "relativePath": "Script\\UI\\view\\ToastView.ts"
+  },
+  "f1f06571-35cd-458b-b3c0-503919c9bff6": {
+    "asset": 1538963886108,
+    "meta": 1538963887462,
+    "relativePath": "Script\\UI\\game\\Game.ts"
   }
 }

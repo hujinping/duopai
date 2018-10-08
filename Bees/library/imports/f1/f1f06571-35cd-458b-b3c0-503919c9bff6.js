@@ -110,8 +110,6 @@ var Game = /** @class */ (function (_super) {
     Game.prototype.initNode = function () {
         this._otherNode = this.node.getChildByName("otherNode");
         this._mask = this._otherNode.getChildByName("mask");
-        // this._noticeNode=this._otherNode.getChildByName("noticeNode");
-        // this._lb_notice=this._noticeNode.getChildByName("mask").getChildByName("lb_notice");
         this._bonusFrame = this._otherNode.getChildByName("bonusFrame");
         this._btn_pfTurntable = this._bonusFrame.getChildByName("btn_pfTurntable");
         this._btn_sevenLogin = this._bonusFrame.getChildByName("btn_sevenLogin");
@@ -148,7 +146,6 @@ var Game = /** @class */ (function (_super) {
         this.initBtnEvent(this._btn_rank);
         this.initBtnEvent(this._btn_exchange);
         this.initBtnEvent(this._btn_more);
-        console.log("log-------GameCtr.isAudited=:", GameCtr_1.default.isAudited);
         this._btn_sevenLogin.active = GameCtr_1.default.isAudited;
         this._btn_pfTurntable.active = GameCtr_1.default.isAudited;
         this._btn_invite.active = GameCtr_1.default.isAudited;
@@ -324,7 +321,6 @@ var Game = /** @class */ (function (_super) {
     Game.prototype.initCombContentEvent = function () {
         var _this = this;
         this._honeycombContent.on(cc.Node.EventType.TOUCH_START, function (e) {
-            //console.log("log----------------touch_start");
         });
         this._honeycombContent.on(cc.Node.EventType.TOUCH_MOVE, function (e) {
             if (_this._honeycombContent.y <= 0 && e.touch._point.y - e.touch._prevPoint.y < 0) {
@@ -342,10 +338,8 @@ var Game = /** @class */ (function (_super) {
             }
         });
         this._honeycombContent.on(cc.Node.EventType.TOUCH_END, function (e) {
-            //console.log("log----------------touch_end");
         });
         this._honeycombContent.on(cc.Node.EventType.TOUCH_CANCEL, function (e) {
-            //console.log("log----------------touch_cancle");
         });
     };
     Game.prototype.initCombs = function () {
