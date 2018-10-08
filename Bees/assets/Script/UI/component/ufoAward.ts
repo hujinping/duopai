@@ -49,6 +49,10 @@ export default class NewClass extends cc.Component {
 
                     WXCtr.share({callback:callFunc});
                 }else{
+                    if(GameCtr.getInstance().getGame().getVedioCD()>0){
+                        WXCtr.share({callback:callFunc});
+                        return;
+                    }
                     WXCtr.offCloseVideo();
                     WXCtr.showVideoAd();
                     WXCtr.onCloseVideo((res) => {
