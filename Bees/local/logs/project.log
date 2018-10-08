@@ -156,3 +156,7 @@
 2018-10-08T01:23:58.271Z - normal: Finish building raw assets
 2018-10-08T01:23:58.273Z - normal: Generating main.js from C:\CocosCreator\resources\static\build-templates\shares\main.js
 2018-10-08T01:23:58.348Z - normal: Built to "F:\developGame\duopai\Bees\build\wechatgame" successfully
+2018-10-08T01:40:42.702Z - error: Window "main" crashed: [object Object]
+    at WebContents.Window.nativeWin.webContents.on.e (C:\CocosCreator\resources\app.asar\editor-framework\lib\main\window.js:1:2853)
+    at emitTwo (events.js:106:13)
+    at WebContents.emit (events.js:194:7)
