@@ -307,7 +307,7 @@ export default class Game extends cc.Component {
                 let role=null;
                 if(i==0){//初始化玩家自己
                     let selfInfo=GameCtr.getInstance().getSelfInfoFromLocal();
-                    role=cc.instantiate(this.roleModleArr[GameCtr.roleTag]);
+                    role=cc.instantiate(this.roleModleArr[GameCtr.roleIndex]);
                     role.parent=this.node;
                     role.getComponent("role").setName(Util.cutstr(selfInfo.nickName,4));
                     role.getComponent("role").setHeadImg(selfInfo.avatarUrl);

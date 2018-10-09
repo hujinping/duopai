@@ -18,21 +18,8 @@ export default class NewClass extends cc.Component {
         this.loadProgress=root.getChildByName("loadProgress");
         this.loadProgressIcon=this.loadProgress.getChildByName("icon");
         this.loadProgress.getComponent(cc.ProgressBar).progress=0;
-        this.loadResource();
     }
 
-    loadResource(){
-        cc.loader.loadResDir("spine",this.progressCallback.bind(this),this.completeCallback.bind(this));
-    }
-
-    progressCallback(completedCount,totalCount,item){
-        this.loadProgress.getComponent(cc.ProgressBar).progress=completedCount/totalCount;
-        this.loadProgressIcon.x = this.loadProgress.getContentSize().width*(completedCount/totalCount)+25;
-    }
-
-    completeCallback(){
-        GameCtr.getInstance().emitEvent("loadComplete",null);
-    }
 
     adaptScreen(){
         var widget=this.loadProgress.getComponent(cc.Widget);
@@ -42,6 +29,4 @@ export default class NewClass extends cc.Component {
         widget.left=67;
         widget.right=83;
     }
-
-    
 }

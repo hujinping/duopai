@@ -229,7 +229,6 @@ export default class NewClass extends cc.Component {
             if(i==1)ad.x=-97;
             if(i==2)ad.x=96;
             if(i==3)ad.x=292; 
-        
         }
         this.initCarousel();
     }

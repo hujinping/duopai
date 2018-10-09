@@ -4,9 +4,7 @@ import UserManager from "../Common/UserManager";
 import WXCtr from "./WXCtr";
 import Game from "../UI/game/Game";
 import Start from "../UI/start/Start";
-import End from "../UI/end/End";
 import RankingView from "../UI/ranking/RankingView";
-import Revive from "../UI/end/Revive";
 import HttpCtr from "./HttpCtr";
 import Http from "../Common/Http";
 //import Collide from "../View/game/Collide";
@@ -18,7 +16,6 @@ export default class GameCtr {
     public static ins: GameCtr;
     public mGame: Game;
     private mStart: Start;
-    private mEnd: End;
     private eventTarget=null;
     public mRanking: RankingView;
     public static selfInfo=null;
@@ -30,7 +27,8 @@ export default class GameCtr {
     public static questionAnswer=-1;                    //当前问题答案  1 正确  2 错误
     public static powerValue = 10;                      //游戏体力值
     public static gameRoleCount=30;                     //游戏总人数    
-    public static roleTag = -1;                         //游戏角色   
+    public static roleIndex = 0;                        //当前游戏角色   
+    public static maxRoles=3;                           //游戏角色数量
     public static chickenCount=-1;                      //吃鸡数量
     public static joinGameCount=-1;                     //参与游戏次数
     public static score: number = 0;
@@ -41,6 +39,7 @@ export default class GameCtr {
     public static challengeSwitch = false;              //挑战开关(有人发起挑战时为true)
     public static reviveData=null;
     public static money=null;
+    public static setting=null;
 
 
     constructor() {
@@ -92,14 +91,19 @@ export default class GameCtr {
     setGame(game: Game) {
         this.mGame = game;
     }
+
+    getGame(){
+        return this.mGame;
+    }
     //设置start实例（开始）
     setStart(start: Start) {
         this.mStart = start;
     }
-    //设置end实例（结束）
-    setEnd(end: End) {
-        this.mEnd = end;
+
+    getStart(){
+        return this.mStart;
     }
+    
     //设置ranking实例（排行）
     setRanking(ranking: RankingView) {
         this.mRanking = ranking;
@@ -190,6 +194,16 @@ export default class GameCtr {
         }
         
         window.localStorage.setItem("selfInfo",JSON.stringify(selfInfo))
+    }
+
+    //根据图片路径设置sprite的spriteFrame
+    static loadImg(spr, imgUrl) {
+        cc.loader.load({
+            url: imgUrl,
+            type: 'png'
+        }, (err, texture) => {
+            spr.spriteFrame = new cc.SpriteFrame(texture);
+        });
     }
 
     getSelfInfoFromLocal(){

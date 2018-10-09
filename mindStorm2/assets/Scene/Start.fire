@@ -129,9 +129,6 @@
       "__id__": 2
     },
     "_enabled": true,
-    "loadingPrefab": {
-      "__uuid__": "43acc2ba-6376-4279-9289-d827a68b46ab"
-    },
     "startPrefab": {
       "__uuid__": "c87efde2-518a-4cbc-a466-d313dd1706c0"
     }

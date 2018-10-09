@@ -10,6 +10,7 @@ export default class NewClass extends cc.Component {
 
     onLoad(){
         this.initNode();
+        HttpCtr.getLoginAwardList(this.initRedPackages.bind(this));
     }
 
     initNode(){
@@ -34,9 +35,22 @@ export default class NewClass extends cc.Component {
         })
     }
 
+    initRedPackages(data){
+        console.log("log--------initRedPackages--->data=:",data);
+        for(let i=0;i<7;i++){
+            let day=this.node.getChildByName("day_0"+(i+1));
+            let icon_get=day.getChildByName("icon_get");
+            if(i<data.todaySum){
+                icon_get.active=true;
+            }else{
+                icon_get.active=false;
+            }
+        }
+    }
+
 
     doGetAward(day){
-        let icon_get=this._days[day].getChildByName("icon_get");
+        let icon_get=this._days[day-1].getChildByName("icon_get");
         icon_get.active=true;
         icon_get.scale=1.5;
         icon_get.runAction(cc.scaleTo(0.5,1.0));

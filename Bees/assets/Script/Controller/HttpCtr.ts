@@ -252,13 +252,10 @@ export default class HttpCtr {
         });
     }
 
-
-
     //关注福利
     static channelGift(query) {
         if (query.channel_id == 88 && query.guanzu) {
             //根据自己实际需求处理
-
         }
     }
 

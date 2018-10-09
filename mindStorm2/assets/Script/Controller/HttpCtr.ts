@@ -26,11 +26,11 @@ export default class HttpCtr {
                     HttpCtr.getUserInfo();
                     HttpCtr.getSettingConfig();
                     WXCtr.getUserInfo();
-                    HttpCtr.chanelCheck(WXCtr.launchOption.query);
-                    // HttpCtr.channelGift(WXCtr.launchOption.query);
-                    // HttpCtr.getShareConfig();
-                    // HttpCtr.getAdConfig();
-                    // HttpCtr.invitedByFriend(WXCtr.launchOption.query);
+                   
+                    if (WXCtr.launchOption.query) {
+                        HttpCtr.invitedByFriend(WXCtr.launchOption.query);
+                        HttpCtr.chanelCheck(WXCtr.launchOption.query);
+                    }
                 }
             },
             data: {
@@ -123,8 +123,10 @@ export default class HttpCtr {
         Http.send({
             url: Http.UrlConfig.GET_SETTING,
             success: (resp) => {
-                //console.log("获取游戏配置=：", resp);
+                console.log("获取游戏配置=：", resp);
                 GameCtr.isAudited=resp.ok;
+                GameCtr.setting=resp;
+                GameCtr.getInstance().getStart().refreshMoreNewGame()
             }
         });
     }
@@ -186,13 +188,14 @@ export default class HttpCtr {
 
      // 邀请好友
      static invitedByFriend(query) {
+        console.log("log----------被好友邀请--inviteID=:",query);
         Http.send({
             url: Http.UrlConfig.INVITED_BY_FRIEND,
-            success: () => { },
+            success: () => {},
             data: {
-                user_id: UserManager.user_id,
+                uid: UserManager.user_id,
                 voucher: UserManager.voucher,
-                friend_user_id: query.invite
+                touid: query.invite
             }
         });
     }
@@ -200,12 +203,16 @@ export default class HttpCtr {
     //邀请好友结果
     static getInviteResult(callback = null) {
         Http.send({
-            url: Http.UrlConfig.INVITE_RESULT,
+            url: Http.UrlConfig.SEEK_LOG,
             success: (res)=>{
-
+                console.log('log-----------邀请好友结果-=:', res);
+                if (callback) {
+                    callback(res.data);
+                }
             },
             data: {
-                user_id: UserManager.user_id,
+                uid: UserManager.user_id,
+                voucher: UserManager.voucher,
             }
         });
     }
@@ -277,12 +284,13 @@ export default class HttpCtr {
         Http.send({
             url: Http.UrlConfig.GET_TODAY,
             success: (res)=>{
-                if(res.code == Http.Code.OK){
+                console.log("log---------获取签到列表------res=:",res);
+                if(res.ret == 1){
                     if(callback) callback(res);
                 }
             },
             data: {
-                user_id: UserManager.user_id,
+                uid: UserManager.user_id,
                 voucher:UserManager.voucher
             }
         });

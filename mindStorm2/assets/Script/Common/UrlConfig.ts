@@ -25,7 +25,7 @@ export default class UrlConfig {
     static SET_FORMID="/weixinapi.php?method=setformId";                      //提交formid
     static INVITED_BY_FRIEND = "/weixinapi.php?method=addSeek";              //邀请朋友获得金币
     static SEEK_LOG="/weixinapi.php?method=SeekLog";                          //获取分享的朋友结果
-    static SHARE_GROUP = "/weixinapi.php?method=shareGroup";                 //分享到群
+    static SHARE_GROUP = "/weixinapi.php?method=shareGroup";                  //分享到群
     static GET_RANK_LIST="/weixinapi.php?method=getRankList";                 //获取排行榜
     static MONEY_TOTICES="/weixinapi.php?method=moneynotices";                //金币操作通知
     static GET_TODAY="/weixinapi.php?method=getToday";                        //获取签到列表

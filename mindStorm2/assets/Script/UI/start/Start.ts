@@ -5,13 +5,10 @@
 import GameCtr from "../../Controller/GameCtr";
 import WXCtr from "../../Controller/WXCtr";
 import ViewManager from "../../Common/ViewManager";
-import { MemoryDetector } from "../../Common/MemoryDetector";
-import {UILoader} from "../../Common/UILoader";
 import Util from "../../Common/Util";
 import UserManager from "../../Common/UserManager";
 import Http from "../../Common/Http";
 import AudioManager from '../../Common/AudioManager'
-import ToastView from "../view/ToastView";
 
 
 const { ccclass, property } = cc._decorator;
@@ -22,16 +19,6 @@ enum Direction{
 
 @ccclass
 export default class Start extends cc.Component {
-
-    @property(cc.Prefab)
-    roleCard_1: cc.Prefab = null; 
-
-    @property(cc.Prefab)
-    roleCard_2: cc.Prefab = null; 
-
-    @property(cc.Prefab)
-    roleCard_3: cc.Prefab = null; 
-
     @property(cc.Prefab)
     worldRank: cc.Prefab = null; 
     @property(cc.Prefab)
@@ -46,42 +33,37 @@ export default class Start extends cc.Component {
     @property(cc.Prefab)
     invite: cc.Prefab = null; 
 
+    @property(cc.Prefab)
+    roleSelete: cc.Prefab = null;
 
     @property(cc.Prefab)
-    roleSelete: cc.Prefab = null; 
-    
-    private totalRankNode=null;
+    ad: cc.Prefab = null; 
+
     private sliderData = null;
-    private roleListEventMask=null;
     private roleListArrowLeft=null;
     private roleListArrowRight=null;
     private lb_roleIndex=null;
-    private mask_up=null;
-    private mask_down=null;
     private btnsNode=null;
+    private adNode=null;
     private tex = null;
     private friendRankNode=null;
     private curRoleCardIndex=2;
-    private roleCardDistance=500;
-    private roleCardBoundary=1000;
-    private lastClickTime=-1;
-    private roleCardList=[];
     private roleCardInfoList=[];
 
+
+
     onLoad() {
+        GameCtr.roleIndex=Number(localStorage.getItem("roleIndex"));
         GameCtr.getInstance().setStart(this);
-        this.initCurrentRoleIndex();
         this.initNode();
-        this.initEvent();
         this.initSelfInfo();
+        this.initCurrentRole();
         AudioManager.getInstance().playMusic("audio/gameMusic");
     }
 
     start() {
         WXCtr.getFriendRankingData();                   //获取好友排行榜数据
         this.showGameCount();
-        //this.lb_roleIndex.getComponent(cc.Label).string=(GameCtr.roleTag+1)%3+1+"/3";
-
         if(window.wx != undefined){
             this.tex = new cc.Texture2D();
             window.sharedCanvas.width = 900;
@@ -94,27 +76,16 @@ export default class Start extends cc.Component {
         GameCtr.startGame();
     }
 
-    initCurrentRoleIndex(){
-        
-    }
-
     initNode(){
-        this.mask_up=this.node.getChildByName("mask_up");
-        this.mask_down=this.node.getChildByName("mask_down");
+        this.adNode=this.node.getChildByName("adNode")
         this.btnsNode=this.node.getChildByName("btnsNode");
         this.friendRankNode=this.node.getChildByName("friendRankNode");
-
-        this.btnsNode.active=false;
+        this.adNode.active=false;
         this.friendRankNode.active=false;
-
-        this.roleCardList.push(this.roleCard_1);
-        this.roleCardList.push(this.roleCard_2);
-        this.roleCardList.push(this.roleCard_3);
         this.initBtnsNode();
     }
 
     initBtnsNode(){
-        let btn_start=this.btnsNode.getChildByName("btn_start");
         let btn_role=this.btnsNode.getChildByName("roleFrame");
         let btn_invite=this.btnsNode.getChildByName("btn_invite");
         let btn_signIn=this.btnsNode.getChildByName("btn_signIn");
@@ -123,9 +94,8 @@ export default class Start extends cc.Component {
         let btn_gameEntrance1=this.btnsNode.getChildByName("btn_gameEntrance1");
         let btn_gameEntrance2=this.btnsNode.getChildByName("btn_gameEntrance2");
         
-        let btn_head=this.node.getChildByName("mask_up").getChildByName("headNode").getChildByName("headFrame");
+        let btn_head=this.btnsNode.getChildByName("headNode").getChildByName("headFrame");
 
-        this.initBtnsListener(btn_start);
         this.initBtnsListener(btn_totalRank);
         this.initBtnsListener(btn_morePower);
         this.initBtnsListener(btn_head);
@@ -147,8 +117,6 @@ export default class Start extends cc.Component {
             }else if(btnName=="btn_gameCount"){
                 if(!GameCtr.isAudited){return}
                 this.createMorePowerNode();
-            }else if(btnName=="btn_start"){
-                this.startFight();
             }else if(btnName=="headFrame"){
                 this.creatSelfInfoNode();
             }else if(btnName=="arrow_left"){
@@ -157,13 +125,12 @@ export default class Start extends cc.Component {
                 this.updateRoleCardPos(Direction.LEFT);
             }else if(btnName=="btn_invite"){
                 this.createInviteNode();
-                //console.log("log--------btn_invite  click");
             }else if(btnName=="btn_signIn"){
                 this.createSignInNode();
             }else if(btnName=="btn_gameEntrance1"){
-                console.log("log--------btn_gameEntrance1  click");
+                this.startFight();
             }else if(btnName=="btn_gameEntrance2"){
-                console.log("log--------btn_gameEntrance2  click");
+                this.startFight();
             }else if(btnName=="roleFrame"){
                 this.createRoleSeleteNode();
             }
@@ -176,7 +143,7 @@ export default class Start extends cc.Component {
     initSelfInfo(){
         let selfInfo=GameCtr.getInstance().getSelfInfoFromLocal();
         if(!selfInfo){return;}
-        let headNode=this.mask_up.getChildByName("headNode");
+        let headNode=this.btnsNode.getChildByName("headNode");
         let lb_name=headNode.getChildByName("lb_name");
         let lb_gold=headNode.getChildByName("lb_gold");
         let headImg=headNode.getChildByName("mask").getChildByName("headImg");
@@ -215,18 +182,21 @@ export default class Start extends cc.Component {
 
     creatSelfInfoNode(){
         if(this.node.parent.getChildByName("btn_head")){return;}
-        let btn_head=this.node.getChildByName("mask_up").getChildByName("headNode").getChildByName("headFrame")
+        let headNode=this.btnsNode.getChildByName("headNode");
+        let btn_head=headNode.getChildByName("headFrame");
+        
         let infoNode=cc.instantiate(this.selfInfoPrefab);
-        infoNode.parent=this.mask_up;
+        infoNode.parent=headNode;
         let selfInfo=GameCtr.getInstance().getSelfInfoFromLocal();
+        let name=selfInfo?selfInfo.nickName:"未授权玩家";
         infoNode.getComponent("selfInfo").setID("用户ID:"+UserManager.user_id);
-        infoNode.getComponent("selfInfo").setName(selfInfo.nickName);
+        infoNode.getComponent("selfInfo").setName(name);
 
         infoNode.getComponent("selfInfo").setGameCount("场次:"+GameCtr.joinGameCount);
         infoNode.getComponent("selfInfo").setChickenCount(GameCtr.chickenCount);
 
         infoNode.x=btn_head.x;
-        infoNode.y=btn_head.y-350;
+        infoNode.y=btn_head.y-100;
         infoNode.runAction(cc.sequence(
             cc.scaleTo(0.1,1.2),
             cc.scaleTo(0.1,1.0),
@@ -252,24 +222,11 @@ export default class Start extends cc.Component {
         roleSelete.parent=this.node;
     }
 
-
-    initEvent(){
-        GameCtr.getInstance().addListener("showStartFullly",this.onShowStartFullly.bind(this));
-        GameCtr.getInstance().addListener("getSelfInfoSuccess",this.onGetSelfInfoSuccess.bind(this));
-        GameCtr.getInstance().addListener("morePowerSuccess1",this.showGameCount.bind(this))
+    getMorePower(){
+        return this.node.getChildByName("morePower");
     }
 
-    onShowStartFullly(){
-        this.mask_up.runAction(cc.moveBy(0.5,cc.p(0,650)));
-        this.mask_down.runAction(cc.sequence(
-            cc.moveBy(0.5,cc.p(0,-150)),
-            cc.callFunc(function(){
-                // this.btnsNode.setLocalZOrder(1);
-                this.showBtnNodeAction();
-                //this.playRoleCardAction();
-            }.bind(this))
-        ));
-    }
+
 
     onGetSelfInfoSuccess(){
         this.initSelfInfo();
@@ -306,13 +263,7 @@ export default class Start extends cc.Component {
         this.friendRankNode.runAction(cc.moveTo(0.2,cc.p(0,-960)));
     }
 
-    showBtnNodeAction(){
-        this.btnsNode.active=true;
 
-        let btn_start=this.btnsNode.getChildByName("btn_start");
-        btn_start.scale=1.2;
-        btn_start.runAction(cc.scaleTo(0.2,1.0)); 
-    }
 
     showWorldRank() {
         console.log('获取世界排行数据???');
@@ -352,6 +303,13 @@ export default class Start extends cc.Component {
         }
     }
 
+    initCurrentRole(){
+        let roleHead=this.btnsNode.getChildByName("mask").getChildByName("headImg");
+        cc.loader.loadRes("textures/role_"+GameCtr.roleIndex, cc.SpriteFrame,  (err, spriteFrame)=> {
+            roleHead.getComponent(cc.Sprite).spriteFrame=spriteFrame;
+        });
+    }
+
     hideAuthTip(){
         let authTip=this.node.getChildByName("authTip");
         authTip.active=false;
@@ -362,8 +320,29 @@ export default class Start extends cc.Component {
         lb_gameCount.getComponent(cc.Label).string=GameCtr.powerValue+"/10";
     }
 
-      // 刷新子域的纹理
-      _updateSubDomainCanvas(){
+    refreshMoreNewGame(){
+        if(!GameCtr.isAudited){return;}
+        if(!GameCtr.setting.nav.banner||GameCtr.setting.nav.banner<=0){return;}
+        if(!this.adNode){return}
+        this.adNode.active=true;
+        
+        for(let i=0;i<GameCtr.setting.nav.banner.length;i++){
+            if(i>=4)return;
+            let ad=cc.instantiate(this.ad);
+            ad.parent=this.adNode;
+            ad.scale=1.0;
+            ad.getComponent("ad").init(GameCtr.setting.nav.banner[i]);
+            ad.y=-15;
+            if(i==0)ad.x=-292;
+            if(i==1)ad.x=-97;
+            if(i==2)ad.x=96;
+            if(i==3)ad.x=292; 
+        }
+    }
+
+
+    // 刷新子域的纹理
+    _updateSubDomainCanvas(){
         if (window.sharedCanvas != undefined && this.tex != null ) {//&& this.ndRanking.active && this.sprFreindRankScroll.node.active
             this.tex.initWithElement(window.sharedCanvas);
             this.tex.handleLoadedTexture();

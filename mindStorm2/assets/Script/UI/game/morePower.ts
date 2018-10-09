@@ -45,21 +45,21 @@ export default class NewClass extends cc.Component {
         }.bind(this))
     }
 
-    initEvent(){
-        GameCtr.getInstance().addListener("morePowerSuccess",this.onMorePower.bind(this))
-    }
+    // initEvent(){
+    //     //GameCtr.getInstance().addListener("morePowerSuccess",this.onMorePower.bind(this))
+    // }
 
     showPower(){
         let lb_powerValue=this.node.getChildByName("lb_power");
         lb_powerValue.getComponent(cc.Label).string=GameCtr.powerValue+"/10";
     }
 
-    onMorePower(){
-        this.close();
-    }
+    // onMorePower(){
+    //     this.close();
+    // }
 
     close(){
-        GameCtr.getInstance().removeListener("morePowerSuccess");
+        //GameCtr.getInstance().removeListener("morePowerSuccess");
         let mask=this.node.getChildByName("mask");
         mask.setContentSize(cc.size(1080,2436));
         mask.runAction(cc.fadeOut(0.15));

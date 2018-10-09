@@ -5,8 +5,8 @@
       "main": true,
       "url": "app://editor/index.html",
       "windowType": "dockable",
-      "x": 314,
-      "y": 19,
+      "x": 625,
+      "y": 217,
       "width": 1264,
       "height": 1023,
       "layout": {
@@ -99,8 +99,7 @@
         "scene",
         "timeline"
       ]
-    },
-    "window-1539049013977": {}
+    }
   },
   "panels": {
     "builder": {
