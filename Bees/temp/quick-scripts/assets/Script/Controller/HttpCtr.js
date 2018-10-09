@@ -122,7 +122,6 @@ var HttpCtr = /** @class */ (function () {
             success: function (resp) {
                 console.log("获取游戏配置=：", resp);
                 GameCtr_1.default.isAudited = resp.ok;
-                //GameCtr.isAudited =false;
                 console.log("获取游戏配置 GameCtr.isAudited=：", GameCtr_1.default.isAudited);
                 GameCtr_1.default.setting = resp;
                 GameCtr_1.default.advTime = resp.advTime;

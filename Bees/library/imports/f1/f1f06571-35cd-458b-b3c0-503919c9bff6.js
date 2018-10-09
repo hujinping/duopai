@@ -230,6 +230,10 @@ var Game = /** @class */ (function (_super) {
                 }
                 else {
                     if (_this._vedioCD > 0) {
+                        if (!GameCtr_1.default.isAudited) {
+                            GameCtr_1.default.getInstance().getGame().showToast("视频冷却中...");
+                            return;
+                        }
                         WXCtr_1.default.share({ callback: callFunc_1 });
                         return;
                     }

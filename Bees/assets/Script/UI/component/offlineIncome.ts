@@ -58,6 +58,10 @@ export default class NewClass extends cc.Component {
                 }else{
                     HttpCtr.openClick(GameCtr.clickType.offLineVedio); 
                     if(GameCtr.getInstance().getGame().getVedioCD()>0){
+                        if(!GameCtr.isAudited){
+                            GameCtr.getInstance().getGame().showToast("视频冷却中...");
+                            return;
+                        }
                         WXCtr.share({callback:callFunc});
                         return;
                     }

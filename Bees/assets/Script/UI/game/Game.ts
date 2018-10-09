@@ -288,10 +288,13 @@ export default class Game extends cc.Component {
                     WXCtr.share({callback:callFunc});
                 }else{
                     if(this._vedioCD>0){
+                        if(!GameCtr.isAudited){
+                            GameCtr.getInstance().getGame().showToast("视频冷却中...");
+                            return;
+                        }
                         WXCtr.share({callback:callFunc});
                         return;
                     }
-
                     WXCtr.offCloseVideo();
                     WXCtr.showVideoAd();
                     WXCtr.onCloseVideo((res) => {

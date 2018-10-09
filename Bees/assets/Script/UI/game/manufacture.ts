@@ -281,6 +281,10 @@ export default class NewClass extends cc.Component {
                     WXCtr.share({callback:callFunc});
                 }else{
                     if(GameCtr.getInstance().getGame().getVedioCD()>0){
+                        if(!GameCtr.isAudited){
+                            GameCtr.getInstance().getGame().showToast("视频冷却中...");
+                            return;
+                        }
                         WXCtr.share({callback:callFunc});
                         return;
                     }

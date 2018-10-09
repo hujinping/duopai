@@ -290,8 +290,8 @@
     "relativePath": "Res\\prefab\\glassPipeline.prefab"
   },
   "b7f1ac3a-02d2-49d9-b967-048d86e1fb20": {
-    "asset": 1538300417402,
-    "meta": 1538961755674,
+    "asset": 1539049522736,
+    "meta": 1539049522753,
     "relativePath": "Res\\prefab\\honeycomb.prefab"
   },
   "6a6ed8a6-51c1-4f60-b404-85698db56099": {
@@ -1595,8 +1595,8 @@
     "relativePath": "Scene"
   },
   "bb5b00a5-8f96-459e-81b4-6d04a7d42443": {
-    "asset": 1538990531945,
-    "meta": 1538990531953,
+    "asset": 1539049554422,
+    "meta": 1539049554428,
     "relativePath": "Scene\\Game.fire"
   },
   "9b775747-d125-485e-85b7-8e3d7d7a3f8a": {
@@ -1803,11 +1803,6 @@
     "asset": 1538300417458,
     "meta": 1538961757599,
     "relativePath": "Script\\UI\\component\\ufo.ts"
-  },
-  "372d59c7-a14b-4ead-a020-5338ab512e91": {
-    "asset": 1538300417459,
-    "meta": 1538961757615,
-    "relativePath": "Script\\UI\\component\\ufoAward.ts"
   },
   "8d89db71-99c8-42b9-863a-97ad688b5841": {
     "asset": 1538961739385,
@@ -2059,11 +2054,6 @@
     "meta": 1538984291210,
     "relativePath": "Script\\Controller\\GameCtr.ts"
   },
-  "e7a76375-f30c-400f-a6ea-1c81f13bf28a": {
-    "asset": 1538983881968,
-    "meta": 1538984291290,
-    "relativePath": "Script\\Controller\\HttpCtr.ts"
-  },
   "41620d55-dbd5-4c9f-9059-02d0651a26a3": {
     "asset": 1538985075459,
     "meta": 1538985084771,
@@ -2079,19 +2069,29 @@
     "meta": 1538988940443,
     "relativePath": "Script\\Controller\\WXCtr.ts"
   },
-  "f03c5278-7d83-4f8b-8055-eacea6bef940": {
-    "asset": 1538988890655,
-    "meta": 1538988940569,
-    "relativePath": "Script\\UI\\component\\offlineIncome.ts"
+  "f1f06571-35cd-458b-b3c0-503919c9bff6": {
+    "asset": 1539048283400,
+    "meta": 1539048360645,
+    "relativePath": "Script\\UI\\game\\Game.ts"
   },
   "275a41e1-1328-4aa3-9d7f-0bcffd7b7187": {
-    "asset": 1538988936299,
-    "meta": 1538988940847,
+    "asset": 1539048299004,
+    "meta": 1539048360646,
     "relativePath": "Script\\UI\\game\\manufacture.ts"
   },
-  "f1f06571-35cd-458b-b3c0-503919c9bff6": {
-    "asset": 1538989353103,
-    "meta": 1538989358601,
-    "relativePath": "Script\\UI\\game\\Game.ts"
+  "f03c5278-7d83-4f8b-8055-eacea6bef940": {
+    "asset": 1539048717247,
+    "meta": 1539048809544,
+    "relativePath": "Script\\UI\\component\\offlineIncome.ts"
+  },
+  "372d59c7-a14b-4ead-a020-5338ab512e91": {
+    "asset": 1539048678260,
+    "meta": 1539048809545,
+    "relativePath": "Script\\UI\\component\\ufoAward.ts"
+  },
+  "e7a76375-f30c-400f-a6ea-1c81f13bf28a": {
+    "asset": 1539049008411,
+    "meta": 1539049010049,
+    "relativePath": "Script\\Controller\\HttpCtr.ts"
   }
 }

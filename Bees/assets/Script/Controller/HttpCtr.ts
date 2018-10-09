@@ -125,7 +125,6 @@ export default class HttpCtr {
             success: (resp) => {
                 console.log("获取游戏配置=：", resp);
                 GameCtr.isAudited =resp.ok;
-                //GameCtr.isAudited =false;
                 console.log("获取游戏配置 GameCtr.isAudited=：", GameCtr.isAudited);
                 GameCtr.setting = resp;
                 GameCtr.advTime =resp.advTime;
