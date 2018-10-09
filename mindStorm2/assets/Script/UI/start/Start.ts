@@ -58,6 +58,7 @@ export default class Start extends cc.Component {
         this.initNode();
         this.initSelfInfo();
         this.initCurrentRole();
+        this.refreshMoreNewGame();
         AudioManager.getInstance().playMusic("audio/gameMusic");
     }
 
