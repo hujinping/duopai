@@ -3,6 +3,7 @@ import UserManager from "../Common/UserManager";
 import WXCtr from "./WXCtr";
 import GameCtr from "./GameCtr";
 import ViewManager from "../Common/ViewManager";
+import Util from "../Common/Util";
 
 /**
  * 所有Http请求统一控制
@@ -60,18 +61,17 @@ export default class HttpCtr {
 
     //获取个人信息
     static getUserInfo(callBack = null) {
-        
-        console.log("log------uid=:",typeof(UserManager.user_id));
         Http.send({
             url: Http.UrlConfig.GET_USERINFO,
             success: (resp) => {
                 if (resp.success == Http.Code.OK) {
+                    console.log("log-----------getUserInfo=:",resp);
                     UserManager.user = resp.user;
-                    window.localStorage.setItem("money",resp.user.money);
-                    console.log("log------------UserManager.user=:",resp);
                     GameCtr.chickenCount=resp.user.Sum;
+                    GameCtr.chickenCount=resp.user.Sum==false?0:GameCtr.chickenCount;
                     GameCtr.joinGameCount=resp.user.SumLog;
                     GameCtr.money=resp.user.money;
+                    GameCtr.getInstance().getStart().initSelfInfo();
                     if (callBack) {
                         callBack(resp.user);
                     }
@@ -126,7 +126,19 @@ export default class HttpCtr {
                 console.log("获取游戏配置=：", resp);
                 GameCtr.isAudited=resp.ok;
                 GameCtr.setting=resp;
-                GameCtr.getInstance().getStart().refreshMoreNewGame()
+                GameCtr.getInstance().getStart().doBanner();
+                GameCtr.getInstance().getStart().refreshMoreNewGame();
+                let vedioInfo=localStorage.getItem("VideoTimes");
+                if(!vedioInfo ){
+                    GameCtr.vedioTimes=GameCtr.setting.advSum;
+                }else {
+                    let obj=JSON.parse(vedioInfo);
+                    if(obj.day!=Util.getCurrTimeYYMMDD()){
+                        GameCtr.vedioTimes=GameCtr.setting.advSum;
+                    }else{
+                        GameCtr.vedioTimes=obj.times;
+                    }
+                }
             }
         });
     }
@@ -161,7 +173,7 @@ export default class HttpCtr {
                         callback();
                     }
                 } else if (resp.ret == 0) {
-                    ViewManager.toast(resp.msg);
+                    //ViewManager.toast(resp.msg);
                 }
             }
         });
@@ -171,17 +183,17 @@ export default class HttpCtr {
     static getAdConfig() {
         Http.send({
             url: Http.UrlConfig.ADConfig,
-            success: (res)=>{
+            success: (res) => {
                 console.log("获取广告配置", res);
-                if(res.data.videoid){
-                    WXCtr.setVideoAd(res.data.videoid);
-                }
-                if(res.data.advid){
+                WXCtr.setVideoAd();
+                if (res.data.advid) {
                     WXCtr.bannerId = res.data.advid;
+                    WXCtr.setBannerAd(100,300);
                 }
             },
             data: {
-                user_id: UserManager.user_id
+                uid: UserManager.user_id,
+                voucher: UserManager.voucher
             }
         });
     }
@@ -240,44 +252,7 @@ export default class HttpCtr {
         }
     }
 
-    // //获取我的战绩
-    // static getSelfArchieve(callback = null) {
-    //     Http.send({
-    //         url: Http.UrlConfig.SELF_ARCHIEVE,
-    //         success: (res)=>{
-    //             if(res.code == Http.Code.OK){
-    //                 if(callback) callback(res);
-    //             }
-    //         },
-    //         data: {
-    //             user_id: UserManager.user_id,
-    //         }
-    //     });
-    // }
 
-    // //获取今日最强数据
-    // static getTodayList(callback = null) {
-    //     Http.send({
-    //         url: Http.UrlConfig.TODAY_LIST,
-    //         success: (res)=>{
-    //             if(res.code == Http.Code.OK){
-    //                 if(callback) callback(res);
-    //             }
-    //         },
-    //     });
-    // }
-
-    //获取历史最强数据
-    // static getHistoryList(callback = null) {
-    //     Http.send({
-    //         url: Http.UrlConfig.HISTORY_LIST,
-    //         success: (res)=>{
-    //             if(res.code == Http.Code.OK){
-    //                 if(callback) callback(res);
-    //             }
-    //         }
-    //     });
-    // }
 
     //获取签到列表
     static getLoginAwardList(callback = null) {
@@ -305,7 +280,7 @@ export default class HttpCtr {
                 if(res.ret==1){
                     callback(res.todaySum);
                 }else{
-                    ViewManager.toast(res.msg);
+                    GameCtr.getInstance().getStart().showToast(res.msg);
                 }
             },
             data:{
@@ -315,38 +290,26 @@ export default class HttpCtr {
         });
     }
 
-
-    static getRankList(type,callback){
-        Http.send({
-            url: Http.UrlConfig.GET_RANK_LIST,
-            success: (res) => { 
-                if(res.code == Http.Code.OK){
-                    callback(true);
-                }else{
-                    ViewManager.toast(res.msg);
-                    callback(false);
-                }
-            },
-            data:{
-                uid:UserManager.user_id,
-                type:type
-            }
-        });
-    }
-
     //开始游戏时获取匹配机器人
     static getGameStartInfo(callback){
         Http.send({
             url: Http.UrlConfig.GET_GAME_START,
             success: (res) => { 
-                //console.log("log------------getGameStartInfo---res=:",res);
+                console.log("log------------getGameStartInfo---res=:",res);
                 if(res.ret == 1){
                     callback(res.data);
+                    GameCtr.getInstance().getGame().setNetTipVisit(false);
                 }else{
-                    ViewManager.toast(res.msg);
-                    //callback(false);
+                    GameCtr.getInstance().getGame().showToast(res.msg);
                 }
             },
+
+            error:()=>{
+                //网络连接错误 界面中显示网络错误提示 并尝试再次向服务器发送请求
+                GameCtr.getInstance().getGame().setNetTipVisit(true);
+                GameCtr.getInstance().getGame().getStartInfo();
+            },
+
             data:{
                 uid:UserManager.user_id,
                 voucher:UserManager.voucher
@@ -363,7 +326,7 @@ export default class HttpCtr {
                 if(res.ret == 1){
                     GameCtr.joinGameCount++;
                 }else{
-                    ViewManager.toast(res.msg);
+                    GameCtr.getInstance().getGame().showToast(res.msg);
                 }
             },
             data:{
@@ -382,8 +345,7 @@ export default class HttpCtr {
                     GameCtr.questionAnswer=res.info.ok;
                     callback(res.info.title);
                 }else{
-                    ViewManager.toast(res.msg);
-                    //callback(false);
+                    GameCtr.getInstance().getGame().showToast(res.msg);
                 }
             },
             data:{
@@ -400,9 +362,9 @@ export default class HttpCtr {
             success: (res) => { 
                 if(res.ret==1){
                     GameCtr.chickenCount++;
+                    WXCtr.submitScoreToWx(GameCtr.chickenCount);
                 }else{
-                    ViewManager.toast(res.msg);
-                    //callback(false);
+                    GameCtr.getInstance().getGame().showToast(res.msg);
                 }
             },
             data:{
@@ -419,8 +381,7 @@ export default class HttpCtr {
                 if(res.ret==1){
                     console.log("log-----------金币上报成功--------------");
                 }else{
-                    ViewManager.toast(res.msg);
-                    console.log("log-----------金币上报失败--------------");
+                    GameCtr.getInstance().getStart().showToast(res.msg);
                 }
             },
             data:{

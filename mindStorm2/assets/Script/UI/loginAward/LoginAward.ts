@@ -30,17 +30,7 @@ export default class LoginAward extends cc.Component {
         });
     }
 
-    signIn(event) {
-        let btn = event.target.getComponent(cc.Button);
-        btn.interactable = false;
-        HttpCtr.sign(Util.getCurrTimeYYMMDD(), (res)=>{
-            btn.interactable = true;
-            if(res){
-                ViewManager.toast("签到成功");
-                this.setAwardDatas();
-            }
-        });
-    }
+
 
     close() {
         if (!this.node.parent) {

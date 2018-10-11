@@ -74,7 +74,6 @@ export default class NewClass extends cc.Component {
                             GameCtr.getInstance().getGame().showToast("视频未看完，无法领取奖励");
                         }
                     });
-                   
                 }
                 
             }else if(e.target.getName()=="btn_close"){

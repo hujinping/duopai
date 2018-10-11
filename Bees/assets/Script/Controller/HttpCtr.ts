@@ -133,12 +133,12 @@ export default class HttpCtr {
                 GameCtr.getInstance().getLoding().refreshMoreNewGame();
                 let vedioInfo=localStorage.getItem("VideoTimes");
                 if(!vedioInfo ){
-                    GameCtr.vedioTimes=GameCtr.setting.advSum;
+                    GameCtr.vedioTimes=6;//GameCtr.setting.advSum;
                 }else {
                     let obj=JSON.parse(vedioInfo);
                     
                     if(obj.day!=Util.getCurrTimeYYMMDD()){
-                        GameCtr.vedioTimes=GameCtr.setting.advSum;
+                        GameCtr.vedioTimes=6;//GameCtr.setting.advSum;
                     }else{
                         GameCtr.vedioTimes=obj.times;
                     }

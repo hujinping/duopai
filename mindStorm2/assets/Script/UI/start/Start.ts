@@ -37,7 +37,13 @@ export default class Start extends cc.Component {
     roleSelete: cc.Prefab = null;
 
     @property(cc.Prefab)
-    ad: cc.Prefab = null; 
+    ad:cc.Prefab = null; 
+
+    @property(cc.Prefab)
+    toast:cc.Prefab=null;
+
+    @property(cc.Prefab)
+    bgMusic:cc.Prefab=null;
 
     private sliderData = null;
     private roleListArrowLeft=null;
@@ -45,6 +51,7 @@ export default class Start extends cc.Component {
     private lb_roleIndex=null;
     private btnsNode=null;
     private adNode=null;
+    private mask=null;
     private tex = null;
     private friendRankNode=null;
     private curRoleCardIndex=2;
@@ -55,21 +62,35 @@ export default class Start extends cc.Component {
     onLoad() {
         GameCtr.roleIndex=Number(localStorage.getItem("roleIndex"));
         GameCtr.getInstance().setStart(this);
+        GameCtr.isFighting=false;
         this.initNode();
+        this.initEvent();
         this.initSelfInfo();
         this.initCurrentRole();
         this.refreshMoreNewGame();
-        AudioManager.getInstance().playMusic("audio/gameMusic");
+        this.initBgMusic();
     }
 
     start() {
         WXCtr.getFriendRankingData();                   //获取好友排行榜数据
         this.showGameCount();
-        if(window.wx != undefined){
-            this.tex = new cc.Texture2D();
-            window.sharedCanvas.width = 900;
-            window.sharedCanvas.height = 1200;
+    }
+
+    initBgMusic(){
+        while(cc.find("Canvas").getChildByTag(999999)){
+            cc.find("Canvas").removeChildByTag(999999);
         }
+        let bgMusic=cc.instantiate(this.bgMusic);
+        bgMusic.parent=cc.find("Canvas");
+        bgMusic.tag=999999;
+    }
+
+    initEvent(){
+        cc.game.on(cc.game.EVENT_SHOW,()=>{
+            this.initBgMusic();
+        });
+        cc.game.on(cc.game.EVENT_HIDE,()=>{
+        });  
     }
 
     //开始游戏
@@ -78,9 +99,11 @@ export default class Start extends cc.Component {
     }
 
     initNode(){
-        this.adNode=this.node.getChildByName("adNode")
+        this.mask=this.node.getChildByName("mask");
+        this.adNode=this.node.getChildByName("adNode");
         this.btnsNode=this.node.getChildByName("btnsNode");
         this.friendRankNode=this.node.getChildByName("friendRankNode");
+        this.mask.active=false;
         this.adNode.active=false;
         this.friendRankNode.active=false;
         this.initBtnsNode();
@@ -117,22 +140,22 @@ export default class Start extends cc.Component {
                 this.showWorldRank();
             }else if(btnName=="btn_gameCount"){
                 if(!GameCtr.isAudited){return}
+                this.setMaskVisit(true);
                 this.createMorePowerNode();
             }else if(btnName=="headFrame"){
                 this.creatSelfInfoNode();
-            }else if(btnName=="arrow_left"){
-                this.updateRoleCardPos(Direction.RIGHT);
-            }else if(btnName=="arrow_right"){
-                this.updateRoleCardPos(Direction.LEFT);
             }else if(btnName=="btn_invite"){
+                this.setMaskVisit(true);
                 this.createInviteNode();
             }else if(btnName=="btn_signIn"){
+                this.setMaskVisit(true);
                 this.createSignInNode();
             }else if(btnName=="btn_gameEntrance1"){
                 this.startFight();
             }else if(btnName=="btn_gameEntrance2"){
                 this.startFight();
             }else if(btnName=="roleFrame"){
+                this.setMaskVisit(true);
                 this.createRoleSeleteNode();
             }
 
@@ -227,12 +250,6 @@ export default class Start extends cc.Component {
         return this.node.getChildByName("morePower");
     }
 
-
-
-    onGetSelfInfoSuccess(){
-        this.initSelfInfo();
-    }
-
     roleCardAcion1(){
         for(let i=0;i<this.roleCardInfoList.length;i++){
             this.roleCardInfoList[i].node.active=true;
@@ -264,7 +281,9 @@ export default class Start extends cc.Component {
         this.friendRankNode.runAction(cc.moveTo(0.2,cc.p(0,-960)));
     }
 
-
+    setMaskVisit(bool){
+        this.mask.active=bool;
+    }
 
     showWorldRank() {
         console.log('获取世界排行数据???');
@@ -279,6 +298,11 @@ export default class Start extends cc.Component {
                 voucher:UserManager.voucher,
             }
         });
+    }
+
+    doBanner(){
+        this.unschedule(this.refreshBanner.bind(this));
+        this.schedule(this.refreshBanner.bind(this),GameCtr.setting.advTime);
     }
 
 
@@ -297,7 +321,7 @@ export default class Start extends cc.Component {
             GameCtr.powerValue--;
         }else{
             if(!GameCtr.isAudited){
-                ViewManager.toast("没有体力值");
+                GameCtr.getInstance().getStart().showToast("没有体力值");
                 return;
             }
             this.createMorePowerNode();
@@ -342,16 +366,24 @@ export default class Start extends cc.Component {
     }
 
 
-    // 刷新子域的纹理
-    _updateSubDomainCanvas(){
-        if (window.sharedCanvas != undefined && this.tex != null ) {//&& this.ndRanking.active && this.sprFreindRankScroll.node.active
-            this.tex.initWithElement(window.sharedCanvas);
-            this.tex.handleLoadedTexture();
-            //this.sprFreindRankScroll.spriteFrame = new cc.SpriteFrame(this.tex);
-        }
+    showToast(msg){
+        if(cc.find("Canvas").getChildByName("toast")){return}
+        let toast=cc.instantiate(this.toast);
+        toast.parent=cc.find("Canvas");
+        toast.setLocalZOrder(1000);
+        toast.getComponent("toast").show(msg);
+        toast.runAction(cc.sequence(
+            cc.delayTime(1.0),
+            cc.fadeOut(0.3),
+            cc.callFunc(()=>{
+                toast.destroy();
+            })
+        ));
     }
 
-    update () {
-        this._updateSubDomainCanvas()
+    refreshBanner(){
+        WXCtr.setBannerAd(300,100);
+        this.unschedule(this.refreshBanner.bind(this));
+        this.scheduleOnce(this.refreshBanner.bind(this),GameCtr.setting.advTime)
     }
 }

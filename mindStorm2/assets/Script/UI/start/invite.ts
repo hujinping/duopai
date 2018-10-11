@@ -1,5 +1,7 @@
 import HttpCtr from "../../Controller/HttpCtr";
 import UserManager from "../../Common/UserManager";
+import GameCtr from "../../Controller/GameCtr";
+import AudioManager from "../../Common/AudioManager";
 
 const {ccclass, property} = cc._decorator;
 @ccclass
@@ -24,8 +26,10 @@ export default class NewClass extends cc.Component {
 
     initBtnEvent(btn){
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
+            AudioManager.getInstance().playSound("audio/btnCick");
             if(e.target.getName()=="btn_close"){
                 this.node.destroy();
+                GameCtr.getInstance().getStart().setMaskVisit(false);
             }else if(e.target.getName()=="btn_get"){
                 //do sth
             }

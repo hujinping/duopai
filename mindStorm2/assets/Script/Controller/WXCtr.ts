@@ -4,6 +4,7 @@ import UserManager from "../Common/UserManager";
 import ViewManager from "../Common/ViewManager";
 import HttpCtr from "./HttpCtr";
 import GameCtr from "./GameCtr";
+import Util from "../Common/Util";
 
 const { ccclass, property } = cc._decorator;
 
@@ -164,9 +165,7 @@ export default class WXCtr {
                     WXCtr.authed = true;
                     HttpCtr.saveUserInfo(res);
                     GameCtr.getInstance().saveSelfInfoToLocal(res.userInfo);
-                    GameCtr.getInstance().emitEvent("getSelfInfoSuccess",null);
-                    GameCtr.getInstance().emitEvent("getSelfInfoSuccess1",null);
-                    //console.log("获取自己信息返回值", res);
+                    GameCtr.getInstance().getStart().initSelfInfo();
                 },
                 fail: function (res) {
                     console.log("获取自己信息失败", res);
@@ -187,6 +186,7 @@ export default class WXCtr {
                     
                     WXCtr.getShareConfig();
                     WXCtr.getReviveData();
+                    HttpCtr.getAdConfig();
                 }
             })
         }
@@ -322,27 +322,30 @@ export default class WXCtr {
     }
 
     //视频广告
-    static setVideoAd(videoId) {
-        if (window.wx != undefined) {
-            WXCtr.videoAd = wx.createRewardedVideoAd({ adUnitId: videoId });
+    static setVideoAd() {
+        if (window.wx != undefined && wx.createRewardedVideoAd) {
+            WXCtr.videoAd = wx.createRewardedVideoAd({ adUnitId:"adunit-cf448a58c6f5d542"});
             WXCtr.videoAd.onLoad(() => {
-                console.log('banner 广告加载成功')
             });
             WXCtr.videoAd.load();
             WXCtr.videoAd.onError(err => {
+                WXCtr.videoAd = null; 
                 console.log(err)
-            });
+            }); 
         }
     }
 
     static showVideoAd() {
         if (WXCtr.videoAd) {
             WXCtr.videoAd.show();
+            GameCtr.vedioTimes--;
+            console.log("今天剩余观看视频次数为：", GameCtr.vedioTimes);
+            localStorage.setItem("VideoTimes", JSON.stringify({ day: Util.getCurrTimeYYMMDD(), times: GameCtr.vedioTimes }));
+            //GameCtr.getInstance().getGame().setVedioCD()
         }
     }
 
     static onCloseVideo(callback) {
-        // 用户点击了【关闭广告】按钮
         let call: Function = (res) => {
             if (res && res.isEnded || res === undefined) {
                 // 正常播放结束，可以下发游戏奖励
@@ -354,70 +357,56 @@ export default class WXCtr {
                 callback(false);
             }
         };
-        WXCtr.videoAd.onClose(call);
+        if(WXCtr.videoAd){
+            WXCtr.videoAd.onClose(call);
+        }
         WXCtr.videoAdCallback = call;
     }
 
     static offCloseVideo() {
         if (WXCtr.videoAdCallback) {
-            WXCtr.videoAd.offClose(WXCtr.videoAdCallback);
+            if(WXCtr.videoAd){
+                WXCtr.videoAd.offClose(WXCtr.videoAdCallback);
+            }
+            WXCtr.videoAdCallback = null;
         }
     }
 
     //banner广告
-    static createBannerAd(height = null) {
-        if (window.wx != undefined) {
-            if (WXCtr.bannerAd) {
+    static setBannerAd(height = null, width = null) {
+        if (window.wx != undefined && wx.createBannerAd) {
+            if (WXCtr.bannerAd && WXCtr.bannerAd.destroy) {
                 WXCtr.bannerAd.destroy();
             }
-            let top = 100;
+            let top = 140;
             if (height) top = height;
+            let widthNum = 375;
+            let left = 0;
+            if (width) {
+                widthNum = width;
+                let realWidth = width * WXCtr.widthRatio;
+                realWidth = realWidth < 300 ? 300 : realWidth;
+                left = (WXCtr.screenWidth - realWidth) / 2;
+            }
             WXCtr.bannerAd = wx.createBannerAd({
-                adUnitId: WXCtr.bannerId,
+                adUnitId:"adunit-4d43fbf2baf8747c",
                 style: {
-                    left: 0,
+                    left: left,
                     top: WXCtr.screenHeight - top * WXCtr.heightRatio,
-                    width: 375 * WXCtr.widthRatio,
+                    width: widthNum * WXCtr.widthRatio,
                 }
             });
             WXCtr.bannerAd.show();
+            WXCtr.bannerAd.onError(() => {
+            })
         }
     }
 
     static hideBannerAd() {
-        if (WXCtr.bannerAd) {
-            WXCtr.bannerAd.destroy();
+        if (cc.isValid(WXCtr.bannerAd) && WXCtr.bannerAd) {
+            WXCtr.bannerAd.hide();
         }
     }
-
-    // //分享 revive是否是复活分享
-    // static share(type) {
-    //     if (window.wx != undefined) {
-    //         window.wx.shareAppMessage({
-    //             title: WXCtr.shareTitle,
-    //             imageUrl: WXCtr.shareImg,
-    //             query: "",
-    //             success: (res) => {
-    //                 //console.log("分享成功回调返回值", res);
-    //                 if (type=="revive") {
-    //                     GameCtr.getInstance().emitEvent("shareSuccess",null);
-    //                     if (res.shareTickets != undefined && res.shareTickets.length > 0) {
-    //                         console.log("分享到群成功");
-    //                         WXCtr.getWxShareInfo(res.shareTickets[0],'revive');
-    //                     } else {
-    //                         //GameCtr.getGold("friend");
-    //                     }
-    //                 }else if("morePower"){
-    //                     GameCtr.powerValue++;
-    //                     GameCtr.getInstance().emitEvent("morePowerSuccess",null);
-    //                     GameCtr.getInstance().emitEvent("morePowerSuccess1",null);
-    //                 }
-    //             },
-            
-    //         });
-    //     } else {
-    //     }
-    // }
 
     //分享 
     static share(data?: {
@@ -580,6 +569,15 @@ export default class WXCtr {
                 messageType: Message_Type.Get_FriendData,
                 LIST_KEY: "Rank_Data"
             });
+        }
+    }
+
+    //显示好友排行
+    static showFriendRank(){
+        if(window.wx !=undefined){
+            window.wx.postMessage({
+                messageType:Message_Type.Show_WholeRanking,
+            })
         }
     }
 

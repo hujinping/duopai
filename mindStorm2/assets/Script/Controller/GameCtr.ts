@@ -7,8 +7,6 @@ import Start from "../UI/start/Start";
 import RankingView from "../UI/ranking/RankingView";
 import HttpCtr from "./HttpCtr";
 import Http from "../Common/Http";
-//import Collide from "../View/game/Collide";
-
 const { ccclass, property } = cc._decorator;
 
 @ccclass
@@ -26,7 +24,7 @@ export default class GameCtr {
     public static isMatchingOver=false;
     public static questionAnswer=-1;                    //当前问题答案  1 正确  2 错误
     public static powerValue = 10;                      //游戏体力值
-    public static gameRoleCount=30;                     //游戏总人数    
+    public static gameRoleCount=24;                     //游戏总人数    
     public static roleIndex = 0;                        //当前游戏角色   
     public static maxRoles=3;                           //游戏角色数量
     public static chickenCount=-1;                      //吃鸡数量
@@ -40,6 +38,8 @@ export default class GameCtr {
     public static reviveData=null;
     public static money=null;
     public static setting=null;
+    public static vedioTimes=6;
+    public static isFighting=false;
 
 
     constructor() {
@@ -171,16 +171,6 @@ export default class GameCtr {
         }
     }
 
-    //游戏结束
-    static gameOver() {
-        if (GameCtr.ins) {
-            WXCtr.submitScoreToWx(GameCtr.score);
-            HttpCtr.sendScore();
-            // if(GameCtr.surplusReviveTimes > 0) {
-            //     GameCtr.showRevive();
-            // }
-        }
-    }
 
     saveSelfInfoToLocal(info){
         let selfInfo={

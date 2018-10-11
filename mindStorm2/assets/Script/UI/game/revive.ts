@@ -1,4 +1,3 @@
-import { UILoader } from "../../Common/UILoader";
 import WXCtr from "../../Controller/WXCtr";
 import AudioManager from "../../Common/AudioManager";
 import GameCtr from "../../Controller/GameCtr";
@@ -37,8 +36,21 @@ export default class NewClass extends cc.Component {
             if(btnName=="btn_close"){
                 this.close();
             }else if(btnName=="btn_revive"){
-               
-                WXCtr.share("revive");
+                //分享屏蔽 看视频复活
+                GameCtr.getInstance().getGame().doRivive();
+                // if(GameCtr.vedioTimes<0){
+                //     WXCtr.offCloseVideo();
+                //     WXCtr.showVideoAd();
+                //     WXCtr.onCloseVideo((res) => {
+                //         if (res) {
+                //             GameCtr.getInstance().getGame().doRivive();
+                //         }else{
+                //             GameCtr.getInstance().getGame().showToast("视频未看完，无法领取奖励");
+                //         }
+                //     });
+                // }else{
+                //     GameCtr.getInstance().getGame().showToast("今日视频已看完");
+                // }
             }
         }.bind(this))
     }

@@ -33,7 +33,7 @@ export default class NewClass extends cc.Component {
                 this.node.destroy();
             }else{
                 if(!GameCtr.isAudited){
-                    ViewManager.toast("没有体力值");
+                    GameCtr.getInstance().getGame().showToast("没有体力值");
                     return
                 }
                 if(this.node.parent.getChildByName("morePower")){return}

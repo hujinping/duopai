@@ -210,6 +210,7 @@ class RankListHandler {
             });
 
             this.friends = data;
+            console.log("log-------------好友榜数据-----this.friends=：", this.friends);
         });
 
         this.info(["selfOpenId"]).then(data => {

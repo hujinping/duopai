@@ -42,7 +42,7 @@ export default class NewClass extends cc.Component {
 
     adaptScreen(){
         let scaleRate=GameCtr.getInstance().getAdaptScaleRate();
-        console.log("log--------titleNode scaleRate=:",scaleRate);
+        //console.log("log--------titleNode scaleRate=:",scaleRate);
         if(Math.abs(scaleRate-1)<=0.1){
             let titleFrame=this.node.getChildByName("titleFrame");
             let widget=titleFrame.getComponent(cc.Widget);
@@ -68,7 +68,7 @@ export default class NewClass extends cc.Component {
         this.lb_des.active=true;
         this.lb_des.getComponent(cc.Label).string=title;
         GameCtr.questionDes=title;
-        console.log("log--------当前题目=:",GameCtr.questionDes);
+        //console.log("log--------当前题目=:",GameCtr.questionDes);
     }
 
     getTitle(){

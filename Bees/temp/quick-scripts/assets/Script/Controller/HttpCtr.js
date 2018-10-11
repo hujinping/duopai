@@ -130,12 +130,12 @@ var HttpCtr = /** @class */ (function () {
                 GameCtr_1.default.getInstance().getLoding().refreshMoreNewGame();
                 var vedioInfo = localStorage.getItem("VideoTimes");
                 if (!vedioInfo) {
-                    GameCtr_1.default.vedioTimes = GameCtr_1.default.setting.advSum;
+                    GameCtr_1.default.vedioTimes = 6; //GameCtr.setting.advSum;
                 }
                 else {
                     var obj = JSON.parse(vedioInfo);
                     if (obj.day != Util_1.default.getCurrTimeYYMMDD()) {
-                        GameCtr_1.default.vedioTimes = GameCtr_1.default.setting.advSum;
+                        GameCtr_1.default.vedioTimes = 6; //GameCtr.setting.advSum;
                     }
                     else {
                         GameCtr_1.default.vedioTimes = obj.times;

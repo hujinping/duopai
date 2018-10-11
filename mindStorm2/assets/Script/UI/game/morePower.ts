@@ -8,7 +8,6 @@ export default class NewClass extends cc.Component {
 
     onLoad () {
         this.initBtns();
-        this.initEvent();
         this.showPower();
         this.openAction();
     }
@@ -35,31 +34,42 @@ export default class NewClass extends cc.Component {
             let btnName=e.target.getName();
             if(btnName=="btn_close"){
                 this.close();
+                if(GameCtr.isFighting){
+                    GameCtr.getInstance().getGame().setMaskVisit(false);
+                }else{
+                    GameCtr.getInstance().getStart().setMaskVisit(false);
+                }
             }else if(btnName=="btn_morePower"){
                 if(GameCtr.powerValue==10){
-                    ViewManager.toast("体力值已满");
+                    GameCtr.getInstance().getStart().showToast("体力值已满");
                     return
                 }
-                WXCtr.share("morePower")
+
+                if(GameCtr.vedioTimes<0){
+                    WXCtr.offCloseVideo();
+                    WXCtr.showVideoAd();
+                    WXCtr.onCloseVideo((res) => {
+                        if (res) {
+                            GameCtr.powerValue++;
+                        }else{
+                            GameCtr.getInstance().getStart().showToast("视频未看完，无法领取奖励");
+                        }
+                    });
+                }else{
+                    GameCtr.getInstance().getStart().showToast("今日视频已看完");
+                }
             }
         }.bind(this))
     }
 
-    // initEvent(){
-    //     //GameCtr.getInstance().addListener("morePowerSuccess",this.onMorePower.bind(this))
-    // }
+
 
     showPower(){
         let lb_powerValue=this.node.getChildByName("lb_power");
         lb_powerValue.getComponent(cc.Label).string=GameCtr.powerValue+"/10";
     }
 
-    // onMorePower(){
-    //     this.close();
-    // }
-
     close(){
-        //GameCtr.getInstance().removeListener("morePowerSuccess");
         let mask=this.node.getChildByName("mask");
         mask.setContentSize(cc.size(1080,2436));
         mask.runAction(cc.fadeOut(0.15));

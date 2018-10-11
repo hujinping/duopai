@@ -1,4 +1,5 @@
 import GameCtr from "../../Controller/GameCtr";
+import AudioManager from "../../Common/AudioManager";
 
 const {ccclass, property} = cc._decorator;
 @ccclass
@@ -35,11 +36,14 @@ export default class NewClass extends cc.Component {
 
     initBtnEvent(btn){
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
+            AudioManager.getInstance().playSound("audio/btnCick");
             if(e.target.getName()=="btn_close"){
+                GameCtr.getInstance().getStart().setMaskVisit(false);
                 this.node.destroy();
             }else if(e.target.getName()=="btn_sure"){
                 localStorage.setItem("roleIndex",GameCtr.roleIndex+"");
                 GameCtr.getInstance().getStart().initCurrentRole();
+                GameCtr.getInstance().getStart().setMaskVisit(false);
                 this.node.destroy();
             }else if(e.target.getName()=="btn_arrowLeft"){
                 GameCtr.roleIndex--;

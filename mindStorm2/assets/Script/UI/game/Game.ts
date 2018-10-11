@@ -57,6 +57,12 @@ export default class Game extends cc.Component {
     @property(cc.Node)
     choiceIcon:cc.Node
 
+    @property(cc.Prefab)
+    toast:cc.Prefab=null;
+
+    @property(cc.Prefab)
+    bgMusic:cc.Prefab=null;
+
     private gameBg1=null;
     private gameBg2=null;
     private btn_error=null;
@@ -66,6 +72,8 @@ export default class Game extends cc.Component {
     private titleNode=null;
     private reviveNode=null;
     private line=null;
+    private mask=null;
+    private netTip=null;
     private gameOverNode=null;
     private firstTitleTime=10;
     private titleIntervalTime=10;
@@ -85,11 +93,24 @@ export default class Game extends cc.Component {
     private roleModleArr=[];
     
     onLoad() {
+        GameCtr.isFighting=true;
         GameCtr.getInstance().setGame(this);
         this.initData();
         this.initNode();
         this.initBtns();
         this.initEvent();
+        this.initBgMusic();
+        WXCtr.hideBannerAd();
+        
+        cc.game.off(cc.game.EVENT_SHOW);
+        cc.game.off(cc.game.EVENT_HIDE);
+        
+        cc.game.on(cc.game.EVENT_SHOW,()=>{
+            this.initBgMusic();
+        });
+        cc.game.on(cc.game.EVENT_HIDE,()=>{
+        });  
+
     }
 
     initData(){
@@ -110,11 +131,24 @@ export default class Game extends cc.Component {
         this.roleModleArr.push(this.role_3);
     }
 
+    initBgMusic(){
+        while(cc.find("Canvas").getChildByTag(999999)){
+            cc.find("Canvas").removeChildByTag(999999);
+        }
+        let bgMusic=cc.instantiate(this.bgMusic);
+        bgMusic.parent=cc.find("Canvas");
+        bgMusic.tag=999999;
+    }
+
     initNode(){
         this.gameBg1=this.node.getChildByName('bg1');
         this.gameBg2=this.node.getChildByName('bg2');
         this.line=this.node.getChildByName("line");
+        this.mask=this.node.getChildByName("mask");
+        this.netTip=this.node.getChildByName("netTip");
         this.line.active=false;
+        this.mask.active=false;
+        this.netTip.active=false;
         this.initGameOverNode();
     }
 
@@ -197,9 +231,11 @@ export default class Game extends cc.Component {
                 this.gameBg2;
             }else{
                 if(!GameCtr.isAudited){
-                    ViewManager.toast("没有体力值");
-                    return}
+                    GameCtr.getInstance().getGame().showToast("没有体力值");
+                    return
+                }
                 if(this.node.getChildByName("morePower")){return}
+                this.setMaskVisit(true);
                 let morePowerNode=cc.instantiate(this.morePower);
                 morePowerNode.parent=this.node;
                 morePowerNode.setLocalZOrder(100);
@@ -210,7 +246,6 @@ export default class Game extends cc.Component {
 
     initEvent(){
         GameCtr.getInstance().addListener("answerFinish",  this.onAnswerFinish.bind(this));
-        GameCtr.getInstance().addListener("shareSuccess",  this.onShareSuccess.bind(this));
         GameCtr.getInstance().addListener("banAnswer",     this.onBanAnswer.bind(this));
         GameCtr.getInstance().addListener("matchCountDown",this.onMatchCountDown.bind(this));
         GameCtr.getInstance().addListener("showFlag",      this.onShowFlag.bind(this));
@@ -228,7 +263,17 @@ export default class Game extends cc.Component {
         GameCtr.rankingEntrance = "Start";               //进入游戏后把排行榜的入口信息恢复成默认
         GameCtr.isMatchingOver =false;
         HttpCtr.GameStart(null);
-        HttpCtr.getGameStartInfo(this.initMatchingRoles.bind(this));
+        this.getStartInfo();
+    }
+
+
+    getStartInfo(){
+        HttpCtr.getGameStartInfo(this.gameStart.bind(this)); 
+    }
+
+
+    gameStart(matchingRoles){
+        this.initMatchingRoles(matchingRoles);
         this.showMatching();
         this.scheduleOnce(function(){
             this.getTitie();
@@ -356,7 +401,6 @@ export default class Game extends cc.Component {
             posIndex=this.getBestEmptyPosIndex(GameMap.RIGHT);
         }
         role.stopAllActions();
-        console.log("log-----------doRoleAnswer-----------roleIndex  this.rolePlaceArr=:",posIndex,this.rolePlaceArr);
         role.runAction(cc.moveTo(0.5,cc.p(this.rolePlaceArr[posIndex].pos)));
         role.setLocalZOrder(GameCtr.gameRoleCount*2-posIndex);
         role.tag=posIndex;
@@ -478,22 +522,6 @@ export default class Game extends cc.Component {
         this.obstacleNode.tag=randnum;
     }
 
-    //增加游戏分数
-    addScore(num = 1) {
-        GameCtr.addScore(num);
-    }
-
-    /**
-     * 下面两个方法为测试用，自己根据实际需求处理
-     */
-    gameOver() {
-        GameCtr.gameOver();
-    }
-
-    clickAddScore() {
-        this.addScore(1);
-    }
- 
     showRevive(){
         if(this.node.getChildByName("revive")){return};
         if(!GameCtr.isAudited){return}
@@ -562,12 +590,10 @@ export default class Game extends cc.Component {
        this.matchingCountDown()
     }
 
-    onShareSuccess(){
+    doRivive(){
         this.reviveNode.destroy();
         this.reviveNode=null;
         this.revive();
-        AudioManager.getInstance().playMusic("audio/gameMusic");
-        //console.log("log---------------音乐开关=：", AudioManager.getInstance().musicOn);
     }
 
     onChoiceGame(){
@@ -657,7 +683,6 @@ export default class Game extends cc.Component {
 
     chickRivive(){
         if(!this.isGameOver){return;}
-        console.log("log------------------GameCtr.totalReviveTimes  GameCtr.reviveData.revive_number=:",GameCtr.totalReviveTimes,GameCtr.reviveData.revive_number)
         if(GameCtr.reviveTimes>0&&this.roles.length>1&&GameCtr.isAudited&&GameCtr.totalReviveTimes<=GameCtr.reviveData.revive_number){
             this.scheduleOnce(this.showRevive.bind(this),1.0);
         }else{
@@ -679,13 +704,11 @@ export default class Game extends cc.Component {
         this.isGameOver=false;
         this.roles[0].node.active=true;
         let posIndex=null;
-        console.log("log--------------revive-----this.dieLeft=:",this.dieLeft);
         if(!this.dieLeft){
             posIndex=this.getBestEmptyPosIndex(GameMap.RIGHT);
         }else{
             posIndex=this.getBestEmptyPosIndex(GameMap.LEFT);
         }
-        console.log("log--------------revive-----this.dieLeft posIndex=:",this.dieLeft,posIndex);
         this.roles[0].node.setLocalZOrder(GameCtr.gameRoleCount*2-posIndex);
         this.roles[0].node.tag=posIndex;
         this.roles[0].node.x=this.rolePlaceArr[posIndex].pos.x;
@@ -698,6 +721,29 @@ export default class Game extends cc.Component {
         this.titleNode.getComponent("titleNode").unscheduleAllCallbacks();
         this.getTitie();
         this.startBgRoll();
+    }
+
+    showToast(msg){
+        if(cc.find("Canvas").getChildByName("toast")){return}
+        let toast=cc.instantiate(this.toast);
+        toast.parent=cc.find("Canvas");
+        toast.setLocalZOrder(1000);
+        toast.getComponent("toast").show(msg);
+        toast.runAction(cc.sequence(
+            cc.delayTime(1.0),
+            cc.fadeOut(0.3),
+            cc.callFunc(()=>{
+                toast.destroy();
+            })
+        ));
+    }
+
+    setMaskVisit(bool){
+        this.mask.active=bool;
+    }
+
+    setNetTipVisit(bool){
+        this.netTip.active=bool;
     }
 
     update (dt) {

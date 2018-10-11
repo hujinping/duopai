@@ -12,87 +12,106 @@ export default class NewClass extends cc.Component {
 
     @property(cc.Prefab)
     otherRankItem:cc.Prefab;
-
     private btn_back = null;
-    private place_1 = null;
-    private place_2 = null;
-    private place_3 = null;
     private title=null;
     private rankContent =null;
     private selfRankInfoNode=null;
-    private first2ThirdArr=[];
     private worldRankData=null;
     private selfRank=null;
     private selfChickenValue=null;
-
     private authTipNode=null;
     private rankNode=null;
+    private btn_worldRank=null;
+    private btn_friendsRank=null;
+    private worldRankNode=null;
+    private friendsRankNode=null;
+
+    private tex = null;
 
     onLoad(){
         this.initNode();
         this.adaptScreen();
         GameCtr.getInstance().addListener("getSelfInfoSuccess1",this.initSelfRankInfo.bind(this));
+        WXCtr.showFriendRank();
+    }
+
+    start(){
+        this.tex=new cc.Texture2D();
+        window.sharedCanvas.width = 1080;
+        window.sharedCanvas.height = 1920;
     }
 
 
     initNode(){
-        this.place_1=this.node.getChildByName("place_1");
-        this.place_2=this.node.getChildByName("place_2");
-        this.place_3=this.node.getChildByName("place_3");
+        this.worldRankNode=this.node.getChildByName("worldRankNode");
+        this.friendsRankNode=this.node.getChildByName("friendsRankNode");
         this.btn_back=this.node.getChildByName("btn_back");
         this.authTipNode=this.node.getChildByName("authTip");
         this.title=this.node.getChildByName("title");
-        this.rankNode=this.node.getChildByName("rankNode");
-        this.selfRankInfoNode=this.node.getChildByName("selfRankInfoNode");
-        this.rankContent=this.node.getChildByName("rankNode").getChildByName("scrollView").getChildByName("view").getChildByName("content");
+        this.btn_worldRank=this.title.getChildByName("btn_worldRank");
+        this.btn_friendsRank=this.title.getChildByName("btn_friendsRank");
 
-        this.place_1.setLocalZOrder(10);
-        this.place_2.setLocalZOrder(10);
-        this.place_3.setLocalZOrder(10);
-
-        this.first2ThirdArr.push(this.place_1);
-        this.first2ThirdArr.push(this.place_2);
-        this.first2ThirdArr.push(this.place_3);
-
-        this.place_1.active=false;
-        this.place_2.active=false;
-        this.place_3.active=false;
+        this.worldRankNode.active=true;
+        this.friendsRankNode.active=false;
         this.title.active=false;
+        this.btn_worldRank.getComponent(cc.Button).interactable=false;
+        this.btn_friendsRank.getComponent(cc.Button).interactable=true;
+
+        this.initBtnEvent(this.btn_back);
+        this.initBtnEvent(this.btn_worldRank);
+        this.initBtnEvent(this.btn_friendsRank);
+
+        this.initWorldRankNode();
+    }
+
+    initWorldRankNode(){
+
+        this.rankNode=this.worldRankNode.getChildByName("rankNode");
+        this.selfRankInfoNode=this.worldRankNode.getChildByName("selfRankInfoNode");
+        this.rankContent=this.rankNode.getChildByName("scrollView").getChildByName("view").getChildByName("content");
+
         this.rankNode.active=false;
         this.selfRankInfoNode.active=false;
+    }
 
-        
-        this.btn_back.on(cc.Node.EventType.TOUCH_END,function(e){
+
+    initBtnEvent(btn){
+        btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
             AudioManager.getInstance().playSound("audio/btnCick");
-            this.close();
-        }.bind(this))
+            if(e.target.getName()=="btn_back"){
+                this.close();
+            }else if(e.target.getName()=="btn_worldRank"){
+                this.worldRankNode.active=true;
+                this.friendsRankNode.active=false;
+                this.btn_worldRank.getComponent(cc.Button).interactable=false;
+                this.btn_friendsRank.getComponent(cc.Button).interactable=true;
+            }else if(e.target.getName()=="btn_friendsRank"){
+                this.worldRankNode.active=false;
+                this.friendsRankNode.active=true;
+                this.btn_worldRank.getComponent(cc.Button).interactable=true;
+                this.btn_friendsRank.getComponent(cc.Button).interactable=false;
+            }
+        })
     }
 
     adaptScreen(){
         let visibleSize=cc.director.getVisibleSize();
-        this.place_1.y=visibleSize.height/2-250;
-        this.place_2.y=visibleSize.height/2-310;
-        this.place_3.y=visibleSize.height/2-310;
+
         this.title.y=visibleSize.height/2-410;
         this.btn_back.y=visibleSize.height/2-200;
         this.selfRankInfoNode.y=-visibleSize.height/2;
 
-        let rankNode=this.node.getChildByName("rankNode");
+        let rankNode=this.worldRankNode.getChildByName("rankNode");
         rankNode.y=visibleSize.height/2-600;
     }
 
     init(){
-        this.place_1.active=true;
-        this.place_2.active=true;
-        this.place_3.active=true;
         this.title.active=true;
         this.rankNode.active=true;
         this.selfRankInfoNode.active=true;
         this.authTipNode.active=false;
-
-        this.initRank();
-        this.initFirst2ThirdHead();
         this.initSelfRankInfo();
+        this.initRank();
     }
 
     initData(totalRank,selfRank,selfChickenValue){
@@ -101,29 +120,21 @@ export default class NewClass extends cc.Component {
         this.selfChickenValue=selfChickenValue;
     }
 
-    initFirst2ThirdHead(){
-        for(let i in this.worldRankData){
-            if(Number(i)-1==3){return};
-            let head= cc.instantiate(this.headPrefab);
-            head.parent=this.first2ThirdArr[Number(i)-1];
-            head.active=true;
-            head.y=-40;
-            head.scale=Number(i)-1>0?0.85:1;
-            head.getComponent("head").setHead(this.worldRankData[i].Icon);
-        }
-    }
-
     initRank(){
-        this.rankContent.setContentSize(cc.size(1080,200*10+400));
+        let rankLength=0;
+        for (let i in this.worldRankData){
+            rankLength++;
+        }
+        this.rankContent.setContentSize(cc.size(1080,200*rankLength+400));
         for(let i in this.worldRankData){
             let rankItem=cc.instantiate(this.otherRankItem)
             rankItem.parent=this.rankContent
             rankItem.y=-200*Number(i)+100;
-            rankItem.getComponent("otherRank").setName(Util.cutstr(this.worldRankData[i].nick,10));
-            rankItem.getComponent("otherRank").setCity(this.worldRankData[i].City);
-            rankItem.getComponent("otherRank").setRank(this.worldRankData[i].top);
-            rankItem.getComponent("otherRank").setChickenCount(this.worldRankData[i].value);
-            rankItem.getComponent("otherRank").setHeadImg(this.worldRankData[i].Icon);
+            rankItem.getComponent("otherRank").setName(Util.cutstr(this.worldRankData[Number(i)].nick,6));
+            rankItem.getComponent("otherRank").setCity(this.worldRankData[Number(i)].City);
+            rankItem.getComponent("otherRank").setRank(this.worldRankData[Number(i)].top);
+            rankItem.getComponent("otherRank").setChickenCount(this.worldRankData[Number(i)].value);
+            rankItem.getComponent("otherRank").setHeadImg(this.worldRankData[Number(i)].Icon);
         }
     }
 
@@ -133,7 +144,7 @@ export default class NewClass extends cc.Component {
             return;
         }
         this.selfChickenValue=!this.selfChickenValue?0:this.selfChickenValue;
-        let selfRankInfoNode=this.node.getChildByName("selfRankInfoNode");
+        let selfRankInfoNode=this.worldRankNode.getChildByName("selfRankInfoNode");
         let lb_name=selfRankInfoNode.getChildByName("lb_name");
         let lb_city=selfRankInfoNode.getChildByName("lb_city");
         let lb_rank=selfRankInfoNode.getChildByName("lb_rank");
@@ -175,5 +186,17 @@ export default class NewClass extends cc.Component {
                 this.node.destroy();
             }.bind(this))
         ))
+    }
+
+    // 刷新子域的纹理
+    _updateSubDomainCanvas() {
+        if (window.sharedCanvas != undefined && this.tex != null && this.friendsRankNode.active ) {
+            this.tex.initWithElement(window.sharedCanvas);
+            this.tex.handleLoadedTexture();
+            this.friendsRankNode.getComponent(cc.Sprite).spriteFrame= new cc.SpriteFrame(this.tex);
+        }
+    }
+    update() {
+        this._updateSubDomainCanvas();
     }
 }
