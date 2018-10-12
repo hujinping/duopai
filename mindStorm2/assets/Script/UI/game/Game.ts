@@ -210,20 +210,22 @@ export default class Game extends cc.Component {
        
         this.gameOverNode.setLocalZOrder(80);
 
-        btn_back.on(cc.Node.EventType.TOUCH_END,function(e){
+        btn_back.on(cc.Node.EventType.TOUCH_END,(e)=>{
             AudioManager.getInstance().playSound("audio/btnCick");
-            cc.director.loadScene("Start")
+            this.removeEvent();
+            cc.director.loadScene("Start");
         })
 
-        btn_share.on(cc.Node.EventType.TOUCH_END,function(e){
+        btn_share.on(cc.Node.EventType.TOUCH_END,(e)=>{
             AudioManager.getInstance().playSound("audio/btnCick");
             WXCtr.share(null);
         })
 
-        btn_continue.on(cc.Node.EventType.TOUCH_END,function(e){
+        btn_continue.on(cc.Node.EventType.TOUCH_END,(e)=>{
             AudioManager.getInstance().playSound("audio/btnCick");
             if(GameCtr.powerValue>0){
                 GameCtr.powerValue--;
+                localStorage.setItem("powerInfo",JSON.stringify({day:Util.getCurrTimeYYMMDD(),powerValue:GameCtr.powerValue}))
                 this.gameOverNode.active=false;
                 this.clearRoles();
                 this.start();
@@ -241,7 +243,7 @@ export default class Game extends cc.Component {
                 morePowerNode.setLocalZOrder(100);
                
             }
-        }.bind(this))
+        })
     }
 
     initEvent(){
@@ -251,6 +253,16 @@ export default class Game extends cc.Component {
         GameCtr.getInstance().addListener("showFlag",      this.onShowFlag.bind(this));
         GameCtr.getInstance().addListener("choiceGame",    this.onChoiceGame.bind(this));
         GameCtr.getInstance().addListener("restartGame",   this.onRestartGame.bind(this));
+    }
+
+
+    removeEvent(){
+        GameCtr.getInstance().removeListener("answerFinish");
+        GameCtr.getInstance().removeListener("banAnswer");
+        GameCtr.getInstance().removeListener("matchCountDown");
+        GameCtr.getInstance().removeListener("showFlag");
+        GameCtr.getInstance().removeListener("choiceGame");
+        GameCtr.getInstance().removeListener("restartGame");
     }
 
 
@@ -352,14 +364,17 @@ export default class Game extends cc.Component {
                 let role=null;
                 if(i==0){//初始化玩家自己
                     let selfInfo=GameCtr.getInstance().getSelfInfoFromLocal();
+                    let name =selfInfo?selfInfo.nickName:"游客";
+                    let avatarUrl=selfInfo?selfInfo.avatarUrl:"";
                     role=cc.instantiate(this.roleModleArr[GameCtr.roleIndex]);
                     role.parent=this.node;
-                    role.getComponent("role").setName(Util.cutstr(selfInfo.nickName,4));
-                    role.getComponent("role").setHeadImg(selfInfo.avatarUrl);
+                    role.getComponent("role").setName(Util.cutstr(name,4));
+                    role.getComponent("role").setHeadImg(avatarUrl);
                 }else{//其他玩家
                     role=cc.instantiate(this.roleModleArr[Math.floor(Math.random()*3)]);
                     role.parent=this.node;
                     role.getComponent("role").setName(Util.cutstr(matchingRoles[i].nick,4));
+                    role.getComponent("role").hideHead();
                 }
                 let randomNum=Math.floor(Math.random()*6);
                 role.x=this.birthPlaceArr[randomNum].x;

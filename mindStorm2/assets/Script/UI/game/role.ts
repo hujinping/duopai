@@ -16,6 +16,7 @@ export default class NewClass extends cc.Component {
         this.headFrame=this.node.getChildByName("headFrame");
         this.headImg=this.node.getChildByName("mask").getChildByName("heading");
         this.headFrame.active=false;
+        this.headImg.active=false;
     }
 
     setName(name:string){
@@ -32,6 +33,8 @@ export default class NewClass extends cc.Component {
 
     setHeadImg(url){
         this.headFrame.active=true;
+        this.headImg.active=true;
+        if(!url || url=="") return;
         let spr=this.headImg.getComponent(cc.Sprite);
         cc.loader.load({
             url: url,
@@ -39,6 +42,10 @@ export default class NewClass extends cc.Component {
         }, (err, texture) => {
             spr.spriteFrame = new cc.SpriteFrame(texture);
         });
+    }
+    
+    hideHead(){
+        this.headImg.active=false;
     }
 
     die(dieWay,die=true){

@@ -33,13 +33,12 @@ export default class NewClass extends cc.Component {
     }
 
     initHeadEvent(){
-        this._head.on(cc.Node.EventType.TOUCH_END,(e)=>{
+        this.node.on(cc.Node.EventType.TOUCH_END,(e)=>{
             WXCtr.share({invite:true,callback:()=>{
                 console.log("log----------------邀请好友---------");
             }})
         })
     }
-
 
     setHeadImg(url){
         this._url=url;

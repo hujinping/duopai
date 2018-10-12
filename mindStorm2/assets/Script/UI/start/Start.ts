@@ -62,7 +62,7 @@ export default class Start extends cc.Component {
     onLoad() {
         GameCtr.roleIndex=Number(localStorage.getItem("roleIndex"));
         GameCtr.getInstance().setStart(this);
-        GameCtr.isFighting=false;
+       
         this.initNode();
         this.initEvent();
         this.initSelfInfo();
@@ -73,7 +73,10 @@ export default class Start extends cc.Component {
 
     start() {
         WXCtr.getFriendRankingData();                   //获取好友排行榜数据
-        this.showGameCount();
+        if(GameCtr.isFighting){
+            this.showGameCount();
+        }
+        GameCtr.isFighting=false;
     }
 
     initBgMusic(){
@@ -307,18 +310,18 @@ export default class Start extends cc.Component {
 
 
     startFight(){
-        if(!WXCtr.authed){
-            let authTip=this.node.getChildByName("authTip");
-            authTip.setLocalZOrder(60);
-            authTip.active=true;
-            WXCtr.createUserInfoBtn();
-            WXCtr.onUserInfoBtnTap(this.hideAuthTip.bind(this));
-            return;
-        }
-
+        // if(!WXCtr.authed){
+        //     let authTip=this.node.getChildByName("authTip");
+        //     authTip.setLocalZOrder(60);
+        //     authTip.active=true;
+        //     WXCtr.createUserInfoBtn();
+        //     WXCtr.onUserInfoBtnTap(this.hideAuthTip.bind(this));
+        //     return;
+        // }
         if( GameCtr.powerValue>0){
             cc.director.loadScene("Game");
             GameCtr.powerValue--;
+            localStorage.setItem("powerInfo",JSON.stringify({day:Util.getCurrTimeYYMMDD(),powerValue:GameCtr.powerValue}))
         }else{
             if(!GameCtr.isAudited){
                 GameCtr.getInstance().getStart().showToast("没有体力值");

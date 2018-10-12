@@ -129,6 +129,7 @@ export default class HttpCtr {
                 GameCtr.getInstance().getStart().doBanner();
                 GameCtr.getInstance().getStart().refreshMoreNewGame();
                 let vedioInfo=localStorage.getItem("VideoTimes");
+                let powerInfo=localStorage.getItem("powerInfo");
                 if(!vedioInfo ){
                     GameCtr.vedioTimes=GameCtr.setting.advSum;
                 }else {
@@ -139,6 +140,14 @@ export default class HttpCtr {
                         GameCtr.vedioTimes=obj.times;
                     }
                 }
+
+                if(powerInfo){
+                    let obj=JSON.parse(powerInfo);
+                    if(obj.day==Util.getCurrTimeYYMMDD()){
+                        GameCtr.powerValue=obj.powerValue;
+                    }
+                }
+                GameCtr.getInstance().getStart().showGameCount();
             }
         });
     }

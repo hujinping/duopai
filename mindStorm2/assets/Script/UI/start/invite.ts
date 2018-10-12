@@ -57,7 +57,6 @@ export default class NewClass extends cc.Component {
             for(let i=0;i<friendList.length;i++){
                 if(friendList[i].uid){
                     console.log("邀请玩家-----uid=:",friendList[i].uid);
-                    //this._content.children[i].getComponent("inviteFriendItem").setName(friendList[i].nick);
                     this._content.children[i].getComponent("inviteItem").setHeadImg(friendList[i].Icon);
                 }else {
                     this._content.children[i].getComponent("inviteItem").initHeadEvent();

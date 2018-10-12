@@ -182,8 +182,6 @@ export default class WXCtr {
                 success: function (loginResp) {
                     console.log("微信登录返回值res", loginResp);
                     HttpCtr.login(loginResp.code);
-
-                    
                     WXCtr.getShareConfig();
                     WXCtr.getReviveData();
                     HttpCtr.getAdConfig();
@@ -251,6 +249,10 @@ export default class WXCtr {
             success: (resp) => {
                 console.log("获取复活配置信息", resp);
                 GameCtr.reviveData = resp.data;
+            },
+
+            data:{
+
             }
         });
     }

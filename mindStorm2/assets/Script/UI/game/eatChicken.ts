@@ -1,6 +1,7 @@
 import GameCtr from "../../Controller/GameCtr";
 import AudioManager from "../../Common/AudioManager";
 import ViewManager from "../../Common/ViewManager";
+import Util from "../../Common/Util";
 const {ccclass, property} = cc._decorator;
 
 @ccclass
@@ -20,15 +21,17 @@ export default class NewClass extends cc.Component {
         light.runAction(cc.repeatForever(cc.rotateBy(0.5,30)));
         this.loadHeadImg(headImg,selfInfo.avatarUrl);
 
-        btn_back.on(cc.Node.EventType.TOUCH_END,function(e){
+        btn_back.on(cc.Node.EventType.TOUCH_END,(e)=>{
             AudioManager.getInstance().playSound("audio/btnCick");
+            GameCtr.getInstance().getGame().removeEvent();
             cc.director.loadScene("Start");
         })
 
-        btn_continue.on(cc.Node.EventType.TOUCH_END,function(e){
+        btn_continue.on(cc.Node.EventType.TOUCH_END,(e)=>{
             AudioManager.getInstance().playSound("audio/btnCick");
             if(GameCtr.powerValue>0){
                 GameCtr.powerValue--;
+                localStorage.setItem("powerInfo",JSON.stringify({day:Util.getCurrTimeYYMMDD(),powerValue:GameCtr.powerValue}))
                 GameCtr.getInstance().emitEvent("restartGame",null);
                 this.node.destroy();
             }else{
@@ -41,7 +44,7 @@ export default class NewClass extends cc.Component {
                 morePowerNode.parent=this.node.parent;
                 morePowerNode.setLocalZOrder(80);
             }
-        }.bind(this))
+        })
     }
 
     loadHeadImg(headNode:cc.Node,headUrl:string){
@@ -54,4 +57,6 @@ export default class NewClass extends cc.Component {
             sp.spriteFrame = new cc.SpriteFrame(texture);
         });
     }
+
+    
 }

@@ -79,6 +79,9 @@ export default class NewClass extends cc.Component {
         btn.on(cc.Node.EventType.TOUCH_END,(e)=>{
             AudioManager.getInstance().playSound("audio/btnCick");
             if(e.target.getName()=="btn_back"){
+                if(WXCtr.userInfoBtn){
+                    WXCtr.userInfoBtn.destroy();
+                }
                 this.close();
             }else if(e.target.getName()=="btn_worldRank"){
                 this.worldRankNode.active=true;

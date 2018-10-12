@@ -2,11 +2,13 @@ import AudioManager from "../../Common/AudioManager";
 import WXCtr from "../../Controller/WXCtr";
 import GameCtr from "../../Controller/GameCtr";
 import ViewManager from "../../Common/ViewManager";
+import Util from "../../Common/Util";
 const {ccclass, property} = cc._decorator;
 @ccclass
 export default class NewClass extends cc.Component {
 
     onLoad () {
+        
         this.initBtns();
         this.showPower();
         this.openAction();
@@ -29,40 +31,46 @@ export default class NewClass extends cc.Component {
     }
 
     initBtnListen(btn){
+        let secne=GameCtr.isFighting?GameCtr.getInstance().getGame():GameCtr.getInstance().getStart();
         btn.on(cc.Node.EventType.TOUCH_END,function(e){
             AudioManager.getInstance().playSound("audio/btnCick");
             let btnName=e.target.getName();
             if(btnName=="btn_close"){
                 this.close();
-                if(GameCtr.isFighting){
-                    GameCtr.getInstance().getGame().setMaskVisit(false);
-                }else{
-                    GameCtr.getInstance().getStart().setMaskVisit(false);
-                }
+                secne.setMaskVisit(false);
             }else if(btnName=="btn_morePower"){
                 if(GameCtr.powerValue==10){
-                    GameCtr.getInstance().getStart().showToast("体力值已满");
+                    secne.showToast("体力值已满");
                     return
                 }
-
-                if(GameCtr.vedioTimes<0){
-                    WXCtr.offCloseVideo();
-                    WXCtr.showVideoAd();
-                    WXCtr.onCloseVideo((res) => {
-                        if (res) {
-                            GameCtr.powerValue++;
-                        }else{
-                            GameCtr.getInstance().getStart().showToast("视频未看完，无法领取奖励");
-                        }
-                    });
+                console.log("log----------------btn_morePower-------------");
+                if(GameCtr.vedioTimes>0){
+                    GameCtr.powerValue++;
+                    localStorage.setItem("powerInfo",JSON.stringify({day:Util.getCurrTimeYYMMDD(),powerValue:GameCtr.powerValue}))
+                    if(!GameCtr.isFighting){
+                        GameCtr.getInstance().getStart().showGameCount();
+                    }
+                    this.showPower();
+                    // WXCtr.offCloseVideo();
+                    // WXCtr.showVideoAd();
+                    // WXCtr.onCloseVideo((res) => {
+                    //     if (res) {
+                    //         GameCtr.powerValue++;
+                    //         this.showPower();
+                    //         if(!GameCtr.isFighting){
+                    //              GameCtr.getInstance().getStart().showGameCount();
+                    //         }
+                    //         localStorage.setItem("powerInfo",JSON.stringify({day:Util.getCurrTimeYYMMDD(),powerValue:GameCtr.powerValue}))
+                    //     }else{
+                    //         secne.showToast("视频未看完，无法领取奖励");
+                    //     }
+                    // });
                 }else{
-                    GameCtr.getInstance().getStart().showToast("今日视频已看完");
+                    secne.showToast("今日视频已看完");
                 }
             }
         }.bind(this))
     }
-
-
 
     showPower(){
         let lb_powerValue=this.node.getChildByName("lb_power");
